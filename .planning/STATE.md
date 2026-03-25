@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-03-25)
 ## Current Position
 
 Phase: 1 of 5 (Parser + Engine)
-Plan: 0 of 3 in current phase
-Status: Ready to plan
-Last activity: 2026-03-25 — Roadmap created, ready for phase planning
+Plan: 1 of 3 in current phase
+Status: In progress
+Last activity: 2026-03-25 — Completed 01-01-PLAN.md (project scaffolding + streaming parser)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█░░░░░░░░░] 7% (1/15 plans estimated)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
-- Average duration: -
-- Total execution time: -
+- Total plans completed: 1
+- Average duration: ~2 min
+- Total execution time: ~2 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 01-parser-engine | 1 | ~2 min | ~2 min |
 
 **Recent Trend:**
-- Last 5 plans: -
-- Trend: -
+- Last 5 plans: 01-01 (2 min)
+- Trend: Baseline established
 
 *Updated after each plan completion*
 
@@ -46,6 +46,11 @@ Recent decisions affecting current work:
 - [Project]: Dual MCP + CLI interface — covers IDE users and terminal natives
 - [Project]: Cloudflare Workers over Vercel — avoids github-readme-stats rate-limit problems
 - [Project]: 3 MCP tools only — ship the wedge, not the platform
+- [01-01]: Node16 module resolution (not Bundler) — targeting Node 22 directly, no bundler
+- [01-01]: glob async iterator form (for await of glob()) — promise form unreliable per research
+- [01-01]: message.id dedup scoped per-file, uuid dedup shared — matches Claude Code write patterns
+- [01-01]: User entries are metadata-only (cwd source) — ParsedMessages are assistant entries only
+- [01-01]: Zero runtime deps enforced — only node: built-ins used in parser
 
 ### Pending Todos
 
@@ -60,6 +65,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-25
-Stopped at: Roadmap created, all 35 v1 requirements mapped to 5 phases
+Last session: 2026-03-25T22:07:13Z
+Stopped at: Completed 01-01-PLAN.md — streaming parser with two-level dedup ready
 Resume file: None
