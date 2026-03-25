@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-03-25)
 
 **Core value:** Developers using Claude Code can see what they shipped and what it cost, and share verifiable proof via an embeddable card.
-**Current focus:** Phase 2 - MCP + CLI
+**Current focus:** Phase 3 - Card Endpoint (Cloudflare Worker)
 
 ## Current Position
 
-Phase: 2 of 5 (MCP + CLI)
-Plan: 2 of 3 in current phase (02-01 and 02-02 complete)
-Status: In progress
-Last activity: 2026-03-25 — Completed 02-01-PLAN.md (CLI layer: args parser, table formatter, 3 commands)
+Phase: 2 of 5 (MCP + CLI) — COMPLETE. Ready for Phase 3.
+Plan: 3 of 3 in Phase 2 complete (02-01, 02-02, 02-03 done)
+Status: Phase 2 complete
+Last activity: 2026-03-25 — Completed 02-03-PLAN.md (package wiring: bin entries, build chmod, MCP config docs)
 
-Progress: [████░░░░░░] 33% (5/15 plans estimated)
+Progress: [█████░░░░░] 40% (6/15 plans estimated)
 
 ## Performance Metrics
 
@@ -28,10 +28,10 @@ Progress: [████░░░░░░] 33% (5/15 plans estimated)
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-parser-engine | 3 | ~8 min | ~2.7 min |
-| 02-mcp-cli | 2 (in progress) | ~4 min | ~2 min |
+| 02-mcp-cli | 3 (complete) | ~6 min | ~2 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (2 min), 01-02 (3 min), 01-03 (3 min), 02-01 (N/A - research), 02-02 (2 min)
+- Last 5 plans: 01-02 (3 min), 01-03 (3 min), 02-01 (N/A - research), 02-02 (2 min), 02-03 (2 min)
 - Trend: Consistent 2-3 min per plan
 
 *Updated after each plan completion*
@@ -67,6 +67,10 @@ Recent decisions affecting current work:
 - [02-02]: Tool-per-file pattern — each MCP tool in separate module for testability and clean server.ts
 - [02-02]: import type McpServer in tool files — type-only import avoids runtime dependency in tool modules
 - [02-02]: as const on MCP content type literal — prevents type widening from "text" to string
+- [02-03]: chmod 755 in build script (not post-install hook) — executable bits set at compile time
+- [02-03]: Separate bin names (shiplog vs shiplog-mcp) — CLI and MCP server are distinct invocations
+- [02-03]: files field includes data/ — pricing snapshot required at runtime, must be in npm publish
+- [02-03]: npx -y required for MCP stdio servers — prevents interactive prompt corrupting transport
 
 ### Pending Todos
 
@@ -80,6 +84,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-25T23:21:26Z
-Stopped at: Completed 02-01-PLAN.md — CLI layer with 3 commands (summary, costs, card) wired to engine
+Last session: 2026-03-25T23:26:13Z
+Stopped at: Completed 02-03-PLAN.md — package wiring with dual bin entries, build chmod, and MCP config docs. Phase 2 complete.
 Resume file: None
