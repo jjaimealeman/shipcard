@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-03-25)
 
 **Core value:** Developers using Claude Code can see what they shipped and what it cost, and share verifiable proof via an embeddable card.
-**Current focus:** Phase 2 - CLI + MCP Tools
+**Current focus:** Phase 2 - MCP + CLI
 
 ## Current Position
 
-Phase: 1 of 5 (Parser + Engine) — COMPLETE
-Plan: 3 of 3 complete
-Status: Phase complete — ready for Phase 2
-Last activity: 2026-03-25 — Completed 01-03-PLAN.md (date filtering, public runEngine() API, end-to-end validation)
+Phase: 2 of 5 (MCP + CLI)
+Plan: 0 of 3 in current phase
+Status: Ready to plan
+Last activity: 2026-03-25 — Phase 1 complete, all 13 requirements verified
 
 Progress: [███░░░░░░░] 20% (3/15 plans estimated)
 
@@ -67,13 +67,12 @@ None yet.
 
 ### Blockers/Concerns
 
-- [Research flag]: JSONL schema edge cases need deeper inspection during Phase 1 planning — more sample files from different project types
 - [Research flag]: SVG rendering on GitHub specifically — camo proxy and SVG sanitizer have undocumented restrictions (Phase 3)
 - [Research flag]: Cloudflare Worker auth strategy for /api/sync — API key vs signed token decision needed in Phase 4 planning
 - [Research gap]: npm name availability — check `npm show shiplog` before writing package.json (Phase 5)
 
 ## Session Continuity
 
-Last session: 2026-03-25T22:20:46Z
-Stopped at: Completed 01-03-PLAN.md — Phase 1 complete, runEngine() validated against real data
+Last session: 2026-03-25
+Stopped at: Phase 1 complete — 3/3 plans executed, 5/5 must-haves verified, 13/13 requirements marked Complete
 Resume file: None

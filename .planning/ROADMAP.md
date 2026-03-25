@@ -12,7 +12,7 @@ ShipLog ships in five sequential phases: a resilient JSONL parser and analytics 
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Parser + Engine** - JSONL parser and analytics engine — the foundation everything else builds on
+- [x] **Phase 1: Parser + Engine** - JSONL parser and analytics engine — the foundation everything else builds on
 - [ ] **Phase 2: MCP + CLI** - Dual interfaces (MCP server + CLI) consuming the engine
 - [ ] **Phase 3: SVG Card** - Local card generation with dark/light themes
 - [ ] **Phase 4: Cloud Worker** - Cloudflare Worker that serves and caches cards at the edge
@@ -33,9 +33,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans:** 3 plans in 3 waves (sequential — each builds on the previous)
 
 Plans:
-- [ ] 01-01-PLAN.md — Project scaffolding, JSONL types, streaming parser with two-level deduplication
-- [ ] 01-02-PLAN.md — Analytics engine: aggregator, LiteLLM pricing with 3-layer cache, cost estimation
-- [ ] 01-03-PLAN.md — Date filtering, public API entry point, integration test against real data
+- [x] 01-01-PLAN.md — Project scaffolding, JSONL types, streaming parser with two-level deduplication
+- [x] 01-02-PLAN.md — Analytics engine: aggregator, LiteLLM pricing with 3-layer cache, cost estimation
+- [x] 01-03-PLAN.md — Date filtering, public API entry point, integration test against real data
 
 ### Phase 2: MCP + CLI
 **Goal**: Both terminal users and Claude Code IDE users can query their stats through their preferred interface
@@ -107,7 +107,7 @@ Phases execute sequentially: 1 -> 2 -> 3 -> 4 -> 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Parser + Engine | 0/3 | Planned | - |
+| 1. Parser + Engine | 3/3 | ✓ Complete | 2026-03-25 |
 | 2. MCP + CLI | 0/3 | Not started | - |
 | 3. SVG Card | 0/2 | Not started | - |
 | 4. Cloud Worker | 0/3 | Not started | - |

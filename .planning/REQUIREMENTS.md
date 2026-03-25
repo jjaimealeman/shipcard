@@ -7,22 +7,22 @@
 
 ### Parser
 
-- [ ] **PARSE-01**: Tool reads all JSONL files from `~/.claude/projects/**/*.jsonl` via streaming parser
-- [ ] **PARSE-02**: Parser extracts token counts (input, output, cache_creation, cache_read) from assistant messages
-- [ ] **PARSE-03**: Parser identifies model used per message (e.g., claude-opus-4-6, claude-sonnet-4-6)
-- [ ] **PARSE-04**: Parser groups messages by sessionId into discrete sessions
-- [ ] **PARSE-05**: Parser handles unknown/changed JSONL fields gracefully without crashing
-- [ ] **PARSE-06**: Parser extracts tool_use blocks from assistant message content for tool call counting
-- [ ] **PARSE-07**: Parser derives project context from cwd field in messages
+- [x] **PARSE-01**: Tool reads all JSONL files from `~/.claude/projects/**/*.jsonl` via streaming parser
+- [x] **PARSE-02**: Parser extracts token counts (input, output, cache_creation, cache_read) from assistant messages
+- [x] **PARSE-03**: Parser identifies model used per message (e.g., claude-opus-4-6, claude-sonnet-4-6)
+- [x] **PARSE-04**: Parser groups messages by sessionId into discrete sessions
+- [x] **PARSE-05**: Parser handles unknown/changed JSONL fields gracefully without crashing
+- [x] **PARSE-06**: Parser extracts tool_use blocks from assistant message content for tool call counting
+- [x] **PARSE-07**: Parser derives project context from cwd field in messages
 
 ### Analytics
 
-- [ ] **ANLYT-01**: Engine computes estimated cost per session/project/model using versioned pricing table
-- [ ] **ANLYT-02**: Engine supports date range filtering (--since / --until)
-- [ ] **ANLYT-03**: Engine counts tool calls per session and project
-- [ ] **ANLYT-04**: Engine produces JSON-serializable output for --json flag
-- [ ] **ANLYT-05**: Cost displayed as approximate ("~$127 estimated") with pricing version visible
-- [ ] **ANLYT-06**: Engine computes summary stats: total sessions, total tokens, models used, projects touched
+- [x] **ANLYT-01**: Engine computes estimated cost per session/project/model using versioned pricing table
+- [x] **ANLYT-02**: Engine supports date range filtering (--since / --until)
+- [x] **ANLYT-03**: Engine counts tool calls per session and project
+- [x] **ANLYT-04**: Engine produces JSON-serializable output for --json flag
+- [x] **ANLYT-05**: Cost displayed as approximate ("~$127 estimated") with pricing version visible
+- [x] **ANLYT-06**: Engine computes summary stats: total sessions, total tokens, models used, projects touched
 
 ### CLI
 
@@ -109,19 +109,19 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PARSE-01 | Phase 1 | Pending |
-| PARSE-02 | Phase 1 | Pending |
-| PARSE-03 | Phase 1 | Pending |
-| PARSE-04 | Phase 1 | Pending |
-| PARSE-05 | Phase 1 | Pending |
-| PARSE-06 | Phase 1 | Pending |
-| PARSE-07 | Phase 1 | Pending |
-| ANLYT-01 | Phase 1 | Pending |
-| ANLYT-02 | Phase 1 | Pending |
-| ANLYT-03 | Phase 1 | Pending |
-| ANLYT-04 | Phase 1 | Pending |
-| ANLYT-05 | Phase 1 | Pending |
-| ANLYT-06 | Phase 1 | Pending |
+| PARSE-01 | Phase 1 | Complete |
+| PARSE-02 | Phase 1 | Complete |
+| PARSE-03 | Phase 1 | Complete |
+| PARSE-04 | Phase 1 | Complete |
+| PARSE-05 | Phase 1 | Complete |
+| PARSE-06 | Phase 1 | Complete |
+| PARSE-07 | Phase 1 | Complete |
+| ANLYT-01 | Phase 1 | Complete |
+| ANLYT-02 | Phase 1 | Complete |
+| ANLYT-03 | Phase 1 | Complete |
+| ANLYT-04 | Phase 1 | Complete |
+| ANLYT-05 | Phase 1 | Complete |
+| ANLYT-06 | Phase 1 | Complete |
 | CLI-01 | Phase 2 | Pending |
 | CLI-02 | Phase 2 | Pending |
 | CLI-03 | Phase 2 | Pending |
