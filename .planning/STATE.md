@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-03-25)
 ## Current Position
 
 Phase: 2 of 5 (MCP + CLI)
-Plan: 0 of 3 in current phase
-Status: Ready to plan
-Last activity: 2026-03-25 — Phase 1 complete, all 13 requirements verified
+Plan: 2 of 3 in current phase
+Status: In progress
+Last activity: 2026-03-25 — Completed 02-02-PLAN.md (MCP server with 3 tools over stdio)
 
-Progress: [███░░░░░░░] 20% (3/15 plans estimated)
+Progress: [████░░░░░░] 33% (5/15 plans estimated)
 
 ## Performance Metrics
 
@@ -28,9 +28,10 @@ Progress: [███░░░░░░░] 20% (3/15 plans estimated)
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-parser-engine | 3 | ~8 min | ~2.7 min |
+| 02-mcp-cli | 2 (in progress) | ~4 min | ~2 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (2 min), 01-02 (3 min), 01-03 (3 min)
+- Last 5 plans: 01-01 (2 min), 01-02 (3 min), 01-03 (3 min), 02-01 (N/A - research), 02-02 (2 min)
 - Trend: Consistent 2-3 min per plan
 
 *Updated after each plan completion*
@@ -60,6 +61,9 @@ Recent decisions affecting current work:
 - [01-03]: sessions map rebuilt from filtered messages so totalSessions reflects the window
 - [01-03]: stats.filesRead/linesSkipped carry from full parse (reflects I/O, not filter)
 - [01-03]: dist/ gitignored — compiled output not committed
+- [02-02]: Tool-per-file pattern — each MCP tool in separate module for testability and clean server.ts
+- [02-02]: import type McpServer in tool files — type-only import avoids runtime dependency in tool modules
+- [02-02]: as const on MCP content type literal — prevents type widening from "text" to string
 
 ### Pending Todos
 
@@ -73,6 +77,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-25
-Stopped at: Phase 1 complete — 3/3 plans executed, 5/5 must-haves verified, 13/13 requirements marked Complete
+Last session: 2026-03-25T23:20:23Z
+Stopped at: Completed 02-02-PLAN.md — MCP server with 3 tools (summary, costs, card) over stdio
 Resume file: None
