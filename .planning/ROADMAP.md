@@ -30,12 +30,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Cost display shows estimated cost per project and model with explicit "~estimated" label and pricing version
   4. Date range filtering with `--since` / `--until` narrows results to the specified window
   5. Engine serializes all output to JSON when requested
-**Plans**: TBD
+**Plans:** 3 plans in 3 waves (sequential — each builds on the previous)
 
 Plans:
-- [ ] 01-01: JSONL streaming parser with resilient field extraction
-- [ ] 01-02: Analytics engine (sessions, tokens, tool calls, projects, cost estimation)
-- [ ] 01-03: Date filtering, JSON output, and engine integration tests
+- [ ] 01-01-PLAN.md — Project scaffolding, JSONL types, streaming parser with two-level deduplication
+- [ ] 01-02-PLAN.md — Analytics engine: aggregator, LiteLLM pricing with 3-layer cache, cost estimation
+- [ ] 01-03-PLAN.md — Date filtering, public API entry point, integration test against real data
 
 ### Phase 2: MCP + CLI
 **Goal**: Both terminal users and Claude Code IDE users can query their stats through their preferred interface
@@ -103,11 +103,11 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute sequentially: 1 → 2 → 3 → 4 → 5
+Phases execute sequentially: 1 -> 2 -> 3 -> 4 -> 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Parser + Engine | 0/3 | Not started | - |
+| 1. Parser + Engine | 0/3 | Planned | - |
 | 2. MCP + CLI | 0/3 | Not started | - |
 | 3. SVG Card | 0/2 | Not started | - |
 | 4. Cloud Worker | 0/3 | Not started | - |
