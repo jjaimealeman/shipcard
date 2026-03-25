@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-03-25)
 ## Current Position
 
 Phase: 1 of 5 (Parser + Engine)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: In progress
-Last activity: 2026-03-25 — Completed 01-01-PLAN.md (project scaffolding + streaming parser)
+Last activity: 2026-03-25 — Completed 01-02-PLAN.md (analytics engine + LiteLLM pricing)
 
-Progress: [█░░░░░░░░░] 7% (1/15 plans estimated)
+Progress: [██░░░░░░░░] 13% (2/15 plans estimated)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
-- Average duration: ~2 min
-- Total execution time: ~2 min
+- Total plans completed: 2
+- Average duration: ~2.5 min
+- Total execution time: ~5 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-parser-engine | 1 | ~2 min | ~2 min |
+| 01-parser-engine | 2 | ~5 min | ~2.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (2 min)
-- Trend: Baseline established
+- Last 5 plans: 01-01 (2 min), 01-02 (3 min)
+- Trend: On pace, slightly faster than average
 
 *Updated after each plan completion*
 
@@ -51,6 +51,10 @@ Recent decisions affecting current work:
 - [01-01]: message.id dedup scoped per-file, uuid dedup shared — matches Claude Code write patterns
 - [01-01]: User entries are metadata-only (cwd source) — ParsedMessages are assistant entries only
 - [01-01]: Zero runtime deps enforced — only node: built-ins used in parser
+- [01-02]: Pricing snapshot stored in data/ (outside src/) — loaded via import.meta.url at runtime, not compiled
+- [01-02]: PricingMap is Map<string, ModelPricing> for O(1) lookup in aggregator hot path
+- [01-02]: Per-message cost calculation (not per-session) — handles multi-model sessions correctly
+- [01-02]: pricingCache in aggregator memoizes getModelPricing() calls per model string
 
 ### Pending Todos
 
@@ -65,6 +69,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-25T22:07:13Z
-Stopped at: Completed 01-01-PLAN.md — streaming parser with two-level dedup ready
+Last session: 2026-03-25T22:13:26Z
+Stopped at: Completed 01-02-PLAN.md — analytics engine with LiteLLM pricing ready
 Resume file: None
