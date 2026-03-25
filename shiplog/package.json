@@ -3,11 +3,23 @@
   "version": "0.1.0",
   "type": "module",
   "description": "Analytics layer for agentic developers — reads Claude Code JSONL files and generates stats cards",
+  "main": "./dist/index.js",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "bin": {
+    "shiplog": "./dist/cli/index.js",
+    "shiplog-mcp": "./dist/mcp/server.js"
+  },
+  "files": [
+    "dist/",
+    "data/"
+  ],
   "engines": {
     "node": ">=22.0.0"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && chmod 755 dist/cli/index.js dist/mcp/server.js",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
