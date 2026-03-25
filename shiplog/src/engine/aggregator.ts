@@ -11,7 +11,7 @@
  * which is important since a single session may involve multiple models.
  */
 
-import type { ParsedMessage, TokenCounts } from "../parser/schema.js";
+import type { TokenCounts } from "../parser/schema.js";
 import type { ParseResult } from "../parser/deduplicator.js";
 import {
   calculateCost,

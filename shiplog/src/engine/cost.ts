@@ -11,7 +11,6 @@
  */
 
 import { readFile, writeFile, mkdir, stat } from "node:fs/promises";
-import { createRequire } from "node:module";
 import * as os from "node:os";
 import * as path from "node:path";
 import * as url from "node:url";
