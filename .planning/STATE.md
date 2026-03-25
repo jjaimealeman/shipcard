@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-03-25)
 ## Current Position
 
 Phase: 2 of 5 (MCP + CLI)
-Plan: 2 of 3 in current phase
+Plan: 2 of 3 in current phase (02-01 and 02-02 complete)
 Status: In progress
-Last activity: 2026-03-25 — Completed 02-02-PLAN.md (MCP server with 3 tools over stdio)
+Last activity: 2026-03-25 — Completed 02-01-PLAN.md (CLI layer: args parser, table formatter, 3 commands)
 
 Progress: [████░░░░░░] 33% (5/15 plans estimated)
 
@@ -61,6 +61,9 @@ Recent decisions affecting current work:
 - [01-03]: sessions map rebuilt from filtered messages so totalSessions reflects the window
 - [01-03]: stats.filesRead/linesSkipped carry from full parse (reflects I/O, not filter)
 - [01-03]: dist/ gitignored — compiled output not committed
+- [02-01]: node:util.parseArgs with strict: false — avoids unknown flag crashes, zero deps
+- [02-01]: shiplog card always JSON in Phase 2 — SVG generation deferred to Phase 3
+- [02-01]: shouldUseColor() checks isTTY first — prevents garbled ANSI in piped output
 - [02-02]: Tool-per-file pattern — each MCP tool in separate module for testability and clean server.ts
 - [02-02]: import type McpServer in tool files — type-only import avoids runtime dependency in tool modules
 - [02-02]: as const on MCP content type literal — prevents type widening from "text" to string
@@ -77,6 +80,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-25T23:20:23Z
-Stopped at: Completed 02-02-PLAN.md — MCP server with 3 tools (summary, costs, card) over stdio
+Last session: 2026-03-25T23:21:26Z
+Stopped at: Completed 02-01-PLAN.md — CLI layer with 3 commands (summary, costs, card) wired to engine
 Resume file: None
