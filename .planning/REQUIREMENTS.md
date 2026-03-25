@@ -26,20 +26,20 @@
 
 ### CLI
 
-- [ ] **CLI-01**: `shiplog summary` displays overview stats as formatted terminal table
-- [ ] **CLI-02**: `shiplog costs` displays cost breakdown by project, model, and time period
-- [ ] **CLI-03**: `shiplog card` generates SVG card locally (--local) or syncs to cloud for shareable URL
-- [ ] **CLI-04**: `--json` flag outputs machine-readable JSON for all commands
-- [ ] **CLI-05**: `--since` and `--until` flags filter by date range for all commands
-- [ ] **CLI-06**: Package installable via `npx shiplog` with zero configuration
+- [x] **CLI-01**: `shiplog summary` displays overview stats as formatted terminal table
+- [x] **CLI-02**: `shiplog costs` displays cost breakdown by project, model, and time period
+- [x] **CLI-03**: `shiplog card` generates SVG card locally (--local) or syncs to cloud for shareable URL
+- [x] **CLI-04**: `--json` flag outputs machine-readable JSON for all commands
+- [x] **CLI-05**: `--since` and `--until` flags filter by date range for all commands
+- [x] **CLI-06**: Package installable via `npx shiplog` with zero configuration
 
 ### MCP Server
 
-- [ ] **MCP-01**: `shiplog:summary` tool returns sessions, tool calls, models, projects, and estimated cost
-- [ ] **MCP-02**: `shiplog:costs` tool returns cost breakdown by project, model, and time period
-- [ ] **MCP-03**: `shiplog:card` tool generates card data or triggers sync
-- [ ] **MCP-04**: MCP server runs via stdio transport with zero stdout pollution (all logging to stderr)
-- [ ] **MCP-05**: Copy-paste MCP config for Claude Code / Cursor setup documented in README
+- [x] **MCP-01**: `shiplog:summary` tool returns sessions, tool calls, models, projects, and estimated cost
+- [x] **MCP-02**: `shiplog:costs` tool returns cost breakdown by project, model, and time period
+- [x] **MCP-03**: `shiplog:card` tool generates card data or triggers sync
+- [x] **MCP-04**: MCP server runs via stdio transport with zero stdout pollution (all logging to stderr)
+- [x] **MCP-05**: Copy-paste MCP config for Claude Code / Cursor setup documented in README
 
 ### Card
 

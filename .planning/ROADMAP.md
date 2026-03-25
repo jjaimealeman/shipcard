@@ -13,7 +13,7 @@ ShipLog ships in five sequential phases: a resilient JSONL parser and analytics 
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Parser + Engine** - JSONL parser and analytics engine — the foundation everything else builds on
-- [ ] **Phase 2: MCP + CLI** - Dual interfaces (MCP server + CLI) consuming the engine
+- [x] **Phase 2: MCP + CLI** - Dual interfaces (MCP server + CLI) consuming the engine
 - [ ] **Phase 3: SVG Card** - Local card generation with dark/light themes
 - [ ] **Phase 4: Cloud Worker** - Cloudflare Worker that serves and caches cards at the edge
 - [ ] **Phase 5: Publish + Launch** - npm publishing, README, and launch readiness
@@ -50,9 +50,9 @@ Plans:
 **Plans:** 3 plans in 2 waves (02-01 + 02-02 parallel, then 02-03)
 
 Plans:
-- [ ] 02-01-PLAN.md — CLI foundation (args, config, format) + entry point with summary, costs, and card commands
-- [ ] 02-02-PLAN.md — MCP server with three tools (summary, costs, card) via stdio transport
-- [ ] 02-03-PLAN.md — Bin entries, build script with chmod, npx invocation, and MCP config documentation
+- [x] 02-01-PLAN.md — CLI foundation (args, config, format) + entry point with summary, costs, and card commands
+- [x] 02-02-PLAN.md — MCP server with three tools (summary, costs, card) via stdio transport
+- [x] 02-03-PLAN.md — Bin entries, build script with chmod, npx invocation, and MCP config documentation
 
 ### Phase 3: SVG Card
 **Goal**: Users can generate a stats card locally that renders correctly on GitHub READMEs and other platforms
@@ -108,7 +108,7 @@ Phases execute sequentially: 1 -> 2 -> 3 -> 4 -> 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Parser + Engine | 3/3 | ✓ Complete | 2026-03-25 |
-| 2. MCP + CLI | 0/3 | Not started | - |
+| 2. MCP + CLI | 3/3 | ✓ Complete | 2026-03-25 |
 | 3. SVG Card | 0/2 | Not started | - |
 | 4. Cloud Worker | 0/3 | Not started | - |
 | 5. Publish + Launch | 0/2 | Not started | - |
