@@ -47,12 +47,12 @@ Plans:
   3. `npx shiplog` runs without installation and without configuration
   4. MCP server responds to `shiplog:summary`, `shiplog:costs`, and `shiplog:card` tool calls with correct data
   5. MCP server produces zero stdout output (all logging to stderr), preventing corruption of the stdio transport
-**Plans**: TBD
+**Plans:** 3 plans in 2 waves (02-01 + 02-02 parallel, then 02-03)
 
 Plans:
-- [ ] 02-01: CLI entry point with summary and costs commands
-- [ ] 02-02: MCP server with three tools via stdio transport
-- [ ] 02-03: Bin entries, npx invocation, and copy-paste MCP config documentation
+- [ ] 02-01-PLAN.md — CLI foundation (args, config, format) + entry point with summary, costs, and card commands
+- [ ] 02-02-PLAN.md — MCP server with three tools (summary, costs, card) via stdio transport
+- [ ] 02-03-PLAN.md — Bin entries, build script with chmod, npx invocation, and MCP config documentation
 
 ### Phase 3: SVG Card
 **Goal**: Users can generate a stats card locally that renders correctly on GitHub READMEs and other platforms
