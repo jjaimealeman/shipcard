@@ -6,6 +6,7 @@
  * Prints help on bare invocation or --help flag.
  */
 
+import { createRequire } from "node:module";
 import { parseCliArgs } from "./args.js";
 import { loadConfig } from "./config.js";
 import { runSummary } from "./commands/summary.js";
@@ -13,6 +14,10 @@ import { runCosts } from "./commands/costs.js";
 import { runCard } from "./commands/card.js";
 import { runLogin } from "./commands/login.js";
 import { runSync } from "./commands/sync.js";
+
+// Read version from package.json at runtime (works for both global install and npx).
+const _require = createRequire(import.meta.url);
+const PKG_VERSION: string = (_require("../../package.json") as { version: string }).version;
 
 // ---------------------------------------------------------------------------
 // Help text
@@ -84,6 +89,12 @@ function shouldUseColor(flagColor: boolean, configColor?: boolean): boolean {
 
 async function main(): Promise<void> {
   const { command, flags } = parseCliArgs();
+
+  // --version flag → print version and exit.
+  if (flags.version) {
+    process.stdout.write(`${PKG_VERSION}\n`);
+    process.exit(0);
+  }
 
   // No subcommand or explicit help flag → show help.
   if (command === undefined || flags.help) {

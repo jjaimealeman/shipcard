@@ -19,6 +19,7 @@ export interface ParsedCliArgs {
     until: string | undefined;
     color: boolean;
     help: boolean;
+    version: boolean;
     local: boolean;
     // Card-specific flags
     layout: string | undefined;
@@ -53,6 +54,7 @@ export function parseCliArgs(): ParsedCliArgs {
       until: { type: "string" },
       color: { type: "boolean", default: false },
       help: { type: "boolean", short: "h", default: false },
+      version: { type: "boolean", short: "v", default: false },
       local: { type: "boolean", default: false },
       // Card appearance flags
       layout: { type: "string" },
@@ -81,6 +83,7 @@ export function parseCliArgs(): ParsedCliArgs {
       until: flags.until as string | undefined,
       color: (flags.color as boolean | undefined) ?? false,
       help: (flags.help as boolean | undefined) ?? false,
+      version: (flags.version as boolean | undefined) ?? false,
       local: (flags.local as boolean | undefined) ?? false,
       // Card appearance flags
       layout: flags.layout as string | undefined,
