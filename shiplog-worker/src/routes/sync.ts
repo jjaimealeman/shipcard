@@ -1,0 +1,103 @@
+/**
+ * Sync routes for the ShipCard Worker.
+ *
+ * POST /sync — Accepts a SafeStats payload from the CLI, stores it in KV,
+ * invalidates all cached card variants, and synchronously re-renders the
+ * default card variant to avoid KV eventual consistency staleness.
+ *
+ * DELETE /sync — Removes all user data and card variants from KV.
+ * Auth token is preserved so the user can re-sync later without re-authenticating.
+ *
+ * All routes require a valid bearer token (authMiddleware).
+ */
+
+import { Hono } from "hono";
+import type { AppType } from "../types.js";
+import { isValidSafeStats } from "../types.js";
+import { authMiddleware } from "../auth.js";
+import {
+  putUserData,
+  deleteAllUserData,
+  invalidateCardVariants,
+  putCardCache,
+} from "../kv.js";
+import { renderCard } from "../svg/index.js";
+
+export const syncRoutes = new Hono<AppType>();
+
+/**
+ * POST /sync
+ *
+ * Accepts: SafeStats JSON payload
+ * Returns: { ok: true, username: string, variantsInvalidated: number }
+ *
+ * Steps:
+ * 1. Authenticate via bearer token (authMiddleware)
+ * 2. Parse and validate payload with isValidSafeStats()
+ * 3. Verify payload.username matches authenticated username
+ * 4. Store data in KV
+ * 5. Invalidate all cached card variants
+ * 6. Synchronously re-render and cache the default variant (dark/classic/github)
+ *    to avoid KV eventual consistency issues (Pitfall 2 from research)
+ */
+syncRoutes.post("/", authMiddleware, async (c) => {
+  let body: unknown;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: "Invalid JSON body" }, 400);
+  }
+
+  // Validate payload shape and privacy boundary
+  if (!isValidSafeStats(body)) {
+    return c.json({ error: "Invalid SafeStats payload" }, 400);
+  }
+
+  // Verify payload username matches authenticated user
+  const authenticatedUsername = c.get("username");
+  if (body.username.toLowerCase() !== authenticatedUsername.toLowerCase()) {
+    return c.json({ error: "Username mismatch: payload does not match token" }, 403);
+  }
+
+  const env = c.env;
+  const username = authenticatedUsername;
+
+  // Store the validated SafeStats in KV
+  await putUserData(env.USER_DATA_KV, username, body);
+
+  // Invalidate all existing cached card variants
+  const variantsInvalidated = await invalidateCardVariants(env.CARDS_KV, username);
+
+  // Synchronously re-render and cache the default card variant.
+  // This prevents the next GET /card/:username from reading stale KV data
+  // due to Cloudflare KV's eventual consistency model.
+  const defaultSvg = renderCard(body, {
+    theme: "dark",
+    layout: "classic",
+    style: "github",
+  });
+  await putCardCache(env.CARDS_KV, username, "dark", "classic", "github", defaultSvg);
+
+  return c.json({ ok: true, username, variantsInvalidated });
+});
+
+/**
+ * DELETE /sync
+ *
+ * Removes all user data and card variants from KV.
+ * Auth token is intentionally preserved so the user can re-sync later.
+ *
+ * Returns: { ok: true, deleted: true, username: string }
+ */
+syncRoutes.delete("/", authMiddleware, async (c) => {
+  const username = c.get("username");
+  const env = c.env;
+
+  // Delete SafeStats data and all card variants
+  await deleteAllUserData(env.USER_DATA_KV, username);
+
+  // Invalidate any remaining card cache variants (belt and suspenders)
+  await invalidateCardVariants(env.CARDS_KV, username);
+
+  return c.json({ ok: true, deleted: true, username });
+});
