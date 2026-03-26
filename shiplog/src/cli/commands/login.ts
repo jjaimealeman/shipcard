@@ -27,7 +27,7 @@ import { saveAuthConfig, getWorkerUrl } from "../config.js";
  * Set Authorization callback URL to: https://shipcard.dev/auth/callback
  * Fill in the actual client ID here before publishing.
  */
-const SHIPCARD_GITHUB_CLIENT_ID = "YOUR_GITHUB_OAUTH_APP_CLIENT_ID";
+const SHIPCARD_GITHUB_CLIENT_ID = "Ov23lijo8A2inPwKNCnx";
 
 // ---------------------------------------------------------------------------
 // Browser open helper
