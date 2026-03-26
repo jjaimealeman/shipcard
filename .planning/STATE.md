@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-03-25)
 
 ## Current Position
 
-Phase: 4 of 5 (Cloud Worker) — Complete
-Plan: 3 of 3 in Phase 4 complete (04-01, 04-02, 04-03 done)
-Status: Phase 4 complete, ready for Phase 5
-Last activity: 2026-03-26 — Completed 04-03-PLAN.md (CLI login/sync + Worker configurator)
+Phase: 5 of 5 (Publish + Launch) — In progress
+Plan: 1 of 3 in Phase 5 complete (05-01 done)
+Status: In progress
+Last activity: 2026-03-26 — Completed 05-01-PLAN.md (rename shiplog → shipcard, /card → /u route)
 
-Progress: [██████████░] 73% (11/15 plans estimated)
+Progress: [████████████░] 80% (12/15 plans estimated)
 
 ## Performance Metrics
 
@@ -94,6 +94,11 @@ Recent decisions affecting current work:
 - [04-03]: Auth config in ~/.shiplog/config.json separate from display config ~/.shiplog.json
 - [04-03]: Configurator stats passed via URL hash fragment — server never sees the data
 - [04-03]: SHIPLOG_GITHUB_CLIENT_ID is a placeholder — must be filled after creating GitHub OAuth App
+- [05-01]: npm package name is shipcard — shiplog was taken on npm registry
+- [05-01]: Card URL path is /u/:username — shorter and cleaner than /card/:username
+- [05-01]: Config paths are ~/.shipcard/ and ~/.shipcard.json (migrated from ~/.shiplog/)
+- [05-01]: MCP tool names use shipcard: prefix (shipcard:summary, shipcard:costs, shipcard:card)
+- [05-01]: Worker name in wrangler.jsonc is shipcard with shipcard.dev custom domain
 
 ### Pending Todos
 
@@ -103,12 +108,12 @@ None yet.
 
 - [Research flag]: SVG rendering on GitHub specifically — camo proxy and SVG sanitizer have undocumented restrictions (Phase 5 / publish)
 - [Resolved]: Cloudflare Worker auth strategy — opaque UUID bearer tokens stored in KV, verified via GitHub API before issuance
-- [Phase 5 action]: Replace SHIPLOG_GITHUB_CLIENT_ID placeholder in login.ts with real OAuth App client ID
+- [Phase 5 action]: Replace SHIPCARD_GITHUB_CLIENT_ID placeholder in login.ts with real OAuth App client ID (callback URL: https://shipcard.dev/auth/callback)
 - [Phase 5 action]: Run wrangler deploy before end-to-end login/sync testing
-- [Research gap]: npm name availability — check `npm show shiplog` before writing package.json (Phase 5)
+- [Resolved]: npm name — "shiplog" taken, package ships as "shipcard" (done in 05-01)
 
 ## Session Continuity
 
-Last session: 2026-03-26T02:20:44Z
-Stopped at: Completed 04-03-PLAN.md — CLI login/sync commands, SafeStats privacy boundary, Worker configurator page. Phase 4 complete.
+Last session: 2026-03-26T03:36:00Z
+Stopped at: Completed 05-01-PLAN.md — renamed shiplog → shipcard across all source, /card → /u route, shipcard.dev custom domain in wrangler.jsonc.
 Resume file: None
