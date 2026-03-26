@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-03-25)
 ## Current Position
 
 Phase: 4 of 5 (Cloud Worker) — In progress
-Plan: 1 of 3 in Phase 4 complete (04-01 done)
+Plan: 2 of 3 in Phase 4 complete (04-02 done)
 Status: In progress
-Last activity: 2026-03-26 — Completed 04-01-PLAN.md (Worker scaffold: Hono + KV + GET /card/:username)
+Last activity: 2026-03-26 — Completed 04-02-PLAN.md (Auth middleware + POST /sync + isValidSafeStats)
 
-Progress: [████████░░] 60% (9/15 plans estimated)
+Progress: [█████████░] 67% (10/15 plans estimated)
 
 ## Performance Metrics
 
@@ -30,10 +30,10 @@ Progress: [████████░░] 60% (9/15 plans estimated)
 | 01-parser-engine | 3 (complete) | ~8 min | ~2.7 min |
 | 02-mcp-cli | 3 (complete) | ~6 min | ~2 min |
 | 03-svg-card | 2 (complete) | ~8 min | ~4 min |
-| 04-cloud-worker | 1 (in progress) | ~6 min | ~6 min |
+| 04-cloud-worker | 2 (in progress) | ~8 min | ~4 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-03 (2 min), 03-01 (5 min), 03-02 (3 min), 04-01 (6 min)
+- Last 5 plans: 03-01 (5 min), 03-02 (3 min), 04-01 (6 min), 04-02 (2 min)
 - Trend: Consistent 2-6 min per plan
 
 *Updated after each plan completion*
@@ -84,6 +84,12 @@ Recent decisions affecting current work:
 - [04-01]: SVG renderer copied verbatim from shiplog/src/card/ into shiplog-worker/src/svg/ — no cross-package import
 - [04-01]: No expirationTtl on card cache KV puts — sync-driven invalidation design (cache until next sync)
 - [04-01]: svgResponse() helper centralizes anti-camo headers — all SVG paths guaranteed Cache-Control: no-cache, no-store
+- [04-02]: AppType Variables: { username: string } — auth middleware sets username on Hono context for typed downstream access
+- [04-02]: crypto.randomUUID() for Worker tokens — opaque, simple; TOKEN_SECRET preserved for future HMAC if needed
+- [04-02]: GitHub login lowercase comparison — prevents false mismatches from user input capitalization
+- [04-02]: isValidSafeStats bans field names (path, paths, filePath, cwd, content, rawContent, jsonl, projectsTouched, projectNames) + rejects file-path strings (/~)
+- [04-02]: Synchronous default card re-render on every sync — defeats Cloudflare KV eventual consistency on next GET
+- [04-02]: DELETE /sync preserves auth token — user can re-sync without re-authenticating
 
 ### Pending Todos
 
@@ -92,11 +98,11 @@ None yet.
 ### Blockers/Concerns
 
 - [Research flag]: SVG rendering on GitHub specifically — camo proxy and SVG sanitizer have undocumented restrictions (Phase 4)
-- [Research flag]: Cloudflare Worker auth strategy for /api/sync — API key vs signed token decision needed in Phase 4 planning
+- [Resolved]: Cloudflare Worker auth strategy — opaque UUID bearer tokens stored in KV, verified via GitHub API before issuance
 - [Research gap]: npm name availability — check `npm show shiplog` before writing package.json (Phase 5)
 
 ## Session Continuity
 
-Last session: 2026-03-26T02:03:09Z
-Stopped at: Completed 04-01-PLAN.md — Worker scaffold: Hono app, wrangler.jsonc with KV bindings, GET /card/:username, SVG renderer copy, SafeStats type.
+Last session: 2026-03-26T02:08:23Z
+Stopped at: Completed 04-02-PLAN.md — Auth middleware, POST /auth/exchange, POST /sync with privacy validation, DELETE /sync. Full read+write cycle complete.
 Resume file: None
