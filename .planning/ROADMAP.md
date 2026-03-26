@@ -139,10 +139,10 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. `GET /` on shipcard.dev serves an HTML landing page (not JSON health check)
   2. Page includes live card demo, quick-start instructions, and value proposition
-**Plans:** TBD
+**Plans:** 1 plan in 1 wave (single vertical slice)
 
 Plans:
-- [ ] 08-01-PLAN.md — TBD
+- [ ] 08-01-PLAN.md — Complete landing page: self-hosted fonts, HTML/CSS/JS page with configurator, index.ts wiring
 
 ## Progress
 
