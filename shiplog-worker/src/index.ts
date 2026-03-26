@@ -2,7 +2,7 @@
  * ShipCard Worker — Hono app entry point.
  *
  * Routes:
- *   GET  /              — health check
+ *   GET  /              — landing page (HTML)
  *   GET  /u/:username   — SVG stats card (cached, public)
  *   POST /auth/exchange  — GitHub token → Worker bearer token exchange
  *   POST /sync           — authenticated stat upload
@@ -16,13 +16,12 @@ import { cardRoutes } from "./routes/card.js";
 import { authRoutes } from "./routes/auth.js";
 import { syncRoutes } from "./routes/sync.js";
 import { configureRoutes } from "./routes/configure.js";
+import { landingRoutes } from "./routes/landing.js";
 
 const app = new Hono<AppType>();
 
-// Health check
-app.get("/", (c) =>
-  c.json({ name: "shipcard", status: "ok", version: "0.1.0" })
-);
+// Landing page — product front door
+app.route("/", landingRoutes);
 
 // Card serving — public, no auth required
 app.route("/u", cardRoutes);

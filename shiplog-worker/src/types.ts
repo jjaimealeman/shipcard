@@ -89,7 +89,7 @@ const BANNED_FIELDS = new Set([
  * File paths start with / (absolute) or ~ (home directory).
  */
 function looksLikeFilePath(value: string): boolean {
-  return value.startsWith("/") || value.startsWith("~");
+  return value.startsWith("/") || value.startsWith("~/");
 }
 
 /**

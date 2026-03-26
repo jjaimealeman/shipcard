@@ -22,7 +22,7 @@ shipcard sync             # push stats to shipcard.dev
 Or without installing:
 
 ```sh
-npx -p @jjaimealeman/shipcard shipcard summary
+npx shipcard summary
 ```
 
 ---
@@ -58,7 +58,7 @@ Ask Claude about your coding stats from inside Claude Code:
   "mcpServers": {
     "shipcard": {
       "command": "npx",
-      "args": ["-y", "-p", "@jjaimealeman/shipcard", "shipcard-mcp"]
+      "args": ["-y", "-p", "shipcard", "shipcard-mcp"]
     }
   }
 }

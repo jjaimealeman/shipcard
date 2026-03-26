@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-03-25)
 
 **Core value:** Developers using Claude Code can see what they shipped and what it cost, and share verifiable proof via an embeddable card.
-**Current focus:** All phases complete — milestone ready for audit
+**Current focus:** Phase 8 - Landing Page
 
 ## Current Position
 
-Phase: 5 of 5 (Publish + Launch) — Complete
-Plan: 4 of 4 in Phase 5 complete (05-01, 05-02, 05-03, 05-04 done)
-Status: All phases complete
-Last activity: 2026-03-26 — Published @jjaimealeman/shipcard@0.1.0 to npm, deployed Worker to shipcard.dev
+Phase: 8 of 8 (Landing Page) — Complete
+Plan: 1 of 1 in Phase 8 complete (08-01 done)
+Status: Phase 8 complete — ALL PHASES DONE
+Last activity: 2026-03-26 — Completed 08-01-PLAN.md (landing page with configurator, fonts, quickstart)
 
-Progress: [████████████████] 100% (15/15 plans)
+Progress: [█████████████████] 100% (17/17 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 15
-- Average duration: ~4 min
-- Total execution time: ~60 min
+- Total plans completed: 10
+- Average duration: ~3.5 min
+- Total execution time: ~35 min
 
 **By Phase:**
 
@@ -92,9 +92,17 @@ All decisions from phases 1-5:
 - [05-01]: Config paths are ~/.shipcard/ and ~/.shipcard.json
 - [05-01]: MCP tool names use shipcard: prefix (shipcard:summary, shipcard:costs, shipcard:card)
 - [05-01]: Worker name in wrangler.jsonc is shipcard with shipcard.dev custom domain
-- [05-02]: LICENSE in both repo root and shiplog/ for npm tarball inclusion
-- [05-04]: Scoped to @jjaimealeman/shipcard — npm rejected "shipcard" (similar to "ship-card")
-- [05-04]: npx MCP config uses -p flag: ["-y", "-p", "@jjaimealeman/shipcard", "shipcard-mcp"]
+- [05-02]: LICENSE placed in both repo root and shiplog/ — npm only auto-includes from package root (shiplog/)
+- [05-02]: "license": "MIT" added to package.json to satisfy npm registry metadata requirement
+- [06-01]: Cache key format: card:{user}:{theme}:{layout}:{style}:hide={sorted,keys} — appended only when non-empty; invalidateCardVariants prefix listing covers all hide variants automatically
+- [06-01]: getCardCache/putCardCache accept optional hide param defaulting to [] — zero breaking changes to existing callers
+- [06-01]: DELETE /sync putCardCache for redacted card placed AFTER deleteAllUserData + invalidateCardVariants — avoids immediate erasure
+- [06-01]: DELETE /sync response includes redactedCard: true to signal CLI that a redacted card was stored
+- [07-01]: npm package name is unscoped "shipcard" — simplifies npx usage (no -p flag for CLI commands)
+- [07-01]: looksLikeFilePath checks ~/ not ~ — cost strings like "~$3,414.02" are not file paths
+- [08-01]: Base64-embedded fonts (Poppins 600/700 + Lora 400, ~43 KB) — zero external requests, instant load
+- [08-01]: XHR for card fetch instead of fetch() — simpler error handling in var-only embedded JS
+- [08-01]: DOM API for snippet content — same security pattern as configure.ts
 
 ### Pending Todos
 
@@ -106,6 +114,6 @@ All resolved.
 
 ## Session Continuity
 
-Last session: 2026-03-26T05:10:00Z
-Stopped at: All 5 phases complete. @jjaimealeman/shipcard@0.1.0 published to npm, Worker deployed to shipcard.dev. Ready for milestone audit.
+Last session: 2026-03-26T07:52:00Z
+Stopped at: Completed 08-01-PLAN.md — landing page with live configurator, base64 fonts, quickstart. All 8 phases complete.
 Resume file: None
