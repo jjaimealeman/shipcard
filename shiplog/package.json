@@ -18,6 +18,7 @@
   "engines": {
     "node": ">=22.0.0"
   },
+  "license": "MIT",
   "scripts": {
     "build": "tsc && chmod 755 dist/cli/index.js dist/mcp/server.js",
     "typecheck": "tsc --noEmit"
