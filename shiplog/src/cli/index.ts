@@ -24,7 +24,7 @@ Usage:
 Commands:
   summary    Show session overview: sessions, tokens, models, cost, tool calls
   costs      Show cost breakdown by project and by model
-  card       Output raw analytics data (SVG card generation coming soon)
+  card       Generate SVG stats card for your README
 
 Flags:
   --json        Output raw JSON instead of formatted table
@@ -33,12 +33,24 @@ Flags:
   --color       Enable ANSI color output
   --help, -h    Show this help text
 
+Card flags:
+  --local           Generate SVG card file (default: show raw JSON)
+  --layout <name>   Layout: classic (default), compact, hero
+  --style <name>    Style: github (default), branded, minimal
+  --theme <name>    Theme: dark (default), light
+  --hide <stat>     Hide a stat (sessions, toolCalls, models, projects, cost)
+  --hero-stat <key> Hero stat for hero layout (default: sessions)
+  --preview         Open card in browser after generation
+  -o, --output      Custom output path (default: repo root/shiplog-card.svg)
+
 Examples:
   shiplog summary
   shiplog costs --json
   shiplog summary --since 30d
   shiplog summary --since 2026-01-01 --until 2026-02-01
-  shiplog card --json
+  shiplog card --local
+  shiplog card --local --layout compact --style branded --theme light
+  shiplog card --local --hide cost --preview
 `;
 
 // ---------------------------------------------------------------------------

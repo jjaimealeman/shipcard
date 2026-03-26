@@ -1,11 +1,19 @@
 /**
  * `shiplog card` command handler.
  *
- * Phase 2 behavior: returns raw analytics data as JSON.
- * SVG card generation will be added in Phase 3 (Cloudflare Worker).
+ * Phase 3 behavior:
+ *   --local   Generate an SVG card file and print a markdown embed snippet.
+ *   --json    Output raw analytics JSON (backward compatible with Phase 2).
+ *   (default) Output raw JSON with a hint to use --local or --json.
  */
 
+import { writeFile } from "node:fs/promises";
+import { join } from "node:path";
 import { runEngine } from "../../index.js";
+import { renderCard } from "../../card/index.js";
+import type { LayoutName, StyleName, ThemeName } from "../../card/index.js";
+import { findGitRoot } from "../../card/git.js";
+import { openInBrowser } from "../../card/preview.js";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -17,6 +25,14 @@ export interface CardFlags {
   until: string | undefined;
   color: boolean;
   local: boolean;
+  // Card appearance flags
+  layout: string | undefined;
+  style: string | undefined;
+  theme: string | undefined;
+  hide: string[];
+  heroStat: string | undefined;
+  preview: boolean;
+  output: string | undefined;
 }
 
 // ---------------------------------------------------------------------------
@@ -37,7 +53,10 @@ If you've used Claude Code on this machine, check that the directory exists.`;
 /**
  * Run the card command.
  *
- * Phase 2: outputs raw analytics JSON. SVG generation coming in a future release.
+ * Behavior:
+ *   --json    Output raw analytics JSON (backward compatible).
+ *   --local   Generate SVG card, write to file, print markdown snippet.
+ *   (default) Output raw JSON with stderr hint.
  *
  * Exit codes:
  *   0 — success
@@ -71,16 +90,69 @@ export async function runCard(flags: CardFlags): Promise<void> {
     process.exit(0);
   }
 
-  // Card is always JSON in Phase 2 — note to stderr if not --json flag.
-  if (!flags.json) {
-    process.stderr.write(
-      "Card SVG generation coming in a future release. Showing raw analytics data.\n"
-    );
+  // --json: raw JSON output (backward compatible, unchanged from Phase 2).
+  if (flags.json) {
+    process.stdout.write(JSON.stringify(result, null, 2) + "\n");
+
+    if (result.meta.linesSkipped > 0) {
+      process.stderr.write(
+        `Warning: ${result.meta.linesSkipped} line(s) skipped due to parse errors.\n`
+      );
+      process.exit(2);
+    }
+
+    process.exit(0);
   }
+
+  // --local: generate SVG card file.
+  if (flags.local) {
+    const svgString = renderCard(result, {
+      layout: flags.layout as LayoutName | undefined,
+      style: flags.style as StyleName | undefined,
+      theme: flags.theme as ThemeName | undefined,
+      hide: flags.hide,
+      heroStat: flags.heroStat,
+    });
+
+    // Determine output path.
+    const outputPath = flags.output ?? join(findGitRoot(), "shiplog-card.svg");
+
+    await writeFile(outputPath, svgString, { encoding: "utf-8" });
+
+    // Print confirmation.
+    process.stdout.write(`Updated ${outputPath}\n`);
+
+    // Print markdown embed snippet.
+    const today = new Date().toISOString().split("T")[0];
+    const cardFilename = flags.output
+      ? flags.output.replace(/.*[\\/]/, "")  // basename of custom path
+      : "shiplog-card.svg";
+    process.stdout.write(
+      `\nEmbed in your README:\n\n![ShipLog-${today}](./${cardFilename})\n`
+    );
+
+    // Optionally open in browser.
+    if (flags.preview) {
+      openInBrowser(outputPath);
+    }
+
+    if (result.meta.linesSkipped > 0) {
+      process.stderr.write(
+        `Warning: ${result.meta.linesSkipped} line(s) skipped due to parse errors.\n`
+      );
+      process.exit(2);
+    }
+
+    process.exit(0);
+  }
+
+  // Default (no --json, no --local): Phase 2 fallback with updated hint.
+  process.stderr.write(
+    "Use --local to generate an SVG card, or --json for raw data.\n"
+  );
 
   process.stdout.write(JSON.stringify(result, null, 2) + "\n");
 
-  // Warn on parse errors, exit 2.
   if (result.meta.linesSkipped > 0) {
     process.stderr.write(
       `Warning: ${result.meta.linesSkipped} line(s) skipped due to parse errors.\n`
