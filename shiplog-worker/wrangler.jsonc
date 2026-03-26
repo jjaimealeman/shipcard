@@ -6,23 +6,21 @@
   "routes": [
     {
       "pattern": "shipcard.dev",
-      "custom_domain": true
-    }
+      "custom_domain": true,
+    },
   ],
   "kv_namespaces": [
     {
       // Card SVG cache — one entry per (username, theme, layout, style) variant.
-      // Create with: npx wrangler kv namespace create CARDS_KV
       "binding": "CARDS_KV",
-      "id": "<REPLACE_WITH_CARDS_KV_NAMESPACE_ID>"
+      "id": "4ef9089113d04b0f81a90b451aecfb67",
     },
     {
       // User SafeStats data store — also stores auth tokens.
-      // Create with: npx wrangler kv namespace create USER_DATA_KV
       "binding": "USER_DATA_KV",
-      "id": "<REPLACE_WITH_USER_DATA_KV_NAMESPACE_ID>"
-    }
-  ]
+      "id": "682c4a90e7ee445ba9dab2ed7eb2722f",
+    },
+  ],
   // Secrets are set via wrangler CLI, NOT in this file:
   //   npx wrangler secret put GITHUB_CLIENT_SECRET
   //   npx wrangler secret put TOKEN_SECRET
