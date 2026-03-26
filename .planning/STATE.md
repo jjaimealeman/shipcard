@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-03-25)
 
 **Core value:** Developers using Claude Code can see what they shipped and what it cost, and share verifiable proof via an embeddable card.
-**Current focus:** Phase 7 - Auth Verify + Docs
+**Current focus:** Phase 8 - Landing Page
 
 ## Current Position
 
-Phase: 6 of 7 (Worker Card Params) — Complete
-Plan: 1 of 1 in Phase 6 complete (06-01 done)
-Status: Phase 6 complete, Phase 7 not started
-Last activity: 2026-03-26 — Completed 06-01-PLAN.md (?hide= param wired into card route and cache; DELETE /sync stores redacted card)
+Phase: 7 of 8 (Auth Verify + Docs) — Complete
+Plan: 1 of 1 in Phase 7 complete (07-01 done)
+Status: Phase 7 complete, Phase 8 not started
+Last activity: 2026-03-26 — Completed 07-01-PLAN.md (unscoped package rename, OAuth device flow verified end-to-end)
 
-Progress: [██████████████] 97% (15/16 plans estimated)
+Progress: [███████████████] 100% (16/16 plans)
 
 ## Performance Metrics
 
@@ -105,6 +105,8 @@ Recent decisions affecting current work:
 - [06-01]: getCardCache/putCardCache accept optional hide param defaulting to [] — zero breaking changes to existing callers
 - [06-01]: DELETE /sync putCardCache for redacted card placed AFTER deleteAllUserData + invalidateCardVariants — avoids immediate erasure
 - [06-01]: DELETE /sync response includes redactedCard: true to signal CLI that a redacted card was stored
+- [07-01]: npm package name is unscoped "shipcard" — simplifies npx usage (no -p flag for CLI commands)
+- [07-01]: looksLikeFilePath checks ~/ not ~ — cost strings like "~$3,414.02" are not file paths
 
 ### Pending Todos
 
@@ -120,6 +122,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-26T05:42:32Z
-Stopped at: Completed 06-01-PLAN.md — ?hide= params wired into card route/cache; DELETE /sync renders redacted card.
+Last session: 2026-03-26T06:55:00Z
+Stopped at: Completed 07-01-PLAN.md — unscoped package rename + OAuth flow verified. SafeStats validator bug fixed.
 Resume file: None

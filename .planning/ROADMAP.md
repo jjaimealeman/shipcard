@@ -18,7 +18,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 4: Cloud Worker** - Cloudflare Worker that serves and caches cards at the edge
 - [x] **Phase 5: Publish + Launch** - npm publishing, README, and launch readiness
 - [x] **Phase 6: Worker Card Params** - Wire hide param and redacted card in Worker
-- [ ] **Phase 7: Auth Verify + Docs** - Test OAuth device flow, document npx CLI usage
+- [x] **Phase 7: Auth Verify + Docs** - Test OAuth device flow, document npx CLI usage
 - [ ] **Phase 8: Landing Page** - Polished homepage for shipcard.dev (replacing JSON health check)
 
 ## Phase Details
@@ -130,7 +130,7 @@ Plans:
 **Plans:** 1 plan in 1 wave
 
 Plans:
-- [ ] 07-01-PLAN.md — Rename package to unscoped shipcard, update all docs, verify OAuth device flow end-to-end
+- [x] 07-01-PLAN.md — Rename package to unscoped shipcard, update all docs, verify OAuth device flow end-to-end
 
 ### Phase 8: Landing Page
 **Goal**: shipcard.dev root serves a polished landing page that sells the product in 30 seconds
@@ -157,5 +157,5 @@ Phases execute sequentially: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | 4. Cloud Worker | 3/3 | ✓ Complete | 2026-03-25 |
 | 5. Publish + Launch | 4/4 | ✓ Complete | 2026-03-26 |
 | 6. Worker Card Params | 1/1 | ✓ Complete | 2026-03-26 |
-| 7. Auth Verify + Docs | 0/1 | Not started | - |
+| 7. Auth Verify + Docs | 1/1 | ✓ Complete | 2026-03-26 |
 | 8. Landing Page | 0/1 | Not started | - |
