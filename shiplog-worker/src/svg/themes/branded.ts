@@ -1,8 +1,8 @@
 /**
- * Branded theme palettes — distinctive accent colors with ShipLog identity.
+ * Branded theme palettes — distinctive accent colors with ShipCard identity.
  *
  * Developer-tool aesthetic inspired by tools like Linear, Vercel, and VS Code.
- * The violet/indigo accent is ShipLog's signature color — bold on dark,
+ * The violet/indigo accent is ShipCard's signature color — bold on dark,
  * vibrant on light. Pairs well with dark-background profile READMEs.
  */
 

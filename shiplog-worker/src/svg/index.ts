@@ -1,5 +1,5 @@
 /**
- * Public SVG card API for the ShipLog Worker.
+ * Public SVG card API for the ShipCard Worker.
  *
  * `renderCard(stats, options?)` is the single entry point — it transforms
  * a SafeStats payload into a complete, GitHub-compatible SVG string.
@@ -129,16 +129,16 @@ export function renderCard(
   const builtStats = buildStats(stats, hide);
 
   const cardData = {
-    title: "ShipLog Stats",
+    title: "ShipCard Stats",
     stats: builtStats,
-    footer: "ShipLog",
+    footer: "ShipCard",
   };
 
   return renderSvg(cardData, { layout, style, theme, heroStat });
 }
 
 /**
- * Render a placeholder SVG card for users who haven't set up ShipLog yet.
+ * Render a placeholder SVG card for users who haven't set up ShipCard yet.
  *
  * Used when GET /card/:username has no user data in KV.
  * Returns a valid SVG (not a 404) — prevents broken image icons in READMEs.
@@ -155,20 +155,20 @@ export function renderPlaceholderCard(username: string): string {
   return [
     `<svg xmlns="http://www.w3.org/2000/svg" width="${CARD_WIDTH}" height="${CARD_HEIGHT}" `,
     `viewBox="0 0 ${CARD_WIDTH} ${CARD_HEIGHT}" role="img" aria-labelledby="card-title">`,
-    `  <title id="card-title">ShipLog — ${escapeXml(username)}</title>`,
+    `  <title id="card-title">ShipCard — ${escapeXml(username)}</title>`,
     `  <style>`,
     `    text { font-family: 'Segoe UI', Ubuntu, 'Helvetica Neue', Sans-Serif; }`,
     `  </style>`,
     `  <rect width="${CARD_WIDTH}" height="${CARD_HEIGHT}" rx="4.5" `,
     `    fill="${bg}" stroke="${border}" stroke-width="1"/>`,
     `  <text x="20" y="35" font-size="15" font-weight="600" fill="${escapeXml(title)}">`,
-    `    ${escapeXml(username)} hasn&apos;t set up ShipLog yet`,
+    `    ${escapeXml(username)} hasn&apos;t set up ShipCard yet`,
     `  </text>`,
     `  <text x="20" y="58" font-size="12" fill="${escapeXml(text)}">`,
     `    Track your Claude Code sessions and share your stats.`,
     `  </text>`,
     `  <text x="20" y="78" font-size="12" fill="${escapeXml(accent)}">`,
-    `    https://github.com/username/shiplog`,
+    `    https://shipcard.dev`,
     `  </text>`,
     `</svg>`,
   ].join("\n");
@@ -177,7 +177,7 @@ export function renderPlaceholderCard(username: string): string {
 /**
  * Render a redacted SVG card for users who deleted their data.
  *
- * Appears after `shiplog sync --delete`. Looks intentional — not broken,
+ * Appears after `shipcard sync --delete`. Looks intentional — not broken,
  * not an error state — clearly "this data was removed".
  */
 export function renderRedactedCard(username: string): string {
@@ -197,14 +197,14 @@ export function renderRedactedCard(username: string): string {
   const lines: string[] = [
     `<svg xmlns="http://www.w3.org/2000/svg" width="${CARD_WIDTH}" height="${CARD_HEIGHT}" `,
     `viewBox="0 0 ${CARD_WIDTH} ${CARD_HEIGHT}" role="img" aria-labelledby="card-title">`,
-    `  <title id="card-title">ShipLog — ${escapeXml(username)} (data removed)</title>`,
+    `  <title id="card-title">ShipCard — ${escapeXml(username)} (data removed)</title>`,
     `  <style>`,
     `    text { font-family: 'Segoe UI', Ubuntu, 'Helvetica Neue', Sans-Serif; }`,
     `  </style>`,
     `  <rect width="${CARD_WIDTH}" height="${CARD_HEIGHT}" rx="4.5" `,
     `    fill="${bg}" stroke="${border}" stroke-width="1"/>`,
     `  <text x="20" y="35" font-size="16" font-weight="600" fill="${escapeXml(title)}">`,
-    `    ShipLog Stats`,
+    `    ShipCard Stats`,
     `  </text>`,
     `  <text x="20" y="55" font-size="11" fill="${escapeXml(text)}">`,
     `    ${escapeXml(username)} — data removed`,
@@ -221,7 +221,7 @@ export function renderRedactedCard(username: string): string {
 
   lines.push(
     `  <text x="${CARD_WIDTH / 2}" y="${CARD_HEIGHT - 8}" font-size="10" `,
-    `    text-anchor="middle" opacity="0.4" fill="${escapeXml(text)}">ShipLog</text>`,
+    `    text-anchor="middle" opacity="0.4" fill="${escapeXml(text)}">ShipCard</text>`,
     `</svg>`
   );
 

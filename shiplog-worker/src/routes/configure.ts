@@ -1,5 +1,5 @@
 /**
- * Configure route for the ShipLog Worker.
+ * Configure route for the ShipCard Worker.
  *
  * GET /configure — Serves a self-contained HTML browser configurator.
  *
@@ -30,7 +30,7 @@ const CONFIGURATOR_HTML = `<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ShipLog Card Configurator</title>
+<title>ShipCard Card Configurator</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -212,7 +212,7 @@ const CONFIGURATOR_HTML = `<!DOCTYPE html>
 </head>
 <body>
 <header>
-  <h1>ShipLog</h1>
+  <h1>ShipCard</h1>
   <span class="badge">Card Configurator</span>
 </header>
 
@@ -292,7 +292,7 @@ const CONFIGURATOR_HTML = `<!DOCTYPE html>
     document.getElementById('main-content').innerHTML =
       '<div class="no-data">' +
       '<p>No stats data found.</p>' +
-      '<p>Run <code>shiplog sync</code> to open this page with your stats.</p>' +
+      '<p>Run <code>shipcard sync</code> to open this page with your stats.</p>' +
       '</div>';
     document.getElementById('sidebar').style.display = 'none';
     return;
@@ -300,7 +300,7 @@ const CONFIGURATOR_HTML = `<!DOCTYPE html>
 
   var username = stats.username || 'unknown';
   var workerOrigin = window.location.origin;
-  var STORAGE_KEY = 'shiplog_config_' + username;
+  var STORAGE_KEY = 'shipcard_config_' + username;
   var savedPrefs = {};
   try { savedPrefs = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch(e) {}
 
@@ -382,7 +382,7 @@ const CONFIGURATOR_HTML = `<!DOCTYPE html>
     });
     return '<svg xmlns="http://www.w3.org/2000/svg" width="500" height="' + h + '">' +
       '<rect width="500" height="' + h + '" rx="8" fill="' + c.bg + '" stroke="' + c.border + '" stroke-width="1"/>' +
-      '<text x="16" y="28" font-size="14" font-weight="600" fill="' + c.title + '">ShipLog</text>' +
+      '<text x="16" y="28" font-size="14" font-weight="600" fill="' + c.title + '">ShipCard</text>' +
       '<text x="16" y="42" font-size="11" fill="' + c.sub + '">@' + escXml(s.username) + '</text>' +
       '<line x1="16" y1="46" x2="484" y2="46" stroke="' + c.border + '" stroke-width="1"/>' +
       rows.join('') + '</svg>';
@@ -442,20 +442,20 @@ const CONFIGURATOR_HTML = `<!DOCTYPE html>
 
   function buildOutputContent(s) {
     var qs = buildQs();
-    var cardUrl = workerOrigin + '/card/' + escXml(s.username) + qs;
+    var cardUrl = workerOrigin + '/u/' + escXml(s.username) + qs;
     var cliExtra = '';
     if (state.theme !== 'dark') cliExtra += ' --theme ' + state.theme;
     if (state.layout !== 'classic') cliExtra += ' --layout ' + state.layout;
     if (state.style !== 'github') cliExtra += ' --style ' + state.style;
-    var cliCmd = 'shiplog sync --confirm' + cliExtra;
+    var cliCmd = 'shipcard sync --confirm' + cliExtra;
 
     // Build output sections as DOM nodes to avoid innerHTML on user content
     var frag = document.createDocumentFragment();
     [
       { title: 'CLI Command', id: 'cli-block', text: cliCmd },
-      { title: 'Card URL', id: 'url-block', text: workerOrigin + '/card/' + s.username + qs },
-      { title: 'Markdown', id: 'md-block', text: '![ShipLog Stats](' + workerOrigin + '/card/' + s.username + qs + ')' },
-      { title: 'HTML', id: 'html-block', text: '<img src="' + workerOrigin + '/card/' + s.username + qs + '" alt="ShipLog Stats" />' },
+      { title: 'Card URL', id: 'url-block', text: workerOrigin + '/u/' + s.username + qs },
+      { title: 'Markdown', id: 'md-block', text: '![ShipCard Stats](' + workerOrigin + '/u/' + s.username + qs + ')' },
+      { title: 'HTML', id: 'html-block', text: '<img src="' + workerOrigin + '/u/' + s.username + qs + '" alt="ShipCard Stats" />' },
     ].forEach(function(item) {
       var wrapper = document.createElement('div');
       var titleEl = document.createElement('div');

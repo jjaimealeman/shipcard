@@ -1,5 +1,5 @@
 /**
- * GET /card/:username — ShipLog SVG card endpoint.
+ * GET /u/:username — ShipCard SVG card endpoint.
  *
  * Serves cached or freshly rendered SVG cards with anti-camo headers.
  * Unknown usernames get a placeholder card (not a 404 or error response).

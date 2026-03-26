@@ -1,5 +1,5 @@
 /**
- * KV helper module for the ShipLog Worker.
+ * KV helper module for the ShipCard Worker.
  *
  * Wraps raw KV calls with typed functions and consistent key naming.
  *
@@ -109,7 +109,7 @@ export async function putUserData(
 
 /**
  * Delete all data for a user: SafeStats payload + all card variants.
- * Used by `shiplog sync --delete`.
+ * Used by `shipcard sync --delete`.
  */
 export async function deleteAllUserData(
   kv: KVNamespace,

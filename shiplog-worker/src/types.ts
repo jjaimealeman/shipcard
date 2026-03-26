@@ -1,5 +1,5 @@
 /**
- * Shared types for the ShipLog Worker.
+ * Shared types for the ShipCard Worker.
  *
  * Env defines the KV bindings and secrets available at runtime.
  * SafeStats is the privacy-boundary type — the ONLY shape of user data

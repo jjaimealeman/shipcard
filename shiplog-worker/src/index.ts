@@ -1,9 +1,9 @@
 /**
- * ShipLog Worker — Hono app entry point.
+ * ShipCard Worker — Hono app entry point.
  *
  * Routes:
  *   GET  /              — health check
- *   GET  /card/:username — SVG stats card (cached, public)
+ *   GET  /u/:username   — SVG stats card (cached, public)
  *   POST /auth/exchange  — GitHub token → Worker bearer token exchange
  *   POST /sync           — authenticated stat upload
  *   DELETE /sync         — wipe user data (auth token preserved)
@@ -21,11 +21,11 @@ const app = new Hono<AppType>();
 
 // Health check
 app.get("/", (c) =>
-  c.json({ name: "shiplog-worker", status: "ok", version: "0.1.0" })
+  c.json({ name: "shipcard", status: "ok", version: "0.1.0" })
 );
 
 // Card serving — public, no auth required
-app.route("/card", cardRoutes);
+app.route("/u", cardRoutes);
 
 // Auth — GitHub token exchange for Worker-issued bearer token
 app.route("/auth", authRoutes);

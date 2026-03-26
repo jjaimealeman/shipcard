@@ -32,11 +32,11 @@ export interface StatEntry {
 
 /** Data shape passed from renderCard() down to every layout renderer. */
 export interface CardData {
-  /** Card heading text, e.g. "ShipLog Stats". */
+  /** Card heading text, e.g. "ShipCard Stats". */
   title: string;
   /** Ordered list of stats to display. */
   stats: StatEntry[];
-  /** Footer text — always "ShipLog". */
+  /** Footer text — always "ShipCard". */
   footer: string;
   /** Optional date range label shown below the title. */
   dateRange?: string;

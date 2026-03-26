@@ -1,5 +1,5 @@
 /**
- * Auth routes for the ShipLog Worker.
+ * Auth routes for the ShipCard Worker.
  *
  * POST /auth/exchange — Converts a GitHub OAuth token into a Worker-issued
  * opaque bearer token. Verifies the GitHub token by calling the GitHub API
@@ -60,7 +60,7 @@ authRoutes.post("/exchange", async (c) => {
     const response = await fetch("https://api.github.com/user", {
       headers: {
         Authorization: `Bearer ${githubToken}`,
-        "User-Agent": "shiplog-worker/1.0",
+        "User-Agent": "shipcard-worker/1.0",
         Accept: "application/vnd.github.v3+json",
       },
     });

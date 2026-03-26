@@ -1,5 +1,5 @@
 /**
- * Sync routes for the ShipLog Worker.
+ * Sync routes for the ShipCard Worker.
  *
  * POST /sync — Accepts a SafeStats payload from the CLI, stores it in KV,
  * invalidates all cached card variants, and synchronously re-renders the

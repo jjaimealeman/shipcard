@@ -1,5 +1,5 @@
 /**
- * Bearer token auth middleware for the ShipLog Worker.
+ * Bearer token auth middleware for the ShipCard Worker.
  *
  * Validates the `Authorization: Bearer <token>` header by looking up the
  * token in USER_DATA_KV. On success, sets `username` in the Hono context

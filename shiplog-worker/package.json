@@ -1,8 +1,8 @@
 {
-  "name": "shiplog-worker",
+  "name": "shipcard-worker",
   "version": "0.1.0",
   "private": true,
-  "description": "Cloudflare Worker — serves ShipLog SVG stats cards at the edge",
+  "description": "Cloudflare Worker — serves ShipCard SVG stats cards at the edge",
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",

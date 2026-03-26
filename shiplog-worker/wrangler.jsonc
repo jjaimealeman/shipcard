@@ -1,8 +1,14 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "shiplog-worker",
+  "name": "shipcard",
   "main": "src/index.ts",
   "compatibility_date": "2026-03-25",
+  "routes": [
+    {
+      "pattern": "shipcard.dev",
+      "custom_domain": true
+    }
+  ],
   "kv_namespaces": [
     {
       // Card SVG cache — one entry per (username, theme, layout, style) variant.
