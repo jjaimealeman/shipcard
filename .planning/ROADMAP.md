@@ -87,18 +87,20 @@ Plans:
 - [x] 04-03-PLAN.md — CLI login/sync commands, SafeStats conversion, browser configurator page
 
 ### Phase 5: Publish + Launch
-**Goal**: Anyone can install ShipLog with one command and the README sells it
+**Goal**: Anyone can `npm install -g shipcard` and the README sells the product in 30 seconds
 **Depends on**: Phase 4
 **Requirements**: PUB-01, PUB-02, PUB-03, PUB-04
 **Success Criteria** (what must be TRUE):
-  1. `npm install -g shiplog` installs and both `shiplog` and `shiplog-mcp` bin entries work
-  2. `npx shiplog summary` works without global install
+  1. `npm install -g shipcard` installs and both `shipcard` and `shipcard-mcp` bin entries work
+  2. `npx shipcard summary` works without global install
   3. README contains a working card embed example, copy-paste MCP config, and CLI usage
-**Plans**: TBD
+**Plans:** 4 plans in 3 waves (05-01 first, then 05-02 + 05-03 parallel, then 05-04)
 
 Plans:
-- [ ] 05-01: Package.json, tsup build, dual bin entries, npm publish
-- [ ] 05-02: README with card embed, MCP config snippet, and CLI usage guide
+- [ ] 05-01-PLAN.md — Full codebase rename from shiplog to shipcard + Worker route change to /u/:username + custom domain config
+- [ ] 05-02-PLAN.md — Build verification, npm pack dry run, MIT LICENSE file
+- [ ] 05-03-PLAN.md — README with live card embed, MCP config snippet, CLI overview + USAGE.md + STYLES.md
+- [ ] 05-04-PLAN.md — Dry run publish chain, Worker deploy, npm publish (human checkpoint)
 
 ## Progress
 
@@ -111,4 +113,4 @@ Phases execute sequentially: 1 -> 2 -> 3 -> 4 -> 5
 | 2. MCP + CLI | 3/3 | ✓ Complete | 2026-03-25 |
 | 3. SVG Card | 2/2 | ✓ Complete | 2026-03-25 |
 | 4. Cloud Worker | 3/3 | ✓ Complete | 2026-03-25 |
-| 5. Publish + Launch | 0/2 | Not started | - |
+| 5. Publish + Launch | 0/4 | Not started | - |
