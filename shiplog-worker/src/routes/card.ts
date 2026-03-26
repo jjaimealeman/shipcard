@@ -8,7 +8,7 @@
  *   ?theme=dark|light                       (default: dark)
  *   ?layout=classic|compact|hero            (default: classic)
  *   ?style=github|branded|minimal           (default: github)
- *   ?hide=cost&hide=models                  (multi-value; valid keys: sessions, toolCalls, models, projects, cost)
+ *   ?hide=cost&hide=projects                (multi-value; valid keys: sessions, toolCalls, projects, cost)
  */
 
 import { Hono } from "hono";

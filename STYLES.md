@@ -90,7 +90,7 @@ Neutral tones that blend with GitHub README backgrounds.
 
 ### Branded
 
-Saturated colors with ShipCard accent palette.
+Deep navy and soft blue — clean, confident, no AI-purple cliché.
 
 <img src="https://shipcard.dev/u/jjaimealeman?style=branded" alt="Branded style" width="495" />
 
@@ -130,11 +130,10 @@ Use `?hide=` to remove individual stat rows:
 
 ```
 ?hide=cost
-?hide=cost&hide=models
 ?hide=sessions&hide=projects
 ```
 
-Hideable stats: `sessions`, `toolCalls`, `models`, `projects`, `cost`
+Hideable stats: `sessions`, `toolCalls`, `projects`, `cost`
 
 ---
 

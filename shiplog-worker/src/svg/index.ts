@@ -11,7 +11,7 @@
 
 import type { SafeStats } from "../types.js";
 import { renderSvg, STAT_ICONS } from "./renderer.js";
-import { abbreviateNumber, formatCost, truncate } from "./format.js";
+import { abbreviateNumber, formatCost } from "./format.js";
 import { escapeXml } from "./xml.js";
 
 export type { LayoutName, RenderOptions } from "./renderer.js";
@@ -34,7 +34,7 @@ export interface CardOptions {
   theme?: ThemeName;
   /**
    * Stat keys to exclude from the card.
-   * Valid keys: 'sessions', 'toolCalls', 'models', 'projects', 'cost'.
+   * Valid keys: 'sessions', 'toolCalls', 'projects', 'cost'.
    */
   hide?: string[];
   /** For hero layout: which stat key to promote as the hero stat. */
@@ -44,8 +44,6 @@ export interface CardOptions {
 // ---------------------------------------------------------------------------
 // Stat definitions
 // ---------------------------------------------------------------------------
-
-const MAX_MODELS_LENGTH = 40;
 
 /** Build the ordered stat list from a SafeStats payload. */
 function buildStats(
@@ -60,11 +58,6 @@ function buildStats(
     0
   );
 
-  const modelsDisplay = truncate(
-    stats.modelsUsed.join(", ") || "none",
-    MAX_MODELS_LENGTH
-  );
-
   const allStats = [
     {
       key: "sessions",
@@ -77,12 +70,6 @@ function buildStats(
       label: "Tool Calls",
       value: abbreviateNumber(totalToolCalls),
       icon: STAT_ICONS.toolCalls,
-    },
-    {
-      key: "models",
-      label: "Models",
-      value: modelsDisplay,
-      icon: STAT_ICONS.models,
     },
     {
       key: "projects",
