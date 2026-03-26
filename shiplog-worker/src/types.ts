@@ -64,6 +64,124 @@ export interface SafeStats {
 }
 
 // ---------------------------------------------------------------------------
+// SafeStats validator
+// ---------------------------------------------------------------------------
+
+/**
+ * Banned field names that would violate the privacy boundary.
+ * Any payload containing these keys is rejected regardless of value.
+ */
+const BANNED_FIELDS = new Set([
+  "path",
+  "paths",
+  "filePath",
+  "projectsDir",
+  "cwd",
+  "content",
+  "rawContent",
+  "jsonl",
+  "projectsTouched",
+  "projectNames",
+]);
+
+/**
+ * Check whether a string value looks like a file path.
+ * File paths start with / (absolute) or ~ (home directory).
+ */
+function looksLikeFilePath(value: string): boolean {
+  return value.startsWith("/") || value.startsWith("~");
+}
+
+/**
+ * Recursively scan an object for banned field names or file-path string values.
+ * Returns true if any violation is found.
+ */
+function containsPrivacyViolation(obj: Record<string, unknown>): boolean {
+  for (const [key, value] of Object.entries(obj)) {
+    // Banned field name check
+    if (BANNED_FIELDS.has(key)) return true;
+
+    // File-path string value check (only on string values)
+    if (typeof value === "string" && looksLikeFilePath(value)) return true;
+
+    // Recurse into nested objects (but not arrays — no deep nesting in SafeStats)
+    if (value !== null && typeof value === "object" && !Array.isArray(value)) {
+      if (containsPrivacyViolation(value as Record<string, unknown>))
+        return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Type guard that validates an unknown payload is a safe SafeStats object.
+ *
+ * Validates:
+ * - All required fields are present with correct types
+ * - No banned field names (path, paths, filePath, projectsDir, cwd, content,
+ *   rawContent, jsonl, projectsTouched, projectNames)
+ * - No string values that look like file paths (starting with / or ~)
+ *
+ * CLOUD-04 enforcement: only numeric aggregates + username reach the cloud.
+ */
+export function isValidSafeStats(payload: unknown): payload is SafeStats {
+  if (payload === null || typeof payload !== "object" || Array.isArray(payload))
+    return false;
+
+  const p = payload as Record<string, unknown>;
+
+  // Check for privacy violations before structural validation
+  if (containsPrivacyViolation(p)) return false;
+
+  // username
+  if (typeof p.username !== "string" || p.username.length === 0) return false;
+
+  // totalSessions
+  if (typeof p.totalSessions !== "number" || p.totalSessions < 0) return false;
+
+  // totalTokens
+  const tt = p.totalTokens;
+  if (tt === null || typeof tt !== "object" || Array.isArray(tt)) return false;
+  const tokens = tt as Record<string, unknown>;
+  if (
+    typeof tokens.input !== "number" ||
+    typeof tokens.output !== "number" ||
+    typeof tokens.cacheCreation !== "number" ||
+    typeof tokens.cacheRead !== "number"
+  )
+    return false;
+
+  // totalCost
+  if (typeof p.totalCost !== "string") return false;
+
+  // modelsUsed
+  if (
+    !Array.isArray(p.modelsUsed) ||
+    !p.modelsUsed.every((m) => typeof m === "string")
+  )
+    return false;
+
+  // projectCount
+  if (typeof p.projectCount !== "number" || p.projectCount < 0) return false;
+
+  // toolCallSummary
+  const tcs = p.toolCallSummary;
+  if (tcs === null || typeof tcs !== "object" || Array.isArray(tcs))
+    return false;
+  if (
+    !Object.values(tcs as Record<string, unknown>).every(
+      (v) => typeof v === "number"
+    )
+  )
+    return false;
+
+  // pricingVersion
+  if (typeof p.pricingVersion !== "string") return false;
+
+  return true;
+}
+
+// ---------------------------------------------------------------------------
 // Card query params
 // ---------------------------------------------------------------------------
 
