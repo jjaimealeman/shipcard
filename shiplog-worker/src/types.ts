@@ -79,4 +79,4 @@ export type CardQueryParams = {
 // ---------------------------------------------------------------------------
 
 /** Hono generic type binding for consistent sub-app typing across routes. */
-export type AppType = { Bindings: Env };
+export type AppType = { Bindings: Env; Variables: { username: string } };
