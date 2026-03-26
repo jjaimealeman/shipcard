@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-03-25)
 ## Current Position
 
 Phase: 5 of 5 (Publish + Launch) — In progress
-Plan: 1 of 3 in Phase 5 complete (05-01 done)
+Plan: 2 of 4 in Phase 5 complete (05-02 done)
 Status: In progress
-Last activity: 2026-03-26 — Completed 05-01-PLAN.md (rename shiplog → shipcard, /card → /u route)
+Last activity: 2026-03-26 — Completed 05-02-PLAN.md (MIT LICENSE, build verification, tarball inspection)
 
-Progress: [████████████░] 80% (12/15 plans estimated)
+Progress: [████████████░] 87% (13/15 plans estimated)
 
 ## Performance Metrics
 
@@ -99,6 +99,8 @@ Recent decisions affecting current work:
 - [05-01]: Config paths are ~/.shipcard/ and ~/.shipcard.json (migrated from ~/.shiplog/)
 - [05-01]: MCP tool names use shipcard: prefix (shipcard:summary, shipcard:costs, shipcard:card)
 - [05-01]: Worker name in wrangler.jsonc is shipcard with shipcard.dev custom domain
+- [05-02]: LICENSE placed in both repo root and shiplog/ — npm only auto-includes from package root (shiplog/)
+- [05-02]: "license": "MIT" added to package.json to satisfy npm registry metadata requirement
 
 ### Pending Todos
 
@@ -114,6 +116,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-26T03:36:00Z
-Stopped at: Completed 05-01-PLAN.md — renamed shiplog → shipcard across all source, /card → /u route, shipcard.dev custom domain in wrangler.jsonc.
+Last session: 2026-03-26T03:40:55Z
+Stopped at: Completed 05-02-PLAN.md — MIT LICENSE added, build verified, tarball confirmed clean.
 Resume file: None
