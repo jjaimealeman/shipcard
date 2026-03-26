@@ -20,6 +20,14 @@ export interface ParsedCliArgs {
     color: boolean;
     help: boolean;
     local: boolean;
+    // Card-specific flags
+    layout: string | undefined;
+    style: string | undefined;
+    theme: string | undefined;
+    hide: string[];
+    heroStat: string | undefined;
+    preview: boolean;
+    output: string | undefined;
   };
 }
 
@@ -43,6 +51,14 @@ export function parseCliArgs(): ParsedCliArgs {
       color: { type: "boolean", default: false },
       help: { type: "boolean", short: "h", default: false },
       local: { type: "boolean", default: false },
+      // Card appearance flags
+      layout: { type: "string" },
+      style: { type: "string" },
+      theme: { type: "string" },
+      hide: { type: "string", multiple: true },
+      "hero-stat": { type: "string" },
+      preview: { type: "boolean", default: false },
+      output: { type: "string", short: "o" },
     },
     allowPositionals: true,
     strict: false,
@@ -60,6 +76,14 @@ export function parseCliArgs(): ParsedCliArgs {
       color: (flags.color as boolean | undefined) ?? false,
       help: (flags.help as boolean | undefined) ?? false,
       local: (flags.local as boolean | undefined) ?? false,
+      // Card appearance flags
+      layout: flags.layout as string | undefined,
+      style: flags.style as string | undefined,
+      theme: flags.theme as string | undefined,
+      hide: (flags.hide as string[] | undefined) ?? [],
+      heroStat: flags["hero-stat"] as string | undefined,
+      preview: (flags.preview as boolean | undefined) ?? false,
+      output: flags.output as string | undefined,
     },
   };
 }
