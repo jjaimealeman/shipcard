@@ -502,7 +502,6 @@ const LANDING_HTML = `<!DOCTYPE html>
           <div class="config-group-title">Hide Stats</div>
           <div class="config-row"><label class="hide-check"><input type="checkbox" id="chk-sessions"><span class="config-label">Sessions</span></label></div>
           <div class="config-row"><label class="hide-check"><input type="checkbox" id="chk-toolCalls"><span class="config-label">Tool Calls</span></label></div>
-          <div class="config-row"><label class="hide-check"><input type="checkbox" id="chk-models"><span class="config-label">Models</span></label></div>
           <div class="config-row"><label class="hide-check"><input type="checkbox" id="chk-projects"><span class="config-label">Projects</span></label></div>
           <div class="config-row"><label class="hide-check"><input type="checkbox" id="chk-cost"><span class="config-label">Cost</span></label></div>
         </div>
@@ -586,7 +585,7 @@ const LANDING_HTML = `<!DOCTYPE html>
     theme: 'dark',
     layout: 'classic',
     style: 'github',
-    hide: { sessions: false, toolCalls: false, models: false, projects: false, cost: false }
+    hide: { sessions: false, toolCalls: false, projects: false, cost: false }
   };
 
   // --- DOM refs ---
@@ -605,7 +604,7 @@ const LANDING_HTML = `<!DOCTYPE html>
     if (state.theme !== 'dark') p.push('theme=' + state.theme);
     if (state.layout !== 'classic') p.push('layout=' + state.layout);
     if (state.style !== 'github') p.push('style=' + state.style);
-    var keys = ['sessions', 'toolCalls', 'models', 'projects', 'cost'];
+    var keys = ['sessions', 'toolCalls', 'projects', 'cost'];
     for (var i = 0; i < keys.length; i++) {
       if (state.hide[keys[i]]) p.push('hide=' + keys[i]);
     }
@@ -696,7 +695,7 @@ const LANDING_HTML = `<!DOCTYPE html>
     state.theme = 'dark';
     state.layout = 'classic';
     state.style = 'github';
-    state.hide = { sessions: false, toolCalls: false, models: false, projects: false, cost: false };
+    state.hide = { sessions: false, toolCalls: false, projects: false, cost: false };
     inpUsername.value = DEFAULT_USERNAME;
     syncControlsToState();
     refreshCard();
@@ -720,7 +719,7 @@ const LANDING_HTML = `<!DOCTYPE html>
       }
     }
     // Checkboxes
-    var hideKeys = ['sessions', 'toolCalls', 'models', 'projects', 'cost'];
+    var hideKeys = ['sessions', 'toolCalls', 'projects', 'cost'];
     for (var h = 0; h < hideKeys.length; h++) {
       document.getElementById('chk-' + hideKeys[h]).checked = state.hide[hideKeys[h]];
     }
@@ -745,7 +744,7 @@ const LANDING_HTML = `<!DOCTYPE html>
   }
 
   // --- Event: hide checkboxes ---
-  var hideKeys = ['sessions', 'toolCalls', 'models', 'projects', 'cost'];
+  var hideKeys = ['sessions', 'toolCalls', 'projects', 'cost'];
   for (var hi = 0; hi < hideKeys.length; hi++) {
     (function(hk) {
       document.getElementById('chk-' + hk).addEventListener('change', function() {

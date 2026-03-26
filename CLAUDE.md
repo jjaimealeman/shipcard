@@ -1,4 +1,4 @@
-# ShipLog
+# ShipCard
 
 Analytics layer for agentic developers. Local MCP server + CLI reads Claude Code JSONL files, Cloudflare Worker serves embeddable SVG stats cards.
 
@@ -22,7 +22,7 @@ PRD.md              # Product Requirements Document
 - Zero external deps beyond MCP SDK for local tool
 - Privacy-first: no raw JSONL upload, only aggregated user-approved stats
 - MIT licensed
-- Alpha scope: 3 MCP tools + 3 CLI commands + 1 card endpoint
+- Alpha scope: 3 MCP tools + 5 CLI commands + 1 card endpoint
 
 ## Git
 
@@ -33,5 +33,4 @@ PRD.md              # Product Requirements Document
 
 ## Banned
 
-- NuxtHub (`@nuxthub/core`, `hubDatabase()`, etc.) — sunset Dec 2025
 - Vercel for card endpoint — use Cloudflare Workers
