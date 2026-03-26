@@ -5,13 +5,13 @@
 See: .planning/PROJECT.md (updated 2026-03-25)
 
 **Core value:** Developers using Claude Code can see what they shipped and what it cost, and share verifiable proof via an embeddable card.
-**Current focus:** Phase 6 - Worker Card Params
+**Current focus:** Phase 7 - Auth Verify + Docs
 
 ## Current Position
 
-Phase: 6 of 6 (Worker Card Params) — In progress
+Phase: 6 of 7 (Worker Card Params) — Complete
 Plan: 1 of 1 in Phase 6 complete (06-01 done)
-Status: Phase complete
+Status: Phase 6 complete, Phase 7 not started
 Last activity: 2026-03-26 — Completed 06-01-PLAN.md (?hide= param wired into card route and cache; DELETE /sync stores redacted card)
 
 Progress: [██████████████] 97% (15/16 plans estimated)

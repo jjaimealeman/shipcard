@@ -17,7 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 3: SVG Card** - Local card generation with dark/light themes
 - [x] **Phase 4: Cloud Worker** - Cloudflare Worker that serves and caches cards at the edge
 - [x] **Phase 5: Publish + Launch** - npm publishing, README, and launch readiness
-- [ ] **Phase 6: Worker Card Params** - Wire hide param and redacted card in Worker
+- [x] **Phase 6: Worker Card Params** - Wire hide param and redacted card in Worker
 - [ ] **Phase 7: Auth Verify + Docs** - Test OAuth device flow, document npx CLI usage
 
 ## Phase Details
@@ -116,7 +116,7 @@ Plans:
 **Plans:** 1 plan in 1 wave
 
 Plans:
-- [ ] 06-01-PLAN.md — Wire hide query param in Worker card route, call renderRedactedCard on sync delete
+- [x] 06-01-PLAN.md — Wire hide query param in Worker card route, call renderRedactedCard on sync delete
 
 ### Phase 7: Auth Verify + Docs
 **Goal**: OAuth login works end-to-end and npx CLI usage is discoverable without global install
@@ -143,5 +143,5 @@ Phases execute sequentially: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 | 3. SVG Card | 2/2 | ✓ Complete | 2026-03-25 |
 | 4. Cloud Worker | 3/3 | ✓ Complete | 2026-03-25 |
 | 5. Publish + Launch | 4/4 | ✓ Complete | 2026-03-26 |
-| 6. Worker Card Params | 0/1 | Not started | - |
+| 6. Worker Card Params | 1/1 | ✓ Complete | 2026-03-26 |
 | 7. Auth Verify + Docs | 0/1 | Not started | - |
