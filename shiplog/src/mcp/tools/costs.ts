@@ -1,5 +1,5 @@
 /**
- * shiplog:costs tool registration.
+ * shipcard:costs tool registration.
  *
  * Returns cost breakdown by project and model from Claude Code JSONL files.
  */
@@ -34,9 +34,9 @@ const dateFilterSchema = {
 
 export function registerCostsTool(server: McpServer): void {
   server.registerTool(
-    "shiplog:costs",
+    "shipcard:costs",
     {
-      title: "ShipLog Costs",
+      title: "ShipCard Costs",
       description:
         "Returns cost breakdown by project and model from Claude Code JSONL files",
       inputSchema: z.object(dateFilterSchema),

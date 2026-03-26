@@ -1,5 +1,5 @@
 /**
- * Public card API for ShipLog SVG card generation.
+ * Public card API for ShipCard SVG card generation.
  *
  * `renderCard(result, options?)` is the single entry point — it transforms
  * an AnalyticsResult into a complete, GitHub-compatible SVG string.
@@ -139,9 +139,9 @@ export function renderCard(
   const dateRange = buildDateRange(result.meta.dateRange);
 
   const cardData = {
-    title: "ShipLog Stats",
+    title: "ShipCard Stats",
     stats,
-    footer: "ShipLog",
+    footer: "ShipCard",
     dateRange,
   };
 

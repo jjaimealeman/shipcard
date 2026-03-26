@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * ShipLog CLI entry point.
+ * ShipCard CLI entry point.
  *
  * Dispatches to subcommand handlers: summary, costs, card.
  * Prints help on bare invocation or --help flag.
@@ -18,10 +18,10 @@ import { runSync } from "./commands/sync.js";
 // Help text
 // ---------------------------------------------------------------------------
 
-const HELP_TEXT = `shiplog — analytics for Claude Code developers
+const HELP_TEXT = `shipcard — analytics for Claude Code developers
 
 Usage:
-  shiplog <command> [flags]
+  shipcard <command> [flags]
 
 Commands:
   summary    Show session overview: sessions, tokens, models, cost, tool calls
@@ -45,24 +45,24 @@ Card flags:
   --hide <stat>     Hide a stat (sessions, toolCalls, models, projects, cost)
   --hero-stat <key> Hero stat for hero layout (default: sessions)
   --preview         Open card in browser after generation
-  -o, --output      Custom output path (default: repo root/shiplog-card.svg)
+  -o, --output      Custom output path (default: repo root/shipcard-card.svg)
 
 Sync flags:
   --confirm     Sync with current/default settings (non-interactive)
   --delete      Remove all your data from the cloud
 
 Examples:
-  shiplog summary
-  shiplog costs --json
-  shiplog summary --since 30d
-  shiplog summary --since 2026-01-01 --until 2026-02-01
-  shiplog card --local
-  shiplog card --local --layout compact --style branded --theme light
-  shiplog card --local --hide cost --preview
-  shiplog login
-  shiplog sync
-  shiplog sync --confirm
-  shiplog sync --delete
+  shipcard summary
+  shipcard costs --json
+  shipcard summary --since 30d
+  shipcard summary --since 2026-01-01 --until 2026-02-01
+  shipcard card --local
+  shipcard card --local --layout compact --style branded --theme light
+  shipcard card --local --hide cost --preview
+  shipcard login
+  shipcard sync
+  shipcard sync --confirm
+  shipcard sync --delete
 `;
 
 // ---------------------------------------------------------------------------

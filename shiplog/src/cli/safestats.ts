@@ -10,12 +10,14 @@
  *
  * Only numeric aggregates, model names, tool call counts, and cost strings
  * reach the cloud.
+ *
+ * Note: SafeStats type mirrors shipcard-worker/src/types.ts — do NOT import from Worker.
  */
 
 import type { AnalyticsResult } from "../engine/types.js";
 
 // ---------------------------------------------------------------------------
-// SafeStats type (mirrors shiplog-worker/src/types.ts — do NOT import from Worker)
+// SafeStats type (mirrors shipcard-worker/src/types.ts — do NOT import from Worker)
 // ---------------------------------------------------------------------------
 
 /**

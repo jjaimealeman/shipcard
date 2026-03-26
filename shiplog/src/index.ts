@@ -1,5 +1,5 @@
 /**
- * ShipLog public API entry point.
+ * ShipCard public API entry point.
  *
  * `runEngine(options?)` is the single entry point for all consumers:
  * CLI, MCP tools, and the card endpoint all call this function.
@@ -34,7 +34,7 @@ export type { TokenCounts } from "./parser/schema.js";
 // ---------------------------------------------------------------------------
 
 /**
- * Run the ShipLog analytics engine.
+ * Run the ShipCard analytics engine.
  *
  * Steps:
  *   1. Resolve projects directory (option or ~/.claude/projects)

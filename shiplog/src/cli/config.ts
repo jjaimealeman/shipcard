@@ -1,11 +1,11 @@
 /**
- * ShipLog config management.
+ * ShipCard config management.
  *
  * Manages two config locations:
- *   - ~/.shiplog.json        — display preferences (color, mode)
- *   - ~/.shiplog/config.json — auth credentials (token, username, workerUrl)
+ *   - ~/.shipcard.json        — display preferences (color, mode)
+ *   - ~/.shipcard/config.json — auth credentials (token, username, workerUrl)
  *
- * The auth config is stored separately under ~/.shiplog/ to keep credentials
+ * The auth config is stored separately under ~/.shipcard/ to keep credentials
  * in a dedicated directory (matching conventional tool patterns like ~/.gh/).
  */
 
@@ -14,30 +14,30 @@ import * as os from "node:os";
 import * as path from "node:path";
 
 // ---------------------------------------------------------------------------
-// Display config (existing — ~/.shiplog.json)
+// Display config (existing — ~/.shipcard.json)
 // ---------------------------------------------------------------------------
 
-export interface ShipLogConfig {
+export interface ShipCardConfig {
   mode?: "compact" | "sectioned";
   color?: boolean;
 }
 
-const DISPLAY_CONFIG_PATH = path.join(os.homedir(), ".shiplog.json");
+const DISPLAY_CONFIG_PATH = path.join(os.homedir(), ".shipcard.json");
 
 /**
- * Load the ShipLog display config file from ~/.shiplog.json.
+ * Load the ShipCard display config file from ~/.shipcard.json.
  *
  * Returns an empty object if the file does not exist or is invalid JSON.
  * Never throws.
  */
-export async function loadConfig(): Promise<ShipLogConfig> {
+export async function loadConfig(): Promise<ShipCardConfig> {
   try {
     const raw = await fs.readFile(DISPLAY_CONFIG_PATH, "utf-8");
     const parsed = JSON.parse(raw) as unknown;
     if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
       return {};
     }
-    return parsed as ShipLogConfig;
+    return parsed as ShipCardConfig;
   } catch {
     // File not found, permission error, or JSON parse error — all silently ignored.
     return {};
@@ -45,23 +45,23 @@ export async function loadConfig(): Promise<ShipLogConfig> {
 }
 
 // ---------------------------------------------------------------------------
-// Auth config (~/.shiplog/config.json)
+// Auth config (~/.shipcard/config.json)
 // ---------------------------------------------------------------------------
 
-/** Auth credentials and preferences persisted in ~/.shiplog/config.json. */
-export interface ShiplogAuthConfig {
+/** Auth credentials and preferences persisted in ~/.shipcard/config.json. */
+export interface ShipcardAuthConfig {
   /** GitHub username of the authenticated user. */
   username?: string;
   /** Worker-issued bearer token. */
   token?: string;
-  /** Worker base URL. Defaults to https://shiplog.workers.dev. */
+  /** Worker base URL. Defaults to https://shipcard.dev. */
   workerUrl?: string;
 }
 
-const SHIPLOG_DIR = path.join(os.homedir(), ".shiplog");
-const AUTH_CONFIG_PATH = path.join(SHIPLOG_DIR, "config.json");
+const SHIPCARD_DIR = path.join(os.homedir(), ".shipcard");
+const AUTH_CONFIG_PATH = path.join(SHIPCARD_DIR, "config.json");
 
-const DEFAULT_WORKER_URL = "https://shiplog.workers.dev";
+const DEFAULT_WORKER_URL = "https://shipcard.dev";
 
 /**
  * Return the path to the auth config file.
@@ -71,38 +71,38 @@ export function getConfigPath(): string {
 }
 
 /**
- * Load auth config from ~/.shiplog/config.json.
+ * Load auth config from ~/.shipcard/config.json.
  *
  * Returns an empty object if the file does not exist or is invalid JSON.
  * Never throws.
  */
-export async function loadAuthConfig(): Promise<ShiplogAuthConfig> {
+export async function loadAuthConfig(): Promise<ShipcardAuthConfig> {
   try {
     const raw = await fs.readFile(AUTH_CONFIG_PATH, "utf-8");
     const parsed = JSON.parse(raw) as unknown;
     if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
       return {};
     }
-    return parsed as ShiplogAuthConfig;
+    return parsed as ShipcardAuthConfig;
   } catch {
     return {};
   }
 }
 
 /**
- * Save (merge) auth config into ~/.shiplog/config.json.
+ * Save (merge) auth config into ~/.shipcard/config.json.
  *
- * Creates the ~/.shiplog/ directory if it does not exist.
+ * Creates the ~/.shipcard/ directory if it does not exist.
  * Merges the new values with any existing config (existing keys not in
  * the update are preserved).
  */
-export async function saveAuthConfig(update: Partial<ShiplogAuthConfig>): Promise<void> {
-  // Ensure ~/.shiplog/ directory exists
-  await fs.mkdir(SHIPLOG_DIR, { recursive: true });
+export async function saveAuthConfig(update: Partial<ShipcardAuthConfig>): Promise<void> {
+  // Ensure ~/.shipcard/ directory exists
+  await fs.mkdir(SHIPCARD_DIR, { recursive: true });
 
   // Load existing config, merge, write back
   const existing = await loadAuthConfig();
-  const merged: ShiplogAuthConfig = { ...existing, ...update };
+  const merged: ShipcardAuthConfig = { ...existing, ...update };
   await fs.writeFile(AUTH_CONFIG_PATH, JSON.stringify(merged, null, 2) + "\n", "utf-8");
 }
 

@@ -1,5 +1,5 @@
 /**
- * `shiplog costs` command handler.
+ * `shipcard costs` command handler.
  *
  * Displays cost breakdown by project and by model as formatted tables.
  */
@@ -24,7 +24,7 @@ export interface CostsFlags {
 
 const ONBOARDING_MESSAGE = `No Claude Code session data found.
 
-ShipLog looks for JSONL files in: ~/.claude/projects/
+ShipCard looks for JSONL files in: ~/.claude/projects/
 
 This directory is populated automatically when you use Claude Code.
 If you've used Claude Code on this machine, check that the directory exists.`;

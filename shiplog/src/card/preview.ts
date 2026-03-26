@@ -1,5 +1,5 @@
 /**
- * Cross-platform browser preview for ShipLog SVG cards.
+ * Cross-platform browser preview for ShipCard SVG cards.
  *
  * `openInBrowser(filePath)` opens a file in the user's default browser.
  * The call is fire-and-forget — it never blocks the CLI process.

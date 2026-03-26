@@ -2,7 +2,7 @@
  * LiteLLM pricing fetch with 3-layer cache and tiered cost calculation.
  *
  * Layer 1 — Runtime: module-level variable, lives for process lifetime.
- * Layer 2 — Disk:    ~/.shiplog/pricing.json, valid for 24 hours (mtime check).
+ * Layer 2 — Disk:    ~/.shipcard/pricing.json, valid for 24 hours (mtime check).
  * Layer 3 — Network: fetch from LiteLLM GitHub raw URL, writes to disk cache.
  * Fallback — Bundle: data/pricing-snapshot.json shipped with the package.
  *
@@ -26,8 +26,8 @@ export const LITELLM_URL =
 
 export const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
-export const SHIPLOG_DIR = path.join(os.homedir(), ".shiplog");
-export const PRICING_CACHE_PATH = path.join(SHIPLOG_DIR, "pricing.json");
+export const SHIPCARD_DIR = path.join(os.homedir(), ".shipcard");
+export const PRICING_CACHE_PATH = path.join(SHIPCARD_DIR, "pricing.json");
 
 /** Tiered pricing threshold in tokens. */
 const TIER_THRESHOLD = 200_000;
@@ -181,7 +181,7 @@ export async function getPricing(): Promise<{
     return runtimeCache;
   }
 
-  // Layer 2: Disk cache (~/.shiplog/pricing.json).
+  // Layer 2: Disk cache (~/.shipcard/pricing.json).
   try {
     const fileStat = await stat(PRICING_CACHE_PATH);
     const ageMs = Date.now() - fileStat.mtimeMs;
@@ -209,7 +209,7 @@ export async function getPricing(): Promise<{
       const raw = (await response.json()) as Record<string, unknown>;
       // Write to disk cache (best-effort).
       try {
-        await mkdir(SHIPLOG_DIR, { recursive: true });
+        await mkdir(SHIPCARD_DIR, { recursive: true });
         await writeFile(PRICING_CACHE_PATH, JSON.stringify(raw), {
           encoding: "utf8",
         });

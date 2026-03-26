@@ -1,5 +1,5 @@
 /**
- * Date parsing and filtering for ShipLog analytics.
+ * Date parsing and filtering for ShipCard analytics.
  *
  * Supports three date input formats:
  *   - ISO date: "2026-03-01" -> start of that day in local time

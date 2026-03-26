@@ -1,5 +1,5 @@
 /**
- * shiplog:summary tool registration.
+ * shipcard:summary tool registration.
  *
  * Returns sessions, tool calls, models used, projects touched, and estimated
  * cost from Claude Code JSONL files.
@@ -35,9 +35,9 @@ const dateFilterSchema = {
 
 export function registerSummaryTool(server: McpServer): void {
   server.registerTool(
-    "shiplog:summary",
+    "shipcard:summary",
     {
-      title: "ShipLog Summary",
+      title: "ShipCard Summary",
       description:
         "Returns sessions, tool calls, models used, projects touched, and estimated cost from Claude Code JSONL files",
       inputSchema: z.object(dateFilterSchema),

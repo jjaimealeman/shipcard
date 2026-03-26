@@ -1,5 +1,5 @@
 /**
- * `shiplog card` command handler.
+ * `shipcard card` command handler.
  *
  * Phase 3 behavior:
  *   --local   Generate an SVG card file and print a markdown embed snippet.
@@ -41,7 +41,7 @@ export interface CardFlags {
 
 const ONBOARDING_MESSAGE = `No Claude Code session data found.
 
-ShipLog looks for JSONL files in: ~/.claude/projects/
+ShipCard looks for JSONL files in: ~/.claude/projects/
 
 This directory is populated automatically when you use Claude Code.
 If you've used Claude Code on this machine, check that the directory exists.`;
@@ -115,7 +115,7 @@ export async function runCard(flags: CardFlags): Promise<void> {
     });
 
     // Determine output path.
-    const outputPath = flags.output ?? join(findGitRoot(), "shiplog-card.svg");
+    const outputPath = flags.output ?? join(findGitRoot(), "shipcard-card.svg");
 
     await writeFile(outputPath, svgString, { encoding: "utf-8" });
 
@@ -126,9 +126,9 @@ export async function runCard(flags: CardFlags): Promise<void> {
     const today = new Date().toISOString().split("T")[0];
     const cardFilename = flags.output
       ? flags.output.replace(/.*[\\/]/, "")  // basename of custom path
-      : "shiplog-card.svg";
+      : "shipcard-card.svg";
     process.stdout.write(
-      `\nEmbed in your README:\n\n![ShipLog-${today}](./${cardFilename})\n`
+      `\nEmbed in your README:\n\n![ShipCard-${today}](./${cardFilename})\n`
     );
 
     // Optionally open in browser.

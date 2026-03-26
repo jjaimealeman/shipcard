@@ -1,5 +1,5 @@
 /**
- * shiplog:card tool registration.
+ * shipcard:card tool registration.
  *
  * Returns raw analytics data for card generation (SVG rendering in future release).
  */
@@ -34,9 +34,9 @@ const dateFilterSchema = {
 
 export function registerCardTool(server: McpServer): void {
   server.registerTool(
-    "shiplog:card",
+    "shipcard:card",
     {
-      title: "ShipLog Card Data",
+      title: "ShipCard Card Data",
       description:
         "Returns raw analytics data for card generation (SVG rendering in future release)",
       inputSchema: z.object(dateFilterSchema),

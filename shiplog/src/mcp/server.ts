@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * ShipLog MCP server entry point.
+ * ShipCard MCP server entry point.
  *
  * Runs over stdio transport. All three tools (summary, costs, card) are
  * registered here. CRITICAL: No console.log() — stdout is the JSON-RPC
@@ -14,7 +14,7 @@ import { registerSummaryTool } from "./tools/summary.js";
 import { registerCostsTool } from "./tools/costs.js";
 import { registerCardTool } from "./tools/card.js";
 
-const server = new McpServer({ name: "shiplog", version: "0.1.0" });
+const server = new McpServer({ name: "shipcard", version: "0.1.0" });
 
 registerSummaryTool(server);
 registerCostsTool(server);
@@ -24,8 +24,8 @@ const transport = new StdioServerTransport();
 
 try {
   await server.connect(transport);
-  console.error("ShipLog MCP server started");
+  console.error("ShipCard MCP server started");
 } catch (err) {
-  console.error("ShipLog MCP server failed to start:", err);
+  console.error("ShipCard MCP server failed to start:", err);
   process.exit(1);
 }

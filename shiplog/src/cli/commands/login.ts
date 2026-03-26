@@ -1,5 +1,5 @@
 /**
- * `shiplog login` command handler.
+ * `shipcard login` command handler.
  *
  * Authenticates the user via GitHub OAuth device flow, then exchanges
  * the GitHub access token for a Worker-issued bearer token.
@@ -10,7 +10,7 @@
  *   3. Poll GitHub until user authorizes the device
  *   4. Fetch GitHub username from api.github.com/user
  *   5. POST to Worker /auth/exchange to get Worker bearer token
- *   6. Save { username, token } to ~/.shiplog/config.json
+ *   6. Save { username, token } to ~/.shipcard/config.json
  */
 
 import { createOAuthDeviceAuth } from "@octokit/auth-oauth-device";
@@ -22,12 +22,12 @@ import { saveAuthConfig, getWorkerUrl } from "../config.js";
 // ---------------------------------------------------------------------------
 
 /**
- * Public client ID for the ShipLog GitHub OAuth App.
+ * Public client ID for the ShipCard GitHub OAuth App.
  * Create your OAuth App at: https://github.com/settings/developers
- * Set Authorization callback URL to: https://shiplog.workers.dev/auth/callback
+ * Set Authorization callback URL to: https://shipcard.dev/auth/callback
  * Fill in the actual client ID here before publishing.
  */
-const SHIPLOG_GITHUB_CLIENT_ID = "YOUR_GITHUB_OAUTH_APP_CLIENT_ID";
+const SHIPCARD_GITHUB_CLIENT_ID = "YOUR_GITHUB_OAUTH_APP_CLIENT_ID";
 
 // ---------------------------------------------------------------------------
 // Browser open helper
@@ -68,7 +68,7 @@ export interface LoginFlags {
 }
 
 /**
- * Run the `shiplog login` command.
+ * Run the `shipcard login` command.
  *
  * Exit codes:
  *   0 — authenticated successfully
@@ -83,7 +83,7 @@ export async function runLogin(_flags: LoginFlags): Promise<void> {
   // Create device flow auth
   const auth = createOAuthDeviceAuth({
     clientType: "oauth-app",
-    clientId: SHIPLOG_GITHUB_CLIENT_ID,
+    clientId: SHIPCARD_GITHUB_CLIENT_ID,
     scopes: ["read:user"],
     onVerification(verification) {
       process.stderr.write(`Open this URL in your browser:\n`);
@@ -109,7 +109,7 @@ export async function runLogin(_flags: LoginFlags): Promise<void> {
     const message = err instanceof Error ? err.message : String(err);
     if (message.includes("timeout") || message.includes("expired")) {
       process.stderr.write(
-        "\nDevice code expired. Run `shiplog login` again to start a new session.\n"
+        "\nDevice code expired. Run `shipcard login` again to start a new session.\n"
       );
     } else {
       process.stderr.write(`\nGitHub authentication failed: ${message}\n`);
@@ -124,7 +124,7 @@ export async function runLogin(_flags: LoginFlags): Promise<void> {
     const userRes = await fetch("https://api.github.com/user", {
       headers: {
         Authorization: `Bearer ${githubToken}`,
-        "User-Agent": "shiplog-cli/1.0",
+        "User-Agent": "shipcard-cli/1.0",
         Accept: "application/vnd.github.v3+json",
       },
     });
@@ -143,14 +143,14 @@ export async function runLogin(_flags: LoginFlags): Promise<void> {
   }
 
   // Exchange GitHub token for Worker bearer token
-  process.stderr.write("Exchanging token with ShipLog...\n");
+  process.stderr.write("Exchanging token with ShipCard...\n");
   let workerToken: string;
   try {
     const exchangeRes = await fetch(`${workerUrl}/auth/exchange`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "User-Agent": "shiplog-cli/1.0",
+        "User-Agent": "shipcard-cli/1.0",
       },
       body: JSON.stringify({ githubToken, username }),
     });
@@ -175,7 +175,7 @@ export async function runLogin(_flags: LoginFlags): Promise<void> {
     process.exit(1);
   }
 
-  // Persist to ~/.shiplog/config.json
+  // Persist to ~/.shipcard/config.json
   await saveAuthConfig({ username, token: workerToken });
 
   process.stdout.write(`Logged in as ${username}\n`);

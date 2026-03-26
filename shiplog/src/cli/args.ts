@@ -1,5 +1,5 @@
 /**
- * CLI argument parser for ShipLog.
+ * CLI argument parser for ShipCard.
  *
  * Wraps node:util.parseArgs with typed flag definitions.
  * Supports subcommand dispatch via positionals.

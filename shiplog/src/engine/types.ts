@@ -1,5 +1,5 @@
 /**
- * Output shapes for the ShipLog analytics engine.
+ * Output shapes for the ShipCard analytics engine.
  *
  * AnalyticsResult is the single canonical output type consumed by every
  * interface: CLI, MCP tools, and the card endpoint.

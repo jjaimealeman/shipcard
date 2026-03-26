@@ -1,5 +1,5 @@
 /**
- * `shiplog summary` command handler.
+ * `shipcard summary` command handler.
  *
  * Displays a formatted terminal table with overview stats:
  * sessions, tokens, models, projects, cost, and tool calls.
@@ -25,7 +25,7 @@ export interface SummaryFlags {
 
 const ONBOARDING_MESSAGE = `No Claude Code session data found.
 
-ShipLog looks for JSONL files in: ~/.claude/projects/
+ShipCard looks for JSONL files in: ~/.claude/projects/
 
 This directory is populated automatically when you use Claude Code.
 If you've used Claude Code on this machine, check that the directory exists.`;

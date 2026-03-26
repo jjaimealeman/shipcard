@@ -1,5 +1,5 @@
 /**
- * UTF-8 box-drawing table renderer for ShipLog CLI output.
+ * UTF-8 box-drawing table renderer for ShipCard CLI output.
  *
  * Produces plain text tables with UTF-8 box-drawing characters.
  * No ANSI colors unless `color: true` is explicitly requested.

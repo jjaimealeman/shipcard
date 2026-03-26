@@ -1,5 +1,5 @@
 /**
- * Git root detection for ShipLog card output path.
+ * Git root detection for ShipCard card output path.
  *
  * `findGitRoot()` returns the repository root directory so generated SVG cards
  * are written to the project root by default.

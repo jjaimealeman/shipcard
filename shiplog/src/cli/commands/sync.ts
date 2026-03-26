@@ -1,12 +1,12 @@
 /**
- * `shiplog sync` command handler.
+ * `shipcard sync` command handler.
  *
- * Syncs local analytics stats to the ShipLog cloud card endpoint.
+ * Syncs local analytics stats to the ShipCard cloud card endpoint.
  *
  * Modes:
- *   shiplog sync           — preview payload + open browser configurator
- *   shiplog sync --confirm — non-interactive POST to /sync + print embed snippets
- *   shiplog sync --delete  — DELETE /sync to wipe all user data from cloud
+ *   shipcard sync           — preview payload + open browser configurator
+ *   shipcard sync --confirm — non-interactive POST to /sync + print embed snippets
+ *   shipcard sync --delete  — DELETE /sync to wipe all user data from cloud
  */
 
 import { runEngine } from "../../index.js";
@@ -64,7 +64,7 @@ function formatNumber(n: number): string {
 // ---------------------------------------------------------------------------
 
 /**
- * Run the `shiplog sync` command.
+ * Run the `shipcard sync` command.
  *
  * Exit codes:
  *   0 — success
@@ -77,7 +77,7 @@ export async function runSync(flags: SyncFlags): Promise<void> {
   // Check authentication
   if (!authConfig.token || !authConfig.username) {
     process.stderr.write(
-      "Not logged in. Run `shiplog login` first.\n"
+      "Not logged in. Run `shipcard login` first.\n"
     );
     process.exit(1);
   }
@@ -92,7 +92,7 @@ export async function runSync(flags: SyncFlags): Promise<void> {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
-          "User-Agent": "shiplog-cli/1.0",
+          "User-Agent": "shipcard-cli/1.0",
         },
       });
       if (!res.ok) {
@@ -127,7 +127,7 @@ export async function runSync(flags: SyncFlags): Promise<void> {
   if (result.meta.filesRead === 0) {
     process.stderr.write(
       "No Claude Code session data found.\n" +
-      "ShipLog looks for JSONL files in: ~/.claude/projects/\n"
+      "ShipCard looks for JSONL files in: ~/.claude/projects/\n"
     );
     process.exit(1);
   }
@@ -166,7 +166,7 @@ export async function runSync(flags: SyncFlags): Promise<void> {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
-          "User-Agent": "shiplog-cli/1.0",
+          "User-Agent": "shipcard-cli/1.0",
         },
         body: JSON.stringify(safeStats),
       });
@@ -190,14 +190,14 @@ export async function runSync(flags: SyncFlags): Promise<void> {
     }
 
     // Print success with embed snippets
-    const cardUrl = `${workerUrl}/card/${username}`;
+    const cardUrl = `${workerUrl}/u/${username}`;
     process.stdout.write("Card synced! View at:\n");
     process.stdout.write(`  ${cardUrl}\n\n`);
     process.stdout.write("Markdown:\n");
-    process.stdout.write(`  ![ShipLog Stats](${cardUrl})\n\n`);
+    process.stdout.write(`  ![ShipCard Stats](${cardUrl})\n\n`);
     process.stdout.write("HTML:\n");
     process.stdout.write(
-      `  <img src="${cardUrl}" alt="ShipLog Stats" />\n\n`
+      `  <img src="${cardUrl}" alt="ShipCard Stats" />\n\n`
     );
     process.stdout.write("Customize appearance with query params:\n");
     process.stdout.write(
@@ -218,6 +218,6 @@ export async function runSync(flags: SyncFlags): Promise<void> {
     "Configure your card in the browser, then run the command shown there.\n"
   );
   process.stdout.write(
-    "Or sync with defaults: shiplog sync --confirm\n"
+    "Or sync with defaults: shipcard sync --confirm\n"
   );
 }
