@@ -2,14 +2,12 @@
  * ShipLog Worker — Hono app entry point.
  *
  * Routes:
- *   GET /              — health check
- *   GET /card/:username — SVG stats card (cached, public)
- *
- * Phase 4, Plan 02 will add:
- *   POST /sync         — stat upload (authenticated)
- *   GET  /auth/callback — GitHub OAuth callback
- *   POST /auth/exchange — GitHub token → Worker token exchange
- *   GET  /configure    — browser configurator HTML page
+ *   GET  /              — health check
+ *   GET  /card/:username — SVG stats card (cached, public)
+ *   POST /auth/exchange  — GitHub token → Worker bearer token exchange
+ *   POST /sync           — authenticated stat upload
+ *   DELETE /sync         — wipe user data (auth token preserved)
+ *   GET  /configure      — browser configurator HTML page (no auth)
  */
 
 import { Hono } from "hono";
@@ -17,6 +15,7 @@ import type { AppType } from "./types.js";
 import { cardRoutes } from "./routes/card.js";
 import { authRoutes } from "./routes/auth.js";
 import { syncRoutes } from "./routes/sync.js";
+import { configureRoutes } from "./routes/configure.js";
 
 const app = new Hono<AppType>();
 
@@ -33,5 +32,8 @@ app.route("/auth", authRoutes);
 
 // Sync — authenticated stat upload and data deletion
 app.route("/sync", syncRoutes);
+
+// Configure — browser configurator (no auth, stats passed via hash fragment)
+app.route("/configure", configureRoutes);
 
 export default app;
