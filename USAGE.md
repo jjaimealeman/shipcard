@@ -77,6 +77,8 @@ shipcard card --json
 | `--since <date>`        | Filter from this date                                                    |
 | `--until <date>`        | Filter up to this date                                                   |
 
+**Note:** When `--since` or `--until` is used, local cards display the date range as a subtitle. Cloud cards (via `shipcard sync`) never show a date range — SafeStats strips temporal metadata for privacy.
+
 ---
 
 ### `shipcard login`
@@ -204,19 +206,25 @@ Returns cost breakdown by project and by model — useful for identifying which 
 
 ### `shipcard:card`
 
-Returns the full analytics result used for card generation — includes summary, per-project costs, per-model costs, and metadata.
+Generates an SVG stats card from local analytics data. Returns SVG markup ready to embed in a GitHub README or save to a file.
 
 **Parameters:**
 
-| Parameter | Type   | Required | Description                          |
-| --------- | ------ | -------- | ------------------------------------ |
-| `since`   | string | No       | Start date (inclusive)               |
-| `until`   | string | No       | End date (exclusive)                 |
+| Parameter  | Type     | Required | Description                                                        |
+| ---------- | -------- | -------- | ------------------------------------------------------------------ |
+| `since`    | string   | No       | Start date (inclusive)                                              |
+| `until`    | string   | No       | End date (exclusive)                                                |
+| `layout`   | string   | No       | Card layout: `classic` (default), `compact`, `hero`                |
+| `style`    | string   | No       | Visual style: `github` (default), `branded`, `minimal`             |
+| `theme`    | string   | No       | Color theme: `dark` (default), `light`                             |
+| `hide`     | string[] | No       | Stat keys to hide: `sessions`, `toolCalls`, `models`, `projects`, `cost` |
+| `heroStat` | string   | No       | For hero layout: which stat to feature (`sessions`, `toolCalls`, etc.) |
 
 **Example usage in Claude:**
-> "Generate my stats card data for the last 30 days."
+> "Generate my stats card for the last 30 days."
+> "Make me a compact light card that hides cost."
 
-**Returns:** Full `AnalyticsResult` JSON (summary + byProject + byModel + meta).
+**Returns:** SVG markup (text).
 
 ---
 

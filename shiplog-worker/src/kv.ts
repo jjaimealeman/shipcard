@@ -157,12 +157,3 @@ export async function putToken(
   });
 }
 
-/**
- * Revoke an auth token by deleting its KV entry.
- */
-export async function deleteToken(
-  kv: KVNamespace,
-  token: string
-): Promise<void> {
-  await kv.delete(`token:${token}:username`);
-}
