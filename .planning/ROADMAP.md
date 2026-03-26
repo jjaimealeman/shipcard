@@ -19,7 +19,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 5: Publish + Launch** - npm publishing, README, and launch readiness
 - [x] **Phase 6: Worker Card Params** - Wire hide param and redacted card in Worker
 - [x] **Phase 7: Auth Verify + Docs** - Test OAuth device flow, document npx CLI usage
-- [ ] **Phase 8: Landing Page** - Polished homepage for shipcard.dev (replacing JSON health check)
+- [x] **Phase 8: Landing Page** - Polished homepage for shipcard.dev (replacing JSON health check)
 
 ## Phase Details
 
@@ -142,7 +142,7 @@ Plans:
 **Plans:** 1 plan in 1 wave (single vertical slice)
 
 Plans:
-- [ ] 08-01-PLAN.md — Complete landing page: self-hosted fonts, HTML/CSS/JS page with configurator, index.ts wiring
+- [x] 08-01-PLAN.md — Complete landing page: self-hosted fonts, HTML/CSS/JS page with configurator, index.ts wiring
 
 ## Progress
 
@@ -158,4 +158,4 @@ Phases execute sequentially: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | 5. Publish + Launch | 4/4 | ✓ Complete | 2026-03-26 |
 | 6. Worker Card Params | 1/1 | ✓ Complete | 2026-03-26 |
 | 7. Auth Verify + Docs | 1/1 | ✓ Complete | 2026-03-26 |
-| 8. Landing Page | 0/1 | Not started | - |
+| 8. Landing Page | 1/1 | ✓ Complete | 2026-03-26 |
