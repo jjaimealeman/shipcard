@@ -43,11 +43,11 @@
 
 ### Card
 
-- [ ] **CARD-01**: SVG stats card displays sessions, tool calls, models used, projects, and estimated cost
-- [ ] **CARD-02**: Dark and light theme variants
-- [ ] **CARD-03**: Card renders correctly on GitHub README (survives camo proxy + SVG sanitizer)
-- [ ] **CARD-04**: Card uses basic SVG elements only (rect, text, g, svg, line) with inline styles
-- [ ] **CARD-05**: All user-controlled text is XML-escaped to prevent injection
+- [x] **CARD-01**: SVG stats card displays sessions, tool calls, models used, projects, and estimated cost
+- [x] **CARD-02**: Dark and light theme variants
+- [x] **CARD-03**: Card renders correctly on GitHub README (survives camo proxy + SVG sanitizer)
+- [x] **CARD-04**: Card uses basic SVG elements only (rect, text, g, svg, line) with inline styles
+- [x] **CARD-05**: All user-controlled text is XML-escaped to prevent injection
 
 ### Cloud
 

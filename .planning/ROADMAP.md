@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Parser + Engine** - JSONL parser and analytics engine — the foundation everything else builds on
 - [x] **Phase 2: MCP + CLI** - Dual interfaces (MCP server + CLI) consuming the engine
-- [ ] **Phase 3: SVG Card** - Local card generation with dark/light themes
+- [x] **Phase 3: SVG Card** - Local card generation with dark/light themes
 - [ ] **Phase 4: Cloud Worker** - Cloudflare Worker that serves and caches cards at the edge
 - [ ] **Phase 5: Publish + Launch** - npm publishing, README, and launch readiness
 
@@ -63,11 +63,11 @@ Plans:
   2. Dark and light theme variants both render correctly
   3. Card survives GitHub's camo proxy and SVG sanitizer (basic elements only, inline styles, no scripts)
   4. All user-controlled text is XML-escaped — injected angle brackets or ampersands appear as literals
-**Plans**: TBD
+**Plans:** 2 plans in 2 waves (03-01 first, then 03-02)
 
 Plans:
-- [ ] 03-01: SVG template renderer with dark/light themes
-- [ ] 03-02: GitHub rendering validation and XML escaping
+- [x] 03-01-PLAN.md — Card rendering engine: XML escape, number formatting, theme system (3 styles x dark/light), three layouts (classic, compact, hero), renderCard() public API
+- [x] 03-02-PLAN.md — CLI integration: git root detection, browser preview, new card flags (--layout, --style, --theme, --hide, --hero-stat, --preview, -o), card command upgrade, help text update
 
 ### Phase 4: Cloud Worker
 **Goal**: Users can sync stats to the cloud and share a publicly accessible card URL backed by edge caching
@@ -109,6 +109,6 @@ Phases execute sequentially: 1 -> 2 -> 3 -> 4 -> 5
 |-------|----------------|--------|-----------|
 | 1. Parser + Engine | 3/3 | ✓ Complete | 2026-03-25 |
 | 2. MCP + CLI | 3/3 | ✓ Complete | 2026-03-25 |
-| 3. SVG Card | 0/2 | Not started | - |
+| 3. SVG Card | 2/2 | ✓ Complete | 2026-03-25 |
 | 4. Cloud Worker | 0/3 | Not started | - |
 | 5. Publish + Launch | 0/2 | Not started | - |
