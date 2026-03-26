@@ -28,6 +28,9 @@ export interface ParsedCliArgs {
     heroStat: string | undefined;
     preview: boolean;
     output: string | undefined;
+    // Sync-specific flags
+    confirm: boolean;
+    delete: boolean;
   };
 }
 
@@ -59,6 +62,9 @@ export function parseCliArgs(): ParsedCliArgs {
       "hero-stat": { type: "string" },
       preview: { type: "boolean", default: false },
       output: { type: "string", short: "o" },
+      // Sync flags
+      confirm: { type: "boolean", default: false },
+      delete: { type: "boolean", default: false },
     },
     allowPositionals: true,
     strict: false,
@@ -84,6 +90,9 @@ export function parseCliArgs(): ParsedCliArgs {
       heroStat: flags["hero-stat"] as string | undefined,
       preview: (flags.preview as boolean | undefined) ?? false,
       output: flags.output as string | undefined,
+      // Sync flags
+      confirm: (flags.confirm as boolean | undefined) ?? false,
+      delete: (flags.delete as boolean | undefined) ?? false,
     },
   };
 }

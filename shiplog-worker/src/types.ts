@@ -48,7 +48,7 @@ export interface SafeStats {
   totalTokens: {
     input: number;
     output: number;
-    cacheCreation: number;
+    cacheCreate: number;
     cacheRead: number;
   };
   /** Formatted total cost string, e.g. "~$12.34". */
@@ -146,7 +146,7 @@ export function isValidSafeStats(payload: unknown): payload is SafeStats {
   if (
     typeof tokens.input !== "number" ||
     typeof tokens.output !== "number" ||
-    typeof tokens.cacheCreation !== "number" ||
+    typeof tokens.cacheCreate !== "number" ||
     typeof tokens.cacheRead !== "number"
   )
     return false;

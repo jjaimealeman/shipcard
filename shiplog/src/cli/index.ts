@@ -11,6 +11,8 @@ import { loadConfig } from "./config.js";
 import { runSummary } from "./commands/summary.js";
 import { runCosts } from "./commands/costs.js";
 import { runCard } from "./commands/card.js";
+import { runLogin } from "./commands/login.js";
+import { runSync } from "./commands/sync.js";
 
 // ---------------------------------------------------------------------------
 // Help text
@@ -25,6 +27,8 @@ Commands:
   summary    Show session overview: sessions, tokens, models, cost, tool calls
   costs      Show cost breakdown by project and by model
   card       Generate SVG stats card for your README
+  login      Authenticate with GitHub to enable cloud sync
+  sync       Sync your stats to the cloud and get an embeddable card URL
 
 Flags:
   --json        Output raw JSON instead of formatted table
@@ -43,6 +47,10 @@ Card flags:
   --preview         Open card in browser after generation
   -o, --output      Custom output path (default: repo root/shiplog-card.svg)
 
+Sync flags:
+  --confirm     Sync with current/default settings (non-interactive)
+  --delete      Remove all your data from the cloud
+
 Examples:
   shiplog summary
   shiplog costs --json
@@ -51,6 +59,10 @@ Examples:
   shiplog card --local
   shiplog card --local --layout compact --style branded --theme light
   shiplog card --local --hide cost --preview
+  shiplog login
+  shiplog sync
+  shiplog sync --confirm
+  shiplog sync --delete
 `;
 
 // ---------------------------------------------------------------------------
@@ -96,6 +108,14 @@ async function main(): Promise<void> {
 
     case "card":
       await runCard(mergedFlags);
+      break;
+
+    case "login":
+      await runLogin(mergedFlags);
+      break;
+
+    case "sync":
+      await runSync(mergedFlags);
       break;
 
     default:
