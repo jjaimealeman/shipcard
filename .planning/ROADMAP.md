@@ -19,6 +19,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 5: Publish + Launch** - npm publishing, README, and launch readiness
 - [x] **Phase 6: Worker Card Params** - Wire hide param and redacted card in Worker
 - [ ] **Phase 7: Auth Verify + Docs** - Test OAuth device flow, document npx CLI usage
+- [ ] **Phase 8: Landing Page** - Polished homepage for shipcard.dev (replacing JSON health check)
 
 ## Phase Details
 
@@ -131,10 +132,22 @@ Plans:
 Plans:
 - [ ] 07-01-PLAN.md — Test OAuth device flow, fix client ID if needed, add npx docs
 
+### Phase 8: Landing Page
+**Goal**: shipcard.dev root serves a polished landing page that sells the product in 30 seconds
+**Depends on**: Phase 7
+**Requirements**: TBD (user gathering inspiration)
+**Success Criteria** (what must be TRUE):
+  1. `GET /` on shipcard.dev serves an HTML landing page (not JSON health check)
+  2. Page includes live card demo, quick-start instructions, and value proposition
+**Plans:** TBD
+
+Plans:
+- [ ] 08-01-PLAN.md — TBD
+
 ## Progress
 
 **Execution Order:**
-Phases execute sequentially: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
+Phases execute sequentially: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -145,3 +158,4 @@ Phases execute sequentially: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 | 5. Publish + Launch | 4/4 | ✓ Complete | 2026-03-26 |
 | 6. Worker Card Params | 1/1 | ✓ Complete | 2026-03-26 |
 | 7. Auth Verify + Docs | 0/1 | Not started | - |
+| 8. Landing Page | 0/1 | Not started | - |
