@@ -74,17 +74,17 @@ Plans:
 **Depends on**: Phase 3
 **Requirements**: CLOUD-01, CLOUD-02, CLOUD-03, CLOUD-04, CLOUD-05
 **Success Criteria** (what must be TRUE):
-  1. `GET /api/card/:username` returns the correct SVG card for the user
-  2. `POST /api/sync` accepts SafeStats payload with API key auth and updates the card
+  1. `GET /card/:username` returns the correct SVG card for the user
+  2. `POST /sync` accepts SafeStats payload with bearer token auth and updates the card
   3. KV-cached cards are served without re-rendering; sync invalidates the cache
   4. User can preview the exact data payload before first sync — no surprises about what reaches the cloud
   5. Raw JSONL paths, file content, and timestamps never appear in cloud storage
-**Plans**: TBD
+**Plans:** 3 plans in 3 waves (sequential — each builds on the previous)
 
 Plans:
-- [ ] 04-01: Cloudflare Worker with GET card endpoint and KV caching
-- [ ] 04-02: POST sync endpoint with API key auth and SafeStats privacy boundary
-- [ ] 04-03: Opt-in sync flow in CLI with preview step
+- [ ] 04-01-PLAN.md — Worker scaffold, SVG renderer copy, KV cache layer, GET /card/:username with anti-camo headers
+- [ ] 04-02-PLAN.md — Auth middleware, token exchange endpoint, POST /sync with SafeStats validation and cache invalidation
+- [ ] 04-03-PLAN.md — CLI login/sync commands, SafeStats conversion, browser configurator page
 
 ### Phase 5: Publish + Launch
 **Goal**: Anyone can install ShipLog with one command and the README sells it
