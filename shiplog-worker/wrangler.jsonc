@@ -1,0 +1,28 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "shiplog-worker",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-03-25",
+  "kv_namespaces": [
+    {
+      // Card SVG cache — one entry per (username, theme, layout, style) variant.
+      // Create with: npx wrangler kv namespace create CARDS_KV
+      "binding": "CARDS_KV",
+      "id": "<REPLACE_WITH_CARDS_KV_NAMESPACE_ID>"
+    },
+    {
+      // User SafeStats data store — also stores auth tokens.
+      // Create with: npx wrangler kv namespace create USER_DATA_KV
+      "binding": "USER_DATA_KV",
+      "id": "<REPLACE_WITH_USER_DATA_KV_NAMESPACE_ID>"
+    }
+  ]
+  // Secrets are set via wrangler CLI, NOT in this file:
+  //   npx wrangler secret put GITHUB_CLIENT_SECRET
+  //   npx wrangler secret put TOKEN_SECRET
+  //
+  // Local dev secrets go in .dev.vars (gitignored):
+  //   GITHUB_CLIENT_ID="<your-github-oauth-app-client-id>"
+  //   GITHUB_CLIENT_SECRET="<your-github-oauth-app-secret>"
+  //   TOKEN_SECRET="<random-32-byte-hex>"
+}
