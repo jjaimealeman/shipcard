@@ -156,7 +156,7 @@ Add shipcard to Claude Code and ask about your stats in any conversation.
   "mcpServers": {
     "shipcard": {
       "command": "npx",
-      "args": ["-y", "shipcard-mcp"]
+      "args": ["-y", "-p", "@jjaimealeman/shipcard", "shipcard-mcp"]
     }
   }
 }
