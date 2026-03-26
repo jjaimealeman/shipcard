@@ -21,7 +21,7 @@ import {
   invalidateCardVariants,
   putCardCache,
 } from "../kv.js";
-import { renderCard } from "../svg/index.js";
+import { renderCard, renderRedactedCard } from "../svg/index.js";
 
 export const syncRoutes = new Hono<AppType>();
 
@@ -99,5 +99,11 @@ syncRoutes.delete("/", authMiddleware, async (c) => {
   // Invalidate any remaining card cache variants (belt and suspenders)
   await invalidateCardVariants(env.CARDS_KV, username);
 
-  return c.json({ ok: true, deleted: true, username });
+  // Render and store a redacted card as the default variant.
+  // MUST come AFTER deleteAllUserData + invalidateCardVariants — those wipe all
+  // card: keys; writing the redacted card first would be immediately erased.
+  const redactedSvg = renderRedactedCard(username);
+  await putCardCache(env.CARDS_KV, username, "dark", "classic", "github", redactedSvg);
+
+  return c.json({ ok: true, deleted: true, username, redactedCard: true });
 });

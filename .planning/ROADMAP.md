@@ -16,7 +16,10 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: MCP + CLI** - Dual interfaces (MCP server + CLI) consuming the engine
 - [x] **Phase 3: SVG Card** - Local card generation with dark/light themes
 - [x] **Phase 4: Cloud Worker** - Cloudflare Worker that serves and caches cards at the edge
-- [ ] **Phase 5: Publish + Launch** - npm publishing, README, and launch readiness
+- [x] **Phase 5: Publish + Launch** - npm publishing, README, and launch readiness
+- [x] **Phase 6: Worker Card Params** - Wire hide param and redacted card in Worker
+- [x] **Phase 7: Auth Verify + Docs** - Test OAuth device flow, document npx CLI usage
+- [x] **Phase 8: Landing Page** - Polished homepage for shipcard.dev (replacing JSON health check)
 
 ## Phase Details
 
@@ -97,15 +100,54 @@ Plans:
 **Plans:** 4 plans in 3 waves (05-01 first, then 05-02 + 05-03 parallel, then 05-04)
 
 Plans:
-- [ ] 05-01-PLAN.md — Full codebase rename from shiplog to shipcard + Worker route change to /u/:username + custom domain config
-- [ ] 05-02-PLAN.md — Build verification, npm pack dry run, MIT LICENSE file
-- [ ] 05-03-PLAN.md — README with live card embed, MCP config snippet, CLI overview + USAGE.md + STYLES.md
-- [ ] 05-04-PLAN.md — Dry run publish chain, Worker deploy, npm publish (human checkpoint)
+- [x] 05-01-PLAN.md — Full codebase rename from shiplog to shipcard + Worker route change to /u/:username + custom domain config
+- [x] 05-02-PLAN.md — Build verification, npm pack dry run, MIT LICENSE file
+- [x] 05-03-PLAN.md — README with live card embed, MCP config snippet, CLI overview + USAGE.md + STYLES.md
+- [x] 05-04-PLAN.md — Dry run publish chain, Worker deploy, npm publish (human checkpoint)
+
+### Phase 6: Worker Card Params
+**Goal**: Cloud-served cards respect the same customization params as local cards — hide and redacted card on delete
+**Depends on**: Phase 4
+**Requirements**: CLOUD-01 (enhancement)
+**Gap Closure**: Closes integration gaps + cloud card flow from v1 audit
+**Success Criteria** (what must be TRUE):
+  1. `GET /u/:username?hide=cost` returns an SVG card with the cost stat hidden
+  2. `DELETE /sync` renders a redacted card via `renderRedactedCard()` instead of generic placeholder
+  3. `renderRedactedCard()` is no longer an orphaned export
+**Plans:** 1 plan in 1 wave
+
+Plans:
+- [x] 06-01-PLAN.md — Wire hide query param in Worker card route, call renderRedactedCard on sync delete
+
+### Phase 7: Auth Verify + Docs
+**Goal**: OAuth login works end-to-end and npx CLI usage is discoverable without global install
+**Depends on**: Phase 5
+**Requirements**: PUB-02 (completion), PUB-04 (enhancement)
+**Gap Closure**: Closes PUB-02 partial + documentation gap from v1 audit
+**Success Criteria** (what must be TRUE):
+  1. `shipcard login` completes GitHub device flow successfully (or client ID is fixed)
+  2. README and USAGE.md document `npx shipcard <command>` usage (unscoped package name)
+**Plans:** 1 plan in 1 wave
+
+Plans:
+- [x] 07-01-PLAN.md — Rename package to unscoped shipcard, update all docs, verify OAuth device flow end-to-end
+
+### Phase 8: Landing Page
+**Goal**: shipcard.dev root serves a polished landing page that sells the product in 30 seconds
+**Depends on**: Phase 7
+**Requirements**: TBD (user gathering inspiration)
+**Success Criteria** (what must be TRUE):
+  1. `GET /` on shipcard.dev serves an HTML landing page (not JSON health check)
+  2. Page includes live card demo, quick-start instructions, and value proposition
+**Plans:** 1 plan in 1 wave (single vertical slice)
+
+Plans:
+- [x] 08-01-PLAN.md — Complete landing page: self-hosted fonts, HTML/CSS/JS page with configurator, index.ts wiring
 
 ## Progress
 
 **Execution Order:**
-Phases execute sequentially: 1 -> 2 -> 3 -> 4 -> 5
+Phases execute sequentially: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -113,4 +155,7 @@ Phases execute sequentially: 1 -> 2 -> 3 -> 4 -> 5
 | 2. MCP + CLI | 3/3 | ✓ Complete | 2026-03-25 |
 | 3. SVG Card | 2/2 | ✓ Complete | 2026-03-25 |
 | 4. Cloud Worker | 3/3 | ✓ Complete | 2026-03-25 |
-| 5. Publish + Launch | 0/4 | Not started | - |
+| 5. Publish + Launch | 4/4 | ✓ Complete | 2026-03-26 |
+| 6. Worker Card Params | 1/1 | ✓ Complete | 2026-03-26 |
+| 7. Auth Verify + Docs | 1/1 | ✓ Complete | 2026-03-26 |
+| 8. Landing Page | 1/1 | ✓ Complete | 2026-03-26 |

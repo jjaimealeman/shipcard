@@ -5,9 +5,10 @@
  * Unknown usernames get a placeholder card (not a 404 or error response).
  *
  * Query params:
- *   ?theme=dark|light      (default: dark)
- *   ?layout=classic|compact|hero  (default: classic)
- *   ?style=github|branded|minimal (default: github)
+ *   ?theme=dark|light                       (default: dark)
+ *   ?layout=classic|compact|hero            (default: classic)
+ *   ?style=github|branded|minimal           (default: github)
+ *   ?hide=cost&hide=models                  (multi-value; valid keys: sessions, toolCalls, models, projects, cost)
  */
 
 import { Hono } from "hono";
@@ -56,9 +57,11 @@ cardRoutes.get("/:username", async (c) => {
   const theme = (c.req.query("theme") ?? "dark") as ThemeName;
   const layout = (c.req.query("layout") ?? "classic") as LayoutName;
   const style = (c.req.query("style") ?? "github") as StyleName;
+  // Use plural queries() to capture all ?hide= values (singular query() drops duplicates)
+  const hide = c.req.queries("hide") ?? [];
 
-  // 1. Check KV card cache first
-  const cached = await getCardCache(c.env.CARDS_KV, username, theme, layout, style);
+  // 1. Check KV card cache first (cache key includes sorted hide params)
+  const cached = await getCardCache(c.env.CARDS_KV, username, theme, layout, style, hide);
   if (cached !== null) {
     return svgResponse(c, cached);
   }
@@ -72,11 +75,11 @@ cardRoutes.get("/:username", async (c) => {
     return svgResponse(c, placeholder);
   }
 
-  // 4. Render the card from user data
-  const svg = renderCard(userData, { theme, layout, style });
+  // 4. Render the card from user data (hide params passed through)
+  const svg = renderCard(userData, { theme, layout, style, hide });
 
   // 5. Store rendered SVG in KV cache (no TTL — valid until next sync)
-  await putCardCache(c.env.CARDS_KV, username, theme, layout, style, svg);
+  await putCardCache(c.env.CARDS_KV, username, theme, layout, style, svg, hide);
 
   return svgResponse(c, svg);
 });

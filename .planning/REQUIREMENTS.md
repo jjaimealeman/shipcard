@@ -51,7 +51,7 @@
 
 ### Cloud
 
-- [x] **CLOUD-01**: Cloudflare Worker serves SVG card at `GET /card/:username`
+- [x] **CLOUD-01**: Cloudflare Worker serves SVG card at `GET /u/:username`
 - [x] **CLOUD-02**: Worker accepts aggregated stats via `POST /sync` with bearer token auth
 - [x] **CLOUD-03**: KV caches rendered SVG cards, invalidated on sync with synchronous re-render
 - [x] **CLOUD-04**: Only SafeStats (numeric aggregates + username) reach the cloud — no paths, content, or timestamps
@@ -59,10 +59,10 @@
 
 ### Publishing
 
-- [ ] **PUB-01**: Package published to npm with dual bin entries (shiplog CLI + shiplog-mcp)
-- [ ] **PUB-02**: Both bin entries work after `npm install -g`
-- [ ] **PUB-03**: MIT license
-- [ ] **PUB-04**: README with card embed example, MCP config snippet, and CLI usage
+- [x] **PUB-01**: Package published to npm with dual bin entries (shiplog CLI + shiplog-mcp)
+- [x] **PUB-02**: Both bin entries work after `npm install -g`
+- [x] **PUB-03**: MIT license
+- [x] **PUB-04**: README with card embed example, MCP config snippet, and CLI usage
 
 ## v2 Requirements
 
@@ -143,10 +143,10 @@
 | CLOUD-03 | Phase 4 | Complete |
 | CLOUD-04 | Phase 4 | Complete |
 | CLOUD-05 | Phase 4 | Complete |
-| PUB-01 | Phase 5 | Pending |
-| PUB-02 | Phase 5 | Pending |
-| PUB-03 | Phase 5 | Pending |
-| PUB-04 | Phase 5 | Pending |
+| PUB-01 | Phase 5 | Complete |
+| PUB-02 | Phase 7 | Complete |
+| PUB-03 | Phase 5 | Complete |
+| PUB-04 | Phase 7 | Complete |
 
 **Coverage:**
 - v1 requirements: 35 total

@@ -11,7 +11,7 @@ Add to `.mcp.json` in your project root (project-scoped) or `~/.claude.json` (gl
   "mcpServers": {
     "shipcard": {
       "command": "npx",
-      "args": ["-y", "-p", "@jjaimealeman/shipcard", "shipcard-mcp"]
+      "args": ["-y", "-p", "shipcard", "shipcard-mcp"]
     }
   }
 }
@@ -26,7 +26,7 @@ Add to `~/.cursor/mcp.json`:
   "mcpServers": {
     "shipcard": {
       "command": "npx",
-      "args": ["-y", "-p", "@jjaimealeman/shipcard", "shipcard-mcp"]
+      "args": ["-y", "-p", "shipcard", "shipcard-mcp"]
     }
   }
 }
@@ -34,7 +34,7 @@ Add to `~/.cursor/mcp.json`:
 
 ## After global install
 
-If you install shipcard globally (`npm install -g @jjaimealeman/shipcard`), you can use the direct binary instead of npx:
+If you install shipcard globally (`npm install -g shipcard`), you can use the direct binary instead of npx:
 
 ```json
 {

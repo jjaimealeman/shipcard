@@ -11,7 +11,7 @@ Reads your Claude Code JSONL files, calculates sessions, tokens, cost, and model
 ## Quick Start
 
 ```sh
-npm install -g @jjaimealeman/shipcard
+npm install -g shipcard
 
 shipcard summary          # terminal overview
 shipcard card --local     # generate SVG card
@@ -22,7 +22,7 @@ shipcard sync             # push stats to shipcard.dev
 Or without installing:
 
 ```sh
-npx -p @jjaimealeman/shipcard shipcard summary
+npx shipcard summary
 ```
 
 ---
@@ -58,7 +58,7 @@ Ask Claude about your coding stats from inside Claude Code:
   "mcpServers": {
     "shipcard": {
       "command": "npx",
-      "args": ["-y", "-p", "@jjaimealeman/shipcard", "shipcard-mcp"]
+      "args": ["-y", "-p", "shipcard", "shipcard-mcp"]
     }
   }
 }

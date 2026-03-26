@@ -4,9 +4,10 @@
  * Wraps raw KV calls with typed functions and consistent key naming.
  *
  * Key naming scheme:
- *   card:{username}:{theme}:{layout}:{style}  — rendered SVG variant cache
- *   user:{username}:data                       — SafeStats JSON payload
- *   token:{token}:username                     — auth token → username lookup
+ *   card:{username}:{theme}:{layout}:{style}              — rendered SVG variant cache (no hide)
+ *   card:{username}:{theme}:{layout}:{style}:hide={a,b}   — SVG variant with hidden stats
+ *   user:{username}:data                                   — SafeStats JSON payload
+ *   token:{token}:username                                 — auth token → username lookup
  */
 
 import type { SafeStats } from "./types.js";
@@ -17,15 +18,21 @@ import type { SafeStats } from "./types.js";
 
 /**
  * Build the KV key for a rendered SVG card variant.
- * Max 18 variants per user (3 styles × 2 themes × 3 layouts).
+ * Max 18 base variants per user (3 styles × 2 themes × 3 layouts).
+ * When hide params are present, a deterministic suffix is appended so
+ * ?hide=cost&hide=models and ?hide=models&hide=cost produce the same key.
  */
 function cardKey(
   username: string,
   theme: string,
   layout: string,
-  style: string
+  style: string,
+  hide: string[] = []
 ): string {
-  return `card:${username}:${theme}:${layout}:${style}`;
+  const base = `card:${username}:${theme}:${layout}:${style}`;
+  if (hide.length === 0) return base;
+  const sorted = [...hide].sort().join(",");
+  return `${base}:hide=${sorted}`;
 }
 
 /**
@@ -37,9 +44,10 @@ export async function getCardCache(
   username: string,
   theme: string,
   layout: string,
-  style: string
+  style: string,
+  hide: string[] = []
 ): Promise<string | null> {
-  return kv.get(cardKey(username, theme, layout, style));
+  return kv.get(cardKey(username, theme, layout, style, hide));
 }
 
 /**
@@ -52,9 +60,10 @@ export async function putCardCache(
   theme: string,
   layout: string,
   style: string,
-  svg: string
+  svg: string,
+  hide: string[] = []
 ): Promise<void> {
-  await kv.put(cardKey(username, theme, layout, style), svg);
+  await kv.put(cardKey(username, theme, layout, style, hide), svg);
 }
 
 /**
@@ -148,12 +157,3 @@ export async function putToken(
   });
 }
 
-/**
- * Revoke an auth token by deleting its KV entry.
- */
-export async function deleteToken(
-  kv: KVNamespace,
-  token: string
-): Promise<void> {
-  await kv.delete(`token:${token}:username`);
-}

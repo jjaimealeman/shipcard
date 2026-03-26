@@ -1,5 +1,5 @@
 {
-  "name": "@jjaimealeman/shipcard",
+  "name": "shipcard",
   "version": "0.1.0",
   "type": "module",
   "description": "Analytics layer for agentic developers — reads Claude Code JSONL files and generates stats cards via shipcard",
