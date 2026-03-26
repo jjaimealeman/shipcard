@@ -29,7 +29,7 @@ const LANDING_HTML = `<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ShipCard — See what you shipped with Claude Code</title>
+<title>ShipCard | See what you shipped with Claude Code</title>
 <meta name="description" content="Sessions, tokens, cost, one embeddable card. ShipCard gives agentic developers a stats card for their Claude Code usage.">
 <style>
   @font-face {
@@ -227,19 +227,35 @@ const LANDING_HTML = `<!DOCTYPE html>
     color: var(--bg);
   }
 
-  /* Hide-stat checkboxes */
-  .hide-check {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
+  /* Stat toggles */
+  .toggle {
+    position: relative;
+    width: 36px;
+    height: 20px;
+    flex-shrink: 0;
   }
-  .hide-check input[type="checkbox"] {
-    accent-color: var(--orange);
-    width: 16px;
-    height: 16px;
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .toggle-track {
+    position: absolute;
+    inset: 0;
+    background: var(--border);
+    border-radius: 10px;
     cursor: pointer;
+    transition: background 0.15s;
   }
+  .toggle input:checked + .toggle-track { background: var(--orange); }
+  .toggle-track::after {
+    content: "";
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background: var(--fg);
+    border-radius: 50%;
+    top: 3px;
+    left: 3px;
+    transition: transform 0.15s;
+  }
+  .toggle input:checked + .toggle-track::after { transform: translateX(16px); }
 
   .reset-btn {
     width: 100%;
@@ -446,9 +462,9 @@ const LANDING_HTML = `<!DOCTYPE html>
   <nav>
     <a href="/" class="nav-brand">ShipCard</a>
     <div class="nav-links">
-      <a href="https://github.com/jjaimealeman/shipcard" target="_blank" rel="noopener">GitHub</a>
-      <a href="https://www.npmjs.com/package/shipcard" target="_blank" rel="noopener">npm</a>
       <a href="/configure">Configurator</a>
+      <a href="https://www.npmjs.com/package/shipcard" target="_blank" rel="noopener">npm</a>
+      <a href="https://github.com/jjaimealeman/shipcard" target="_blank" rel="noopener">GitHub</a>
     </div>
   </nav>
 </div>
@@ -499,11 +515,11 @@ const LANDING_HTML = `<!DOCTYPE html>
         </div>
 
         <div class="config-group">
-          <div class="config-group-title">Hide Stats</div>
-          <div class="config-row"><label class="hide-check"><input type="checkbox" id="chk-sessions"><span class="config-label">Sessions</span></label></div>
-          <div class="config-row"><label class="hide-check"><input type="checkbox" id="chk-toolCalls"><span class="config-label">Tool Calls</span></label></div>
-          <div class="config-row"><label class="hide-check"><input type="checkbox" id="chk-projects"><span class="config-label">Projects</span></label></div>
-          <div class="config-row"><label class="hide-check"><input type="checkbox" id="chk-cost"><span class="config-label">Cost</span></label></div>
+          <div class="config-group-title">Stats</div>
+          <div class="config-row"><span class="config-label">Sessions</span><label class="toggle"><input type="checkbox" id="tog-sessions" checked><span class="toggle-track"></span></label></div>
+          <div class="config-row"><span class="config-label">Tool Calls</span><label class="toggle"><input type="checkbox" id="tog-toolCalls" checked><span class="toggle-track"></span></label></div>
+          <div class="config-row"><span class="config-label">Projects</span><label class="toggle"><input type="checkbox" id="tog-projects" checked><span class="toggle-track"></span></label></div>
+          <div class="config-row"><span class="config-label">Cost</span><label class="toggle"><input type="checkbox" id="tog-cost" checked><span class="toggle-track"></span></label></div>
         </div>
 
         <button class="reset-btn" id="btn-reset">Reset to defaults</button>
@@ -718,10 +734,10 @@ const LANDING_HTML = `<!DOCTYPE html>
         }
       }
     }
-    // Checkboxes
+    // Toggles (checked = show, so invert hide state)
     var hideKeys = ['sessions', 'toolCalls', 'projects', 'cost'];
     for (var h = 0; h < hideKeys.length; h++) {
-      document.getElementById('chk-' + hideKeys[h]).checked = state.hide[hideKeys[h]];
+      document.getElementById('tog-' + hideKeys[h]).checked = !state.hide[hideKeys[h]];
     }
   }
 
@@ -743,12 +759,12 @@ const LANDING_HTML = `<!DOCTYPE html>
     })(groupIds[gi], groupKeys[gi]);
   }
 
-  // --- Event: hide checkboxes ---
+  // --- Event: stat toggles (checked = show, unchecked = hide) ---
   var hideKeys = ['sessions', 'toolCalls', 'projects', 'cost'];
   for (var hi = 0; hi < hideKeys.length; hi++) {
     (function(hk) {
-      document.getElementById('chk-' + hk).addEventListener('change', function() {
-        state.hide[hk] = this.checked;
+      document.getElementById('tog-' + hk).addEventListener('change', function() {
+        state.hide[hk] = !this.checked;
         refreshCard();
       });
     })(hideKeys[hi]);

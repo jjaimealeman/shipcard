@@ -30,7 +30,7 @@ const CONFIGURATOR_HTML = `<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ShipCard Card Configurator</title>
+<title>ShipCard | Configurator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
@@ -93,7 +93,6 @@ const CONFIGURATOR_HTML = `<!DOCTYPE html>
   }
   .layout {
     display: flex;
-    flex: 1;
     gap: 24px;
     max-width: 960px;
     margin: 0 auto;
@@ -289,9 +288,29 @@ const CONFIGURATOR_HTML = `<!DOCTYPE html>
     border-radius: 3px;
     color: var(--light);
   }
+  .hero {
+    text-align: center;
+    padding: 40px 24px 24px;
+    max-width: 960px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+  }
+  .hero h1 .accent { color: var(--orange); }
+  .hero .sub {
+    font-size: 15px;
+    color: var(--mid);
+    line-height: 1.5;
+  }
   .footer {
     text-align: center;
-    padding: 24px;
+    padding: 16px;
     color: var(--mid);
     font-size: 13px;
   }
@@ -307,12 +326,16 @@ const CONFIGURATOR_HTML = `<!DOCTYPE html>
 <nav>
   <a href="/" class="nav-brand">ShipCard</a>
   <div class="nav-links">
-    <span class="badge">Configurator</span>
+  <a href="/">Home</a>
+  <a href="https://www.npmjs.com/package/shipcard" target="_blank" rel="noopener">npm</a>
     <a href="https://github.com/jjaimealeman/shipcard" target="_blank" rel="noopener">GitHub</a>
-    <a href="https://www.npmjs.com/package/shipcard" target="_blank" rel="noopener">npm</a>
-    <a href="/">Home</a>
   </div>
 </nav>
+
+<div class="hero">
+  <h1>Configure your <span class="accent">ShipCard</span></h1>
+  <p class="sub">Toggle stats, pick a style, grab your embed code.</p>
+</div>
 
 <div class="layout">
   <aside class="sidebar" id="sidebar">
