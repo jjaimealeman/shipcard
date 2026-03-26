@@ -9,19 +9,19 @@ See: .planning/PROJECT.md (updated 2026-03-25)
 
 ## Current Position
 
-Phase: 3 of 5 (SVG Card) — Complete
-Plan: 2 of 2 in Phase 3 complete (03-01 and 03-02 done)
-Status: Phase 3 complete, ready for Phase 4
-Last activity: 2026-03-26 — Completed 03-02-PLAN.md (CLI integration: findGitRoot, openInBrowser, 7 new flags, --local SVG generation)
+Phase: 4 of 5 (Cloud Worker) — In progress
+Plan: 1 of 3 in Phase 4 complete (04-01 done)
+Status: In progress
+Last activity: 2026-03-26 — Completed 04-01-PLAN.md (Worker scaffold: Hono + KV + GET /card/:username)
 
-Progress: [███████░░░] 53% (8/15 plans estimated)
+Progress: [████████░░] 60% (9/15 plans estimated)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 8 (estimated)
+- Total plans completed: 9
 - Average duration: ~3 min
-- Total execution time: ~24 min
+- Total execution time: ~30 min
 
 **By Phase:**
 
@@ -30,10 +30,11 @@ Progress: [███████░░░] 53% (8/15 plans estimated)
 | 01-parser-engine | 3 (complete) | ~8 min | ~2.7 min |
 | 02-mcp-cli | 3 (complete) | ~6 min | ~2 min |
 | 03-svg-card | 2 (complete) | ~8 min | ~4 min |
+| 04-cloud-worker | 1 (in progress) | ~6 min | ~6 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-02 (2 min), 02-03 (2 min), 03-01 (5 min), 03-02 (3 min)
-- Trend: Consistent 2-5 min per plan
+- Last 5 plans: 02-03 (2 min), 03-01 (5 min), 03-02 (3 min), 04-01 (6 min)
+- Trend: Consistent 2-6 min per plan
 
 *Updated after each plan completion*
 
@@ -79,6 +80,10 @@ Recent decisions affecting current work:
 - [03-02]: Cast CLI string flags to LayoutName/StyleName/ThemeName at renderCard() call site — no runtime validation, invalid values fall through to renderer defaults
 - [03-02]: Markdown snippet uses basename of custom output path — portability for relative README embeds
 - [03-02]: Import LayoutName/StyleName/ThemeName from card/index.ts re-exports — keeps cli/ imports clean
+- [04-01]: Bundler module resolution in tsconfig.json — Workers runtime uses a bundler, not Node16 resolution
+- [04-01]: SVG renderer copied verbatim from shiplog/src/card/ into shiplog-worker/src/svg/ — no cross-package import
+- [04-01]: No expirationTtl on card cache KV puts — sync-driven invalidation design (cache until next sync)
+- [04-01]: svgResponse() helper centralizes anti-camo headers — all SVG paths guaranteed Cache-Control: no-cache, no-store
 
 ### Pending Todos
 
@@ -92,6 +97,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-26T00:39:39Z
-Stopped at: Completed 03-02-PLAN.md — CLI integration: findGitRoot, openInBrowser, 7 card flags, --local SVG generation, updated help text. Phase 3 complete.
+Last session: 2026-03-26T02:03:09Z
+Stopped at: Completed 04-01-PLAN.md — Worker scaffold: Hono app, wrangler.jsonc with KV bindings, GET /card/:username, SVG renderer copy, SafeStats type.
 Resume file: None
