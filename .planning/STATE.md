@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-03-25)
 
 ## Current Position
 
-Phase: 2 of 5 (MCP + CLI) — COMPLETE. Ready for Phase 3.
-Plan: 3 of 3 in Phase 2 complete (02-01, 02-02, 02-03 done)
-Status: Phase 2 complete
-Last activity: 2026-03-25 — Completed 02-03-PLAN.md (package wiring: bin entries, build chmod, MCP config docs)
+Phase: 3 of 5 (SVG Card) — In progress
+Plan: 1 of 3 in Phase 3 complete (03-01 done)
+Status: In progress
+Last activity: 2026-03-26 — Completed 03-01-PLAN.md (card rendering engine: XML escape, formatters, 3 styles x dark/light, 3 layouts, renderCard() API)
 
-Progress: [█████░░░░░] 40% (6/15 plans estimated)
+Progress: [██████░░░░] 47% (7/15 plans estimated)
 
 ## Performance Metrics
 
@@ -29,10 +29,11 @@ Progress: [█████░░░░░] 40% (6/15 plans estimated)
 |-------|-------|-------|----------|
 | 01-parser-engine | 3 | ~8 min | ~2.7 min |
 | 02-mcp-cli | 3 (complete) | ~6 min | ~2 min |
+| 03-svg-card | 1 | ~5 min | ~5 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-02 (3 min), 01-03 (3 min), 02-01 (N/A - research), 02-02 (2 min), 02-03 (2 min)
-- Trend: Consistent 2-3 min per plan
+- Last 5 plans: 01-03 (3 min), 02-01 (N/A - research), 02-02 (2 min), 02-03 (2 min), 03-01 (5 min)
+- Trend: Consistent 2-5 min per plan
 
 *Updated after each plan completion*
 
@@ -71,6 +72,10 @@ Recent decisions affecting current work:
 - [02-03]: Separate bin names (shiplog vs shiplog-mcp) — CLI and MCP server are distinct invocations
 - [02-03]: files field includes data/ — pricing snapshot required at runtime, must be in npm publish
 - [02-03]: npx -y required for MCP stdio servers — prevents interactive prompt corrupting transport
+- [03-01]: ThemeColors in themes/types.ts (not index.ts) — prevents circular imports between registry and palette modules
+- [03-01]: Inline SVG path d strings for icons (STAT_ICONS map in renderer.ts) — zero icon package dependency
+- [03-01]: CardData intermediate type in renderer.ts — clean boundary between AnalyticsResult and SVG rendering concerns
+- [03-01]: Classic layout dynamic height (70px + 30px/stat); compact/hero use formula heights
 
 ### Pending Todos
 
@@ -84,6 +89,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-25T23:26:13Z
-Stopped at: Completed 02-03-PLAN.md — package wiring with dual bin entries, build chmod, and MCP config docs. Phase 2 complete.
+Last session: 2026-03-26T00:32:51Z
+Stopped at: Completed 03-01-PLAN.md — card rendering engine with 3 layouts x 6 themes, renderCard() public API.
 Resume file: None
