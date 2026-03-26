@@ -126,11 +126,11 @@ Plans:
 **Gap Closure**: Closes PUB-02 partial + documentation gap from v1 audit
 **Success Criteria** (what must be TRUE):
   1. `shipcard login` completes GitHub device flow successfully (or client ID is fixed)
-  2. README and USAGE.md document `npx -p @jjaimealeman/shipcard shipcard <command>` usage
+  2. README and USAGE.md document `npx shipcard <command>` usage (unscoped package name)
 **Plans:** 1 plan in 1 wave
 
 Plans:
-- [ ] 07-01-PLAN.md — Test OAuth device flow, fix client ID if needed, add npx docs
+- [ ] 07-01-PLAN.md — Rename package to unscoped shipcard, update all docs, verify OAuth device flow end-to-end
 
 ### Phase 8: Landing Page
 **Goal**: shipcard.dev root serves a polished landing page that sells the product in 30 seconds
