@@ -9,19 +9,19 @@ See: .planning/PROJECT.md (updated 2026-03-25)
 
 ## Current Position
 
-Phase: 7 of 8 (Auth Verify + Docs) — Complete
-Plan: 1 of 1 in Phase 7 complete (07-01 done)
-Status: Phase 7 complete, Phase 8 not started
-Last activity: 2026-03-26 — Completed 07-01-PLAN.md (unscoped package rename, OAuth device flow verified end-to-end)
+Phase: 8 of 8 (Landing Page) — Complete
+Plan: 1 of 1 in Phase 8 complete (08-01 done)
+Status: Phase 8 complete — ALL PHASES DONE
+Last activity: 2026-03-26 — Completed 08-01-PLAN.md (landing page with configurator, fonts, quickstart)
 
-Progress: [███████████████] 100% (16/16 plans)
+Progress: [█████████████████] 100% (17/17 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 9
-- Average duration: ~3 min
-- Total execution time: ~30 min
+- Total plans completed: 10
+- Average duration: ~3.5 min
+- Total execution time: ~35 min
 
 **By Phase:**
 
@@ -107,6 +107,9 @@ Recent decisions affecting current work:
 - [06-01]: DELETE /sync response includes redactedCard: true to signal CLI that a redacted card was stored
 - [07-01]: npm package name is unscoped "shipcard" — simplifies npx usage (no -p flag for CLI commands)
 - [07-01]: looksLikeFilePath checks ~/ not ~ — cost strings like "~$3,414.02" are not file paths
+- [08-01]: Base64-embedded fonts (Poppins 600/700 + Lora 400, ~43 KB) — zero external requests, instant load
+- [08-01]: XHR for card fetch instead of fetch() — simpler error handling in var-only embedded JS
+- [08-01]: DOM API for snippet content — same security pattern as configure.ts
 
 ### Pending Todos
 
@@ -122,6 +125,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-26T06:55:00Z
-Stopped at: Completed 07-01-PLAN.md — unscoped package rename + OAuth flow verified. SafeStats validator bug fixed.
+Last session: 2026-03-26T07:52:00Z
+Stopped at: Completed 08-01-PLAN.md — landing page with live configurator, base64 fonts, quickstart. All 8 phases complete.
 Resume file: None
