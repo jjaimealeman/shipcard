@@ -19,6 +19,12 @@ shipcard login            # authenticate with GitHub
 shipcard sync             # push stats to shipcard.dev
 ```
 
+Or without installing:
+
+```sh
+npx -p @jjaimealeman/shipcard shipcard summary
+```
+
 ---
 
 ## Embed Your Card
