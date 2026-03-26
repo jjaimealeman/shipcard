@@ -5,34 +5,34 @@
 See: .planning/PROJECT.md (updated 2026-03-25)
 
 **Core value:** Developers using Claude Code can see what they shipped and what it cost, and share verifiable proof via an embeddable card.
-**Current focus:** Phase 3 - Card Endpoint (Cloudflare Worker)
+**Current focus:** Phase 4 - Cloudflare Worker (card endpoint)
 
 ## Current Position
 
-Phase: 3 of 5 (SVG Card) — In progress
-Plan: 1 of 3 in Phase 3 complete (03-01 done)
-Status: In progress
-Last activity: 2026-03-26 — Completed 03-01-PLAN.md (card rendering engine: XML escape, formatters, 3 styles x dark/light, 3 layouts, renderCard() API)
+Phase: 3 of 5 (SVG Card) — Complete
+Plan: 2 of 2 in Phase 3 complete (03-01 and 03-02 done)
+Status: Phase 3 complete, ready for Phase 4
+Last activity: 2026-03-26 — Completed 03-02-PLAN.md (CLI integration: findGitRoot, openInBrowser, 7 new flags, --local SVG generation)
 
-Progress: [██████░░░░] 47% (7/15 plans estimated)
+Progress: [███████░░░] 53% (8/15 plans estimated)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
-- Average duration: ~2.7 min
-- Total execution time: ~8 min
+- Total plans completed: 8 (estimated)
+- Average duration: ~3 min
+- Total execution time: ~24 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-parser-engine | 3 | ~8 min | ~2.7 min |
+| 01-parser-engine | 3 (complete) | ~8 min | ~2.7 min |
 | 02-mcp-cli | 3 (complete) | ~6 min | ~2 min |
-| 03-svg-card | 1 | ~5 min | ~5 min |
+| 03-svg-card | 2 (complete) | ~8 min | ~4 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-03 (3 min), 02-01 (N/A - research), 02-02 (2 min), 02-03 (2 min), 03-01 (5 min)
+- Last 5 plans: 02-02 (2 min), 02-03 (2 min), 03-01 (5 min), 03-02 (3 min)
 - Trend: Consistent 2-5 min per plan
 
 *Updated after each plan completion*
@@ -76,6 +76,9 @@ Recent decisions affecting current work:
 - [03-01]: Inline SVG path d strings for icons (STAT_ICONS map in renderer.ts) — zero icon package dependency
 - [03-01]: CardData intermediate type in renderer.ts — clean boundary between AnalyticsResult and SVG rendering concerns
 - [03-01]: Classic layout dynamic height (70px + 30px/stat); compact/hero use formula heights
+- [03-02]: Cast CLI string flags to LayoutName/StyleName/ThemeName at renderCard() call site — no runtime validation, invalid values fall through to renderer defaults
+- [03-02]: Markdown snippet uses basename of custom output path — portability for relative README embeds
+- [03-02]: Import LayoutName/StyleName/ThemeName from card/index.ts re-exports — keeps cli/ imports clean
 
 ### Pending Todos
 
@@ -83,12 +86,12 @@ None yet.
 
 ### Blockers/Concerns
 
-- [Research flag]: SVG rendering on GitHub specifically — camo proxy and SVG sanitizer have undocumented restrictions (Phase 3)
+- [Research flag]: SVG rendering on GitHub specifically — camo proxy and SVG sanitizer have undocumented restrictions (Phase 4)
 - [Research flag]: Cloudflare Worker auth strategy for /api/sync — API key vs signed token decision needed in Phase 4 planning
 - [Research gap]: npm name availability — check `npm show shiplog` before writing package.json (Phase 5)
 
 ## Session Continuity
 
-Last session: 2026-03-26T00:32:51Z
-Stopped at: Completed 03-01-PLAN.md — card rendering engine with 3 layouts x 6 themes, renderCard() public API.
+Last session: 2026-03-26T00:39:39Z
+Stopped at: Completed 03-02-PLAN.md — CLI integration: findGitRoot, openInBrowser, 7 card flags, --local SVG generation, updated help text. Phase 3 complete.
 Resume file: None
