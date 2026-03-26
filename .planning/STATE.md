@@ -5,7 +5,7 @@
 See: .planning/PROJECT.md (updated 2026-03-25)
 
 **Core value:** Developers using Claude Code can see what they shipped and what it cost, and share verifiable proof via an embeddable card.
-**Current focus:** Phase 4 - Cloudflare Worker (card endpoint)
+**Current focus:** Phase 5 - Publish + Launch
 
 ## Current Position
 

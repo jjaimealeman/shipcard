@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Parser + Engine** - JSONL parser and analytics engine — the foundation everything else builds on
 - [x] **Phase 2: MCP + CLI** - Dual interfaces (MCP server + CLI) consuming the engine
 - [x] **Phase 3: SVG Card** - Local card generation with dark/light themes
-- [ ] **Phase 4: Cloud Worker** - Cloudflare Worker that serves and caches cards at the edge
+- [x] **Phase 4: Cloud Worker** - Cloudflare Worker that serves and caches cards at the edge
 - [ ] **Phase 5: Publish + Launch** - npm publishing, README, and launch readiness
 
 ## Phase Details
@@ -82,9 +82,9 @@ Plans:
 **Plans:** 3 plans in 3 waves (sequential — each builds on the previous)
 
 Plans:
-- [ ] 04-01-PLAN.md — Worker scaffold, SVG renderer copy, KV cache layer, GET /card/:username with anti-camo headers
-- [ ] 04-02-PLAN.md — Auth middleware, token exchange endpoint, POST /sync with SafeStats validation and cache invalidation
-- [ ] 04-03-PLAN.md — CLI login/sync commands, SafeStats conversion, browser configurator page
+- [x] 04-01-PLAN.md — Worker scaffold, SVG renderer copy, KV cache layer, GET /card/:username with anti-camo headers
+- [x] 04-02-PLAN.md — Auth middleware, token exchange endpoint, POST /sync with SafeStats validation and cache invalidation
+- [x] 04-03-PLAN.md — CLI login/sync commands, SafeStats conversion, browser configurator page
 
 ### Phase 5: Publish + Launch
 **Goal**: Anyone can install ShipLog with one command and the README sells it
@@ -110,5 +110,5 @@ Phases execute sequentially: 1 -> 2 -> 3 -> 4 -> 5
 | 1. Parser + Engine | 3/3 | ✓ Complete | 2026-03-25 |
 | 2. MCP + CLI | 3/3 | ✓ Complete | 2026-03-25 |
 | 3. SVG Card | 2/2 | ✓ Complete | 2026-03-25 |
-| 4. Cloud Worker | 0/3 | Not started | - |
+| 4. Cloud Worker | 3/3 | ✓ Complete | 2026-03-25 |
 | 5. Publish + Launch | 0/2 | Not started | - |

@@ -51,11 +51,11 @@
 
 ### Cloud
 
-- [ ] **CLOUD-01**: Cloudflare Worker serves SVG card at `GET /api/card/:username`
-- [ ] **CLOUD-02**: Worker accepts aggregated stats via `POST /api/sync` with API key auth
-- [ ] **CLOUD-03**: KV caches rendered SVG cards with 1-hour TTL, invalidated on sync
-- [ ] **CLOUD-04**: Only SafeStats (numeric aggregates + username) reach the cloud — no paths, content, or timestamps
-- [ ] **CLOUD-05**: User can preview exact data payload before first sync
+- [x] **CLOUD-01**: Cloudflare Worker serves SVG card at `GET /card/:username`
+- [x] **CLOUD-02**: Worker accepts aggregated stats via `POST /sync` with bearer token auth
+- [x] **CLOUD-03**: KV caches rendered SVG cards, invalidated on sync with synchronous re-render
+- [x] **CLOUD-04**: Only SafeStats (numeric aggregates + username) reach the cloud — no paths, content, or timestamps
+- [x] **CLOUD-05**: User can preview exact data payload before first sync
 
 ### Publishing
 
@@ -122,27 +122,27 @@
 | ANLYT-04 | Phase 1 | Complete |
 | ANLYT-05 | Phase 1 | Complete |
 | ANLYT-06 | Phase 1 | Complete |
-| CLI-01 | Phase 2 | Pending |
-| CLI-02 | Phase 2 | Pending |
-| CLI-03 | Phase 2 | Pending |
-| CLI-04 | Phase 2 | Pending |
-| CLI-05 | Phase 2 | Pending |
-| CLI-06 | Phase 2 | Pending |
-| MCP-01 | Phase 2 | Pending |
-| MCP-02 | Phase 2 | Pending |
-| MCP-03 | Phase 2 | Pending |
-| MCP-04 | Phase 2 | Pending |
-| MCP-05 | Phase 2 | Pending |
-| CARD-01 | Phase 3 | Pending |
-| CARD-02 | Phase 3 | Pending |
-| CARD-03 | Phase 3 | Pending |
-| CARD-04 | Phase 3 | Pending |
-| CARD-05 | Phase 3 | Pending |
-| CLOUD-01 | Phase 4 | Pending |
-| CLOUD-02 | Phase 4 | Pending |
-| CLOUD-03 | Phase 4 | Pending |
-| CLOUD-04 | Phase 4 | Pending |
-| CLOUD-05 | Phase 4 | Pending |
+| CLI-01 | Phase 2 | Complete |
+| CLI-02 | Phase 2 | Complete |
+| CLI-03 | Phase 2 | Complete |
+| CLI-04 | Phase 2 | Complete |
+| CLI-05 | Phase 2 | Complete |
+| CLI-06 | Phase 2 | Complete |
+| MCP-01 | Phase 2 | Complete |
+| MCP-02 | Phase 2 | Complete |
+| MCP-03 | Phase 2 | Complete |
+| MCP-04 | Phase 2 | Complete |
+| MCP-05 | Phase 2 | Complete |
+| CARD-01 | Phase 3 | Complete |
+| CARD-02 | Phase 3 | Complete |
+| CARD-03 | Phase 3 | Complete |
+| CARD-04 | Phase 3 | Complete |
+| CARD-05 | Phase 3 | Complete |
+| CLOUD-01 | Phase 4 | Complete |
+| CLOUD-02 | Phase 4 | Complete |
+| CLOUD-03 | Phase 4 | Complete |
+| CLOUD-04 | Phase 4 | Complete |
+| CLOUD-05 | Phase 4 | Complete |
 | PUB-01 | Phase 5 | Pending |
 | PUB-02 | Phase 5 | Pending |
 | PUB-03 | Phase 5 | Pending |
