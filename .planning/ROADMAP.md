@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: MCP + CLI** - Dual interfaces (MCP server + CLI) consuming the engine
 - [x] **Phase 3: SVG Card** - Local card generation with dark/light themes
 - [x] **Phase 4: Cloud Worker** - Cloudflare Worker that serves and caches cards at the edge
-- [ ] **Phase 5: Publish + Launch** - npm publishing, README, and launch readiness
+- [x] **Phase 5: Publish + Launch** - npm publishing, README, and launch readiness
 
 ## Phase Details
 
@@ -87,7 +87,7 @@ Plans:
 - [x] 04-03-PLAN.md — CLI login/sync commands, SafeStats conversion, browser configurator page
 
 ### Phase 5: Publish + Launch
-**Goal**: Anyone can `npm install -g shipcard` and the README sells the product in 30 seconds
+**Goal**: Anyone can `npm install -g @jjaimealeman/shipcard` and the README sells the product in 30 seconds
 **Depends on**: Phase 4
 **Requirements**: PUB-01, PUB-02, PUB-03, PUB-04
 **Success Criteria** (what must be TRUE):
@@ -97,10 +97,10 @@ Plans:
 **Plans:** 4 plans in 3 waves (05-01 first, then 05-02 + 05-03 parallel, then 05-04)
 
 Plans:
-- [ ] 05-01-PLAN.md — Full codebase rename from shiplog to shipcard + Worker route change to /u/:username + custom domain config
-- [ ] 05-02-PLAN.md — Build verification, npm pack dry run, MIT LICENSE file
-- [ ] 05-03-PLAN.md — README with live card embed, MCP config snippet, CLI overview + USAGE.md + STYLES.md
-- [ ] 05-04-PLAN.md — Dry run publish chain, Worker deploy, npm publish (human checkpoint)
+- [x] 05-01-PLAN.md — Full codebase rename from shiplog to shipcard + Worker route change to /u/:username + custom domain config
+- [x] 05-02-PLAN.md — Build verification, npm pack dry run, MIT LICENSE file
+- [x] 05-03-PLAN.md — README with live card embed, MCP config snippet, CLI overview + USAGE.md + STYLES.md
+- [x] 05-04-PLAN.md — Dry run publish chain, Worker deploy, npm publish (human checkpoint)
 
 ## Progress
 
@@ -113,4 +113,4 @@ Phases execute sequentially: 1 -> 2 -> 3 -> 4 -> 5
 | 2. MCP + CLI | 3/3 | ✓ Complete | 2026-03-25 |
 | 3. SVG Card | 2/2 | ✓ Complete | 2026-03-25 |
 | 4. Cloud Worker | 3/3 | ✓ Complete | 2026-03-25 |
-| 5. Publish + Launch | 0/4 | Not started | - |
+| 5. Publish + Launch | 4/4 | ✓ Complete | 2026-03-26 |

@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-03-25)
 
 **Core value:** Developers using Claude Code can see what they shipped and what it cost, and share verifiable proof via an embeddable card.
-**Current focus:** Phase 5 - Publish + Launch
+**Current focus:** All phases complete — milestone ready for audit
 
 ## Current Position
 
-Phase: 5 of 5 (Publish + Launch) — In progress
-Plan: 3 of 4 in Phase 5 complete (05-03 done)
-Status: In progress
-Last activity: 2026-03-26 — Completed 05-03-PLAN.md (README.md, USAGE.md, STYLES.md — product documentation)
+Phase: 5 of 5 (Publish + Launch) — Complete
+Plan: 4 of 4 in Phase 5 complete (05-01, 05-02, 05-03, 05-04 done)
+Status: All phases complete
+Last activity: 2026-03-26 — Published @jjaimealeman/shipcard@0.1.0 to npm, deployed Worker to shipcard.dev
 
-Progress: [█████████████░] 93% (14/15 plans estimated)
+Progress: [████████████████] 100% (15/15 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 9
-- Average duration: ~3 min
-- Total execution time: ~30 min
+- Total plans completed: 15
+- Average duration: ~4 min
+- Total execution time: ~60 min
 
 **By Phase:**
 
@@ -31,19 +31,14 @@ Progress: [█████████████░] 93% (14/15 plans estimate
 | 02-mcp-cli | 3 (complete) | ~6 min | ~2 min |
 | 03-svg-card | 2 (complete) | ~8 min | ~4 min |
 | 04-cloud-worker | 3 (complete) | ~16 min | ~5 min |
-
-**Recent Trend:**
-- Last 5 plans: 03-01 (5 min), 03-02 (3 min), 04-01 (6 min), 04-02 (2 min)
-- Trend: Consistent 2-6 min per plan
-
-*Updated after each plan completion*
+| 05-publish-launch | 4 (complete) | ~25 min | ~6 min |
 
 ## Accumulated Context
 
 ### Decisions
 
 Decisions are logged in PROJECT.md Key Decisions table.
-Recent decisions affecting current work:
+All decisions from phases 1-5:
 
 - [Project]: Phase 1 + Phase 2 sequential — local tool must work before card has data
 - [Project]: Dual MCP + CLI interface — covers IDE users and terminal natives
@@ -64,13 +59,12 @@ Recent decisions affecting current work:
 - [01-03]: stats.filesRead/linesSkipped carry from full parse (reflects I/O, not filter)
 - [01-03]: dist/ gitignored — compiled output not committed
 - [02-01]: node:util.parseArgs with strict: false — avoids unknown flag crashes, zero deps
-- [02-01]: shiplog card always JSON in Phase 2 — SVG generation deferred to Phase 3
 - [02-01]: shouldUseColor() checks isTTY first — prevents garbled ANSI in piped output
 - [02-02]: Tool-per-file pattern — each MCP tool in separate module for testability and clean server.ts
 - [02-02]: import type McpServer in tool files — type-only import avoids runtime dependency in tool modules
 - [02-02]: as const on MCP content type literal — prevents type widening from "text" to string
 - [02-03]: chmod 755 in build script (not post-install hook) — executable bits set at compile time
-- [02-03]: Separate bin names (shiplog vs shiplog-mcp) — CLI and MCP server are distinct invocations
+- [02-03]: Separate bin names (shipcard vs shipcard-mcp) — CLI and MCP server are distinct invocations
 - [02-03]: files field includes data/ — pricing snapshot required at runtime, must be in npm publish
 - [02-03]: npx -y required for MCP stdio servers — prevents interactive prompt corrupting transport
 - [03-01]: ThemeColors in themes/types.ts (not index.ts) — prevents circular imports between registry and palette modules
@@ -91,31 +85,27 @@ Recent decisions affecting current work:
 - [04-02]: Synchronous default card re-render on every sync — defeats Cloudflare KV eventual consistency on next GET
 - [04-02]: DELETE /sync preserves auth token — user can re-sync without re-authenticating
 - [04-03]: SafeStats.totalTokens uses cacheCreate (aligns to local TokenCounts) — cacheCreation was a Worker typo
-- [04-03]: Auth config in ~/.shiplog/config.json separate from display config ~/.shiplog.json
+- [04-03]: Auth config in ~/.shipcard/config.json separate from display config ~/.shipcard.json
 - [04-03]: Configurator stats passed via URL hash fragment — server never sees the data
-- [04-03]: SHIPLOG_GITHUB_CLIENT_ID is a placeholder — must be filled after creating GitHub OAuth App
 - [05-01]: npm package name is shipcard — shiplog was taken on npm registry
 - [05-01]: Card URL path is /u/:username — shorter and cleaner than /card/:username
-- [05-01]: Config paths are ~/.shipcard/ and ~/.shipcard.json (migrated from ~/.shiplog/)
+- [05-01]: Config paths are ~/.shipcard/ and ~/.shipcard.json
 - [05-01]: MCP tool names use shipcard: prefix (shipcard:summary, shipcard:costs, shipcard:card)
 - [05-01]: Worker name in wrangler.jsonc is shipcard with shipcard.dev custom domain
-- [05-02]: LICENSE placed in both repo root and shiplog/ — npm only auto-includes from package root (shiplog/)
-- [05-02]: "license": "MIT" added to package.json to satisfy npm registry metadata requirement
+- [05-02]: LICENSE in both repo root and shiplog/ for npm tarball inclusion
+- [05-04]: Scoped to @jjaimealeman/shipcard — npm rejected "shipcard" (similar to "ship-card")
+- [05-04]: npx MCP config uses -p flag: ["-y", "-p", "@jjaimealeman/shipcard", "shipcard-mcp"]
 
 ### Pending Todos
 
-None yet.
+None.
 
 ### Blockers/Concerns
 
-- [Research flag]: SVG rendering on GitHub specifically — camo proxy and SVG sanitizer have undocumented restrictions (Phase 5 / publish)
-- [Resolved]: Cloudflare Worker auth strategy — opaque UUID bearer tokens stored in KV, verified via GitHub API before issuance
-- [Phase 5 action]: Replace SHIPCARD_GITHUB_CLIENT_ID placeholder in login.ts with real OAuth App client ID (callback URL: https://shipcard.dev/auth/callback)
-- [Phase 5 action]: Run wrangler deploy before end-to-end login/sync testing
-- [Resolved]: npm name — "shiplog" taken, package ships as "shipcard" (done in 05-01)
+All resolved.
 
 ## Session Continuity
 
-Last session: 2026-03-26T03:42:23Z
-Stopped at: Completed 05-03-PLAN.md — README.md product landing page, USAGE.md full CLI+MCP reference, STYLES.md card gallery.
+Last session: 2026-03-26T05:10:00Z
+Stopped at: All 5 phases complete. @jjaimealeman/shipcard@0.1.0 published to npm, Worker deployed to shipcard.dev. Ready for milestone audit.
 Resume file: None
