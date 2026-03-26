@@ -1,6 +1,6 @@
 # MCP Configuration
 
-Add shiplog as an MCP server in Claude Code or Cursor to access your analytics from within any conversation.
+Add shipcard as an MCP server in Claude Code or Cursor to access your analytics from within any conversation.
 
 ## Claude Code
 
@@ -9,9 +9,9 @@ Add to `.mcp.json` in your project root (project-scoped) or `~/.claude.json` (gl
 ```json
 {
   "mcpServers": {
-    "shiplog": {
+    "shipcard": {
       "command": "npx",
-      "args": ["-y", "shiplog-mcp"]
+      "args": ["-y", "shipcard-mcp"]
     }
   }
 }
@@ -24,9 +24,9 @@ Add to `~/.cursor/mcp.json`:
 ```json
 {
   "mcpServers": {
-    "shiplog": {
+    "shipcard": {
       "command": "npx",
-      "args": ["-y", "shiplog-mcp"]
+      "args": ["-y", "shipcard-mcp"]
     }
   }
 }
@@ -34,13 +34,13 @@ Add to `~/.cursor/mcp.json`:
 
 ## After global install
 
-If you install shiplog globally (`npm install -g shiplog`), you can use the direct binary instead of npx:
+If you install shipcard globally (`npm install -g shipcard`), you can use the direct binary instead of npx:
 
 ```json
 {
   "mcpServers": {
-    "shiplog": {
-      "command": "shiplog-mcp"
+    "shipcard": {
+      "command": "shipcard-mcp"
     }
   }
 }
@@ -56,9 +56,9 @@ Once configured, the following tools are available to your AI assistant:
 
 | Tool | Description |
 |------|-------------|
-| `shiplog:summary` | Sessions, tool calls, models used, projects, and estimated cost overview |
-| `shiplog:costs` | Cost breakdown by project and by model |
-| `shiplog:card` | Raw analytics data for SVG card generation |
+| `shipcard:summary` | Sessions, tool calls, models used, projects, and estimated cost overview |
+| `shipcard:costs` | Cost breakdown by project and by model |
+| `shipcard:card` | Raw analytics data for SVG card generation |
 
 ## Example usage
 
