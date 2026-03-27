@@ -503,8 +503,8 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
     <p><code>shipcard sync</code></p>
   </div>
 
-  <!-- Dashboard content — visible when loaded and not 404 -->
-  <div x-show="!$store.dashboard.notFound" style="display:block">
+  <!-- Dashboard content — visible when loaded and no empty/error state -->
+  <div x-show="!$store.dashboard.loading && !$store.dashboard.notFound && !$store.dashboard.error" style="display:block">
 
     <!-- -------------------------------------------------------------------
          HERO STATS
