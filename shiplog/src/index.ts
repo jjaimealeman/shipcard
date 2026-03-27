@@ -44,6 +44,7 @@ export type { TokenCounts, ParsedMessage } from "./parser/schema.js";
 export interface EngineFullResult {
   result: import("./engine/types.js").AnalyticsResult;
   messages: import("./parser/schema.js").ParsedMessage[];
+  userMessagesByDate: Map<string, number>;
 }
 
 // ---------------------------------------------------------------------------
@@ -116,10 +117,19 @@ export async function runEngineFull(
       }
     }
 
+    // Filter userMessagesByDate to dates within the since/until range.
+    const filteredUserMessagesByDate = new Map<string, number>();
+    for (const [date, count] of parseResult.userMessagesByDate) {
+      if (since !== undefined && date < since) continue;
+      if (until !== undefined && date > until) continue;
+      filteredUserMessagesByDate.set(date, count);
+    }
+
     filteredParseResult = {
       messages: filteredMessages,
       sessions: filteredSessions,
       stats: parseResult.stats, // filesRead/linesSkipped reflect the full parse, not the filter
+      userMessagesByDate: filteredUserMessagesByDate,
     };
   }
 
@@ -140,7 +150,11 @@ export async function runEngineFull(
     }
   }
 
-  return { result, messages: filteredParseResult.messages };
+  return {
+    result,
+    messages: filteredParseResult.messages,
+    userMessagesByDate: filteredParseResult.userMessagesByDate,
+  };
 }
 
 /**
