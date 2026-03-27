@@ -182,6 +182,87 @@ export function isValidSafeStats(payload: unknown): payload is SafeStats {
 }
 
 // ---------------------------------------------------------------------------
+// SafeTimeSeries — privacy-safe time-series for v2 sync
+// ---------------------------------------------------------------------------
+
+/**
+ * A single day's stats in the SafeTimeSeries payload.
+ *
+ * Mirrors the CLI's SafeDailyStats type. The `projects` field is optional —
+ * only present when the user synced with --show-projects.
+ */
+export interface SafeDailyStats {
+  date: string;
+  sessions: number;
+  messages: number;
+  userMessages: number;
+  thinkingBlocks: number;
+  tokens: {
+    input: number;
+    output: number;
+    cacheCreate: number;
+    cacheRead: number;
+  };
+  costCents: number;
+  models: Record<string, number>;
+  toolCalls: Record<string, number>;
+  /** Only present when --show-projects flag is set. */
+  projects?: string[];
+}
+
+/**
+ * Privacy-safe time-series payload received from the CLI via POST /sync/v2.
+ *
+ * Wraps SafeDailyStats[] with metadata. Version is always 2 to distinguish
+ * from any future format changes.
+ */
+export interface SafeTimeSeries {
+  username: string;
+  version: 2;
+  days: SafeDailyStats[];
+  generatedAt: string;
+}
+
+/**
+ * Combined body shape for POST /sync/v2.
+ * Contains both the aggregate stats (v1-compatible) and the time-series data.
+ */
+export interface SyncV2Body {
+  safeStats: SafeStats;
+  timeSeries: SafeTimeSeries;
+}
+
+/**
+ * Type guard that validates an unknown payload is a valid SyncV2Body.
+ *
+ * Delegates SafeStats validation to the existing isValidSafeStats() guard.
+ * Validates the timeSeries shape: non-null object, username string,
+ * version === 2, days array, generatedAt string.
+ */
+export function isValidSyncV2Body(payload: unknown): payload is SyncV2Body {
+  if (payload === null || typeof payload !== "object" || Array.isArray(payload))
+    return false;
+
+  const p = payload as Record<string, unknown>;
+
+  // Validate safeStats using existing guard
+  if (!isValidSafeStats(p.safeStats)) return false;
+
+  // Validate timeSeries shape
+  const ts = p.timeSeries;
+  if (ts === null || typeof ts !== "object" || Array.isArray(ts)) return false;
+  const t = ts as Record<string, unknown>;
+
+  if (typeof t.username !== "string" || t.username.length === 0) return false;
+  if (t.version !== 2) return false;
+  if (!Array.isArray(t.days)) return false;
+  if (typeof t.generatedAt !== "string" || t.generatedAt.length === 0)
+    return false;
+
+  return true;
+}
+
+// ---------------------------------------------------------------------------
 // Card query params
 // ---------------------------------------------------------------------------
 
