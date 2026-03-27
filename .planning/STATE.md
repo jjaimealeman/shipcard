@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-03-25)
 ## Current Position
 
 Phase: 12 of 12 (Polish & Community) — In progress
-Plan: 1 of ? in Phase 12 complete
+Plan: 3 of ? in Phase 12 complete
 Status: In progress — Phase 12 underway
-Last activity: 2026-03-27 — Completed 12-01-PLAN.md (SVG promo footer "Get yours at shipcard.dev", dashboard empty/error state guard)
+Last activity: 2026-03-27 — Completed 12-03-PLAN.md (CommunityMeta KV metadata, listUsers(), cards-served counter, both sync routes write metadata)
 
-Progress: [█████████████████████████] 25/25 plans complete so far (Phase 12 rolling)
+Progress: [███████████████████████████] 27/27 plans complete so far (Phase 12 rolling)
 
 ## Performance Metrics
 
@@ -140,6 +140,11 @@ Recent decisions affecting current work:
 - [11-03]: Project panel x-show="$store.dashboard.hasProjects" — conditional visibility with helpful fallback message
 - [12-01]: SVG footer text "Get yours at shipcard.dev" right-aligned (text-anchor=end, x=CARD_WIDTH-PADDING) — no <a> tag since SVG via img src sandboxes hyperlinks
 - [12-01]: Dashboard content wrapper guards !loading && !notFound && !error — skeleton visible during load, hidden on any non-data state
+- [12-03]: CommunityMeta.totalTokens is flat sum (not breakdown) — community pages need headline number only
+- [12-03]: putUserData() metadata param is optional — zero breaking changes to existing callers
+- [12-03]: listUsers() filters :data suffix — avoids double-counting timeseries keys under user: prefix
+- [12-03]: cards-served counter in USER_DATA_KV (not CARDS_KV) — logically grouped with user data
+- [12-03]: Both v1 and v2 sync routes write CommunityMeta — ensures all users appear in community listings
 
 ### Pending Todos
 
@@ -155,6 +160,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-27T17:15:35Z
-Stopped at: Completed 12-01-PLAN.md — SVG promo footer + dashboard empty/error state guard
+Last session: 2026-03-27T17:17:20Z
+Stopped at: Completed 12-03-PLAN.md — CommunityMeta KV metadata, listUsers(), cards-served counter, both sync routes updated
 Resume file: None
