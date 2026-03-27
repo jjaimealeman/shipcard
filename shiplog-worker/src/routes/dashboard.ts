@@ -32,8 +32,7 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Lora:wght@400;500&display=swap" rel="stylesheet">
-<!-- cal-heatmap CSS -->
-<link rel="stylesheet" href="https://unpkg.com/cal-heatmap@4.2.4/dist/cal-heatmap.css">
+<!-- heatmap styles (custom SVG, no external dep) -->
 <style>
   :root {
     --bg: #141413;
@@ -323,14 +322,15 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
   #heatmap-container {
     min-width: 600px;
   }
-  /* cal-heatmap dark theme overrides */
-  #heatmap-container .ch-domain-text {
-    fill: var(--mid) !important;
-    font-family: 'Poppins', system-ui, sans-serif !important;
-    font-size: 10px !important;
-  }
-  #heatmap-container rect.ch-subdomain-bg {
-    fill: var(--surface) !important;
+  /* custom heatmap styles */
+  #heatmap-container { overflow-x: auto; }
+  #heatmap-container svg { display: block; }
+  .hm-label { fill: var(--mid); font-family: 'Poppins', system-ui, sans-serif; font-size: 10px; }
+  .hm-cell { rx: 2; ry: 2; }
+  .hm-tooltip {
+    position: absolute; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 4px; padding: 4px 8px; font-size: 11px; color: var(--fg);
+    pointer-events: none; white-space: nowrap; z-index: 200; display: none;
   }
   .panel {
     background: var(--surface);
@@ -751,14 +751,13 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
 <!-- =========================================================================
      SCRIPTS — load order is critical
      ====================================================================== -->
-<!-- 1. D3.js v7 (required by cal-heatmap) -->
+<!-- 1. D3.js v7 (used by custom heatmap) -->
 <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js" defer></script>
 <!-- 2. Chart.js 4.5.1 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js" defer></script>
 <!-- 3. chartjs-plugin-datalabels 2.2.0 (after Chart.js) -->
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js" defer></script>
-<!-- 4. cal-heatmap 4.2.4 (after D3) -->
-<script src="https://unpkg.com/cal-heatmap@4.2.4/dist/cal-heatmap.min.js" defer></script>
+<!-- 4. (cal-heatmap removed — custom SVG heatmap used instead) -->
 <!-- 5. Alpine.js intersect plugin (BEFORE Alpine core) -->
 <script src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.15.8/dist/cdn.min.js" defer></script>
 <!-- 6. Alpine.js core 3.15.8 (LAST) -->
@@ -1114,7 +1113,7 @@ let chartModels   = null;
 let chartMessages = null;
 let chartTokens   = null;
 let chartProjects = null;
-let calHeatmapInstance = null;
+let heatmapBuilt = false;
 
 // ---------------------------------------------------------------------------
 // Chart builders — each returns the Chart instance
@@ -1477,70 +1476,128 @@ function buildTokensChart(days) {
 }
 
 // ---------------------------------------------------------------------------
-// Calendar heatmap — cal-heatmap 4.x
+// Custom GitHub-style SVG calendar heatmap
 // Always shows ALL TIME regardless of range filter (heatmap = historical view)
 // ---------------------------------------------------------------------------
 function buildHeatmap(allDays) {
   const container = document.getElementById('heatmap-container');
   if (!container) return;
-  if (typeof CalHeatmap === 'undefined') return;
+  if (heatmapBuilt) { container.innerHTML = ''; }
+  heatmapBuilt = true;
 
-  // Destroy existing instance if any, clear container child nodes safely
-  if (calHeatmapInstance) {
-    try { calHeatmapInstance.destroy(); } catch (_) { /* ignore */ }
-    calHeatmapInstance = null;
-    while (container.firstChild) container.removeChild(container.firstChild);
-  }
+  // Build date→sessions lookup
+  const dataMap = {};
+  allDays.forEach(d => { dataMap[d.date] = d.sessions; });
 
-  // Transform days into { date, value } format
-  const source = allDays.map(d => ({ date: d.date, value: d.sessions }));
+  // Color scale thresholds (green palette matching brand)
+  const colorScale = (v) => {
+    if (!v || v === 0) return '#1e1e1c';
+    if (v < 2)  return '#2d3a2d';
+    if (v < 4)  return '#4a6b3a';
+    if (v < 8)  return '#788c5d';
+    return '#a4c278';
+  };
 
-  // Determine the start date — align to 12 months back
+  // Determine date range: from first data point (or 12 months ago) to today
   const now = new Date();
-  const twelveMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 11, 1);
-
-  let startDate = twelveMonthsAgo;
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  let start;
   if (allDays.length > 0) {
-    const firstDay = new Date(allDays[0].date + 'T00:00:00');
-    // Show from the earlier of first day (month-aligned) or 12 months ago
-    const firstDayMonthStart = new Date(firstDay.getFullYear(), firstDay.getMonth(), 1);
-    startDate = firstDayMonthStart < twelveMonthsAgo ? twelveMonthsAgo : firstDayMonthStart;
+    const first = new Date(allDays[0].date + 'T12:00:00');
+    const twelveAgo = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
+    start = first < twelveAgo ? twelveAgo : first;
+  } else {
+    start = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
+  }
+  // Align start to Sunday (beginning of week)
+  const startDay = new Date(start);
+  startDay.setDate(startDay.getDate() - startDay.getDay());
+
+  // Generate all days from startDay to today
+  const days = [];
+  const d = new Date(startDay);
+  while (d <= today) {
+    days.push(new Date(d));
+    d.setDate(d.getDate() + 1);
   }
 
-  calHeatmapInstance = new CalHeatmap();
-  calHeatmapInstance.paint({
-    data: {
-      source,
-      x: 'date',
-      y: 'value',
-      groupY: 'sum',
-    },
-    date: {
-      start: startDate,
-      highlight: [new Date()],
-    },
-    range: 12,
-    scale: {
-      color: {
-        type: 'threshold',
-        range: ['#1e1e1c', '#2d3a2d', '#4a6b3a', '#788c5d', '#a4c278'],
-        domain: [1, 3, 6, 10],
-      },
-    },
-    domain: {
-      type: 'month',
-      gutter: 4,
-      label: { text: 'MMM', textAlign: 'start', position: 'top' },
-    },
-    subDomain: {
-      type: 'day',
-      radius: 2,
-      width: 12,
-      height: 12,
-      gutter: 2,
-    },
-    itemSelector: '#heatmap-container',
+  // Layout: columns (weeks) x 7 rows (days)
+  const cellSize = 12;
+  const cellGap = 2;
+  const step = cellSize + cellGap;
+  const labelH = 20;  // month label height
+  const dayLabelW = 24; // weekday label width
+  const totalWeeks = Math.ceil(days.length / 7);
+  const svgW = dayLabelW + totalWeeks * step + 2;
+  const svgH = labelH + 7 * step + 2;
+
+  // Month labels: find the first day of each month
+  const months = [];
+  let lastMonth = -1;
+  days.forEach((day, i) => {
+    if (day.getMonth() !== lastMonth) {
+      lastMonth = day.getMonth();
+      const weekIdx = Math.floor(i / 7);
+      months.push({ label: day.toLocaleDateString('en', { month: 'short' }), x: dayLabelW + weekIdx * step });
+    }
   });
+
+  // Day-of-week labels
+  const dowLabels = ['', 'Mon', '', 'Wed', '', 'Fri', ''];
+
+  // Build SVG
+  let svg = '<svg width="' + svgW + '" height="' + svgH + '" xmlns="http://www.w3.org/2000/svg">';
+
+  // Month labels
+  months.forEach(m => {
+    svg += '<text class="hm-label" x="' + m.x + '" y="12" font-size="10">' + m.label + '</text>';
+  });
+
+  // Day-of-week labels
+  dowLabels.forEach((lbl, i) => {
+    if (lbl) svg += '<text class="hm-label" x="0" y="' + (labelH + i * step + cellSize - 1) + '" font-size="9">' + lbl + '</text>';
+  });
+
+  // Cells
+  days.forEach((day, i) => {
+    const col = Math.floor(i / 7);
+    const row = day.getDay(); // 0=Sun
+    const dateStr = day.toISOString().slice(0, 10);
+    const val = dataMap[dateStr] || 0;
+    const x = dayLabelW + col * step;
+    const y = labelH + row * step;
+    const isToday = dateStr === today.toISOString().slice(0, 10);
+
+    svg += '<rect class="hm-cell" x="' + x + '" y="' + y + '" width="' + cellSize + '" height="' + cellSize + '" fill="' + colorScale(val) + '"'
+      + (isToday ? ' stroke="' + COLORS.orange + '" stroke-width="1.5"' : '')
+      + ' data-date="' + dateStr + '" data-value="' + val + '"/>';
+  });
+
+  svg += '</svg>';
+  container.innerHTML = svg;
+
+  // Tooltip on hover
+  let tooltip = document.getElementById('hm-tooltip');
+  if (!tooltip) {
+    tooltip = document.createElement('div');
+    tooltip.id = 'hm-tooltip';
+    tooltip.className = 'hm-tooltip';
+    document.body.appendChild(tooltip);
+  }
+  container.addEventListener('mouseover', (e) => {
+    const rect = e.target.closest('.hm-cell');
+    if (!rect) { tooltip.style.display = 'none'; return; }
+    const date = rect.getAttribute('data-date');
+    const val = rect.getAttribute('data-value');
+    const dateObj = new Date(date + 'T12:00:00');
+    const label = dateObj.toLocaleDateString('en', { month: 'short', day: 'numeric', year: 'numeric' });
+    tooltip.textContent = val + ' session' + (val === '1' ? '' : 's') + ' on ' + label;
+    const r = rect.getBoundingClientRect();
+    tooltip.style.left = (r.left + r.width / 2 - 60) + 'px';
+    tooltip.style.top = (r.top - 30) + 'px';
+    tooltip.style.display = 'block';
+  });
+  container.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
 }
 
 // ---------------------------------------------------------------------------
