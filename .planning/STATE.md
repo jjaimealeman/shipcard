@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-03-25)
 
 **Core value:** Developers using Claude Code can see what they shipped and what it cost, and share verifiable proof via an embeddable card.
-**Current focus:** Phase 8 - Landing Page
+**Current focus:** Phase 9 - CLI Time-Series Extraction
 
 ## Current Position
 
-Phase: 8 of 8 (Landing Page) — Complete
-Plan: 1 of 1 in Phase 8 complete (08-01 done)
-Status: Phase 8 complete — ALL PHASES DONE
-Last activity: 2026-03-26 — Completed 08-01-PLAN.md (landing page with configurator, fonts, quickstart)
+Phase: 9 of 9 (CLI Time-Series) — In progress
+Plan: 1 of N in Phase 9 complete (09-01 done)
+Status: In progress
+Last activity: 2026-03-27 — Completed 09-01-PLAN.md (parser enhancement + daily aggregation engine)
 
-Progress: [█████████████████] 100% (17/17 plans)
+Progress: [██████████████████] 18/18 plans (phases 1-8 done + 09-01)
 
 ## Performance Metrics
 
@@ -110,6 +110,10 @@ Recent decisions affecting current work:
 - [08-01]: Base64-embedded fonts (Poppins 600/700 + Lora 400, ~43 KB) — zero external requests, instant load
 - [08-01]: XHR for card fetch instead of fetch() — simpler error handling in var-only embedded JS
 - [08-01]: DOM API for snippet content — same security pattern as configure.ts
+- [09-01]: thinkingBlocks counted per ParsedMessage from assistant content filter — enables extended thinking time-series
+- [09-01]: userMessages per day = 0 with TODO — UserEntry timestamps not linked to ParsedMessages, global count sufficient for now
+- [09-01]: costCents as Math.round(dollars * 100) integer — safe for chart arithmetic, avoids float drift
+- [09-01]: dailyAggregator.ts is independent of aggregator.ts — parallel path keeps time-series concerns separate
 
 ### Pending Todos
 
@@ -125,6 +129,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-26T07:52:00Z
-Stopped at: Completed 08-01-PLAN.md — landing page with live configurator, base64 fonts, quickstart. All 8 phases complete.
+Last session: 2026-03-27T05:00:22Z
+Stopped at: Completed 09-01-PLAN.md — parser enhancement (thinkingBlocks, userMessages) + daily aggregation engine (DailyStats, aggregateDaily).
 Resume file: None
