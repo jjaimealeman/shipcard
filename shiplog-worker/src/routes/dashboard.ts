@@ -152,18 +152,15 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
   .page {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 32px 24px 64px;
+    padding: 24px 12px 48px;
+  }
+  @media (min-width: 640px) {
+    .page { padding: 32px 24px 64px; }
   }
 
   /* -------------------------------------------------------------------------
    * Hero stats section
    * ---------------------------------------------------------------------- */
-  .hero-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin-bottom: 32px;
-  }
   .stat-card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -266,17 +263,20 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
   }
 
   /* -------------------------------------------------------------------------
-   * Chart panel grid (bento-style layout)
+   * Chart panel grid (bento-style layout) — mobile-first
+   * Default = single column (mobile 375px+)
+   * 640px  = hero stats 2-col, filter bar shows dropdown -> button group
+   * 1024px = full desktop multi-column layout
    * ---------------------------------------------------------------------- */
   .panels-overview {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 16px;
     margin-bottom: 16px;
   }
   .panels-row {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 16px;
     margin-bottom: 16px;
   }
@@ -287,27 +287,70 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
     margin-bottom: 16px;
   }
 
-  /* Responsive: 2-col at 900px */
-  @media (max-width: 900px) {
-    .panels-row {
-      grid-template-columns: 1fr 1fr;
+  /* Hero grid: 2-col on mobile (4 stat cards in 2x2) */
+  .hero-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  /* Mobile filter bar dropdown (shown by default, hidden on 640px+) */
+  .mobile-range-select {
+    display: block;
+    appearance: none;
+    -webkit-appearance: none;
+    background: var(--bg);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 28px 6px 10px;
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23b0aea5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+  }
+  .mobile-range-select option {
+    background: var(--surface);
+    color: var(--fg);
+  }
+  /* Button group hidden on mobile, shown on 640px+ */
+  .btn-group {
+    display: none;
+  }
+
+  /* Panel body — explicit height prevents Chart.js 0-height collapse */
+  .panel-body {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    height: 220px;
+  }
+
+  /* 640px+: filter swaps to button group */
+  @media (min-width: 640px) {
+    .mobile-range-select { display: none; }
+    .btn-group { display: flex; }
+    .hero-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* 1024px+: full desktop multi-column layout */
+  @media (min-width: 1024px) {
+    .hero-grid {
+      grid-template-columns: repeat(4, 1fr);
     }
     .panels-overview {
-      grid-template-columns: 1fr;
-    }
-  }
-  /* Responsive: 1-col at 600px */
-  @media (max-width: 600px) {
-    .panels-row {
-      grid-template-columns: 1fr;
-    }
-    .hero-grid {
       grid-template-columns: 1fr 1fr;
     }
-  }
-  @media (max-width: 420px) {
-    .hero-grid {
-      grid-template-columns: 1fr;
+    .panels-row {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+    .panel-body {
+      height: 280px;
     }
   }
 
@@ -320,7 +363,7 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
     padding-bottom: 4px;
   }
   #heatmap-container {
-    min-width: 600px;
+    /* min-width removed — SVG width adapts to day count (mobile caps to 30 days) */
   }
   /* custom heatmap styles */
   #heatmap-container { overflow-x: auto; }
@@ -371,12 +414,6 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
     border: 1px solid var(--border);
     border-radius: 10px;
     padding: 2px 8px;
-  }
-  .panel-body {
-    flex: 1;
-    position: relative;
-    display: flex;
-    align-items: stretch;
   }
   .panel-body canvas {
     width: 100% !important;
@@ -472,6 +509,13 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
     <span class="divider">|</span>
     <span class="username-title"><span>__USERNAME__</span>&nbsp;Analytics</span>
   </div>
+  <!-- Mobile dropdown (visible below 640px, hidden above via CSS) -->
+  <select class="mobile-range-select" x-model="$store.dashboard.range">
+    <option value="7d">Last 7 days</option>
+    <option value="30d">Last 30 days</option>
+    <option value="all">All time</option>
+  </select>
+  <!-- Desktop segmented control (hidden below 640px, shown above via CSS) -->
   <div class="btn-group" x-data>
     <button
       :class="{ active: $store.dashboard.range === '7d' }"
@@ -1485,9 +1529,13 @@ function buildHeatmap(allDays) {
   if (heatmapBuilt) { container.innerHTML = ''; }
   heatmapBuilt = true;
 
-  // Build date→sessions lookup
+  // Mobile day cap: screens narrower than 640px show ~30 days to prevent overflow
+  const maxDays = window.innerWidth < 640 ? 30 : null;
+  const displayDays = maxDays !== null ? allDays.slice(-maxDays) : allDays;
+
+  // Build date->sessions lookup
   const dataMap = {};
-  allDays.forEach(d => { dataMap[d.date] = d.sessions; });
+  displayDays.forEach(d => { dataMap[d.date] = d.sessions; });
 
   // Color scale thresholds (green palette matching brand)
   const colorScale = (v) => {
@@ -1502,8 +1550,8 @@ function buildHeatmap(allDays) {
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   let start;
-  if (allDays.length > 0) {
-    const first = new Date(allDays[0].date + 'T12:00:00');
+  if (displayDays.length > 0) {
+    const first = new Date(displayDays[0].date + 'T12:00:00');
     const twelveAgo = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
     start = first < twelveAgo ? twelveAgo : first;
   } else {
