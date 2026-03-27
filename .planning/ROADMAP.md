@@ -22,7 +22,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 8: Landing Page** - Polished homepage for shipcard.dev (replacing JSON health check)
 - [x] **Phase 9: CLI Time-Series Extraction** - CLI computes daily aggregates from JSONL and sends alongside SafeStats
 - [x] **Phase 10: Worker v2 Sync + JSON API** - Worker accepts time-series data and serves JSON APIs
-- [ ] **Phase 11: Dashboard MVP** - Full analytics dashboard at /u/:username/dashboard with Alpine.js + Chart.js
+- [x] **Phase 11: Dashboard MVP** - Full analytics dashboard at /u/:username/dashboard with Alpine.js + Chart.js
 - [ ] **Phase 12: Polish + Community** - Mobile responsive, private dashboards, community feed on homepage
 
 ## Phase Details
@@ -191,9 +191,9 @@ Plans:
 **Plans:** 3 plans in 2 waves (11-01 first, then 11-02 + 11-03 parallel)
 
 Plans:
-- [ ] 11-01-PLAN.md -- Dashboard skeleton: route, Alpine.js state, data fetching, sticky filter bar, skeleton loading, hero stats
-- [ ] 11-02-PLAN.md -- Chart.js visualizations: activity overview, daily cost, day-of-week, tool/model/message donuts
-- [ ] 11-03-PLAN.md -- Calendar heatmap, project activity bars, grid layout polish, visual checkpoint
+- [x] 11-01-PLAN.md -- Dashboard skeleton: route, Alpine.js state, data fetching, sticky filter bar, skeleton loading, hero stats
+- [x] 11-02-PLAN.md -- Chart.js visualizations: activity overview, daily cost, day-of-week, tool/model/message donuts
+- [x] 11-03-PLAN.md -- Calendar heatmap, project activity bars, grid layout polish, visual checkpoint
 
 ### Phase 12: Polish + Community
 **Goal**: Production-ready dashboard with mobile layout, private option, and community features on homepage
@@ -222,5 +222,5 @@ Phases execute sequentially: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10 -> 
 | 8. Landing Page | 1/1 | ✓ Complete | 2026-03-26 |
 | 9. CLI Time-Series | 2/2 | ✓ Complete | 2026-03-26 |
 | 10. Worker v2 API | 2/2 | ✓ Complete | 2026-03-27 |
-| 11. Dashboard MVP | 0/? | ○ Pending | - |
+| 11. Dashboard MVP | 3/3 | ✓ Complete | 2026-03-27 |
 | 12. Polish + Community | 0/? | ○ Pending | - |

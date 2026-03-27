@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-03-25)
 
 **Core value:** Developers using Claude Code can see what they shipped and what it cost, and share verifiable proof via an embeddable card.
-**Current focus:** Phase 11 - Dashboard MVP
+**Current focus:** Phase 11 - Dashboard MVP — Complete
 
 ## Current Position
 
-Phase: 11 of 11 (Dashboard MVP) — In progress
-Plan: 2 of 3 in Phase 11 complete
-Status: In progress — executing Phase 11
-Last activity: 2026-03-27 — Completed 11-02-PLAN.md (Chart visualizations: 6 Chart.js charts, Alpine.effect() reactivity, datalabels donuts)
+Phase: 11 of 12 (Dashboard MVP) — Complete
+Plan: 3 of 3 in Phase 11 complete (all plans done)
+Status: Phase complete — 11 of 12 phases done
+Last activity: 2026-03-27 — Completed 11-03-PLAN.md (Cal-heatmap, project bars, grid layout, Alpine init() race fix)
 
-Progress: [███████████████████████░] 23/24 plans complete
+Progress: [████████████████████████] 24/24 plans complete
 
 ## Performance Metrics
 
@@ -135,6 +135,9 @@ Recent decisions affecting current work:
 - [11-02]: Build vs. patch strategy — first render builds charts (new Chart), range changes use patchChart() for smooth morph via chart.update('active')
 - [11-02]: Chart.register(ChartDataLabels) in alpine:init — guarantees registration before any chart is built
 - [11-02]: Donut label threshold 5% — labels hidden for segments below threshold to prevent overlap
+- [11-03]: Renamed store.init() to store.load() — Alpine auto-calls store.init() with no args, causing race with x-init username call
+- [11-03]: Calendar heatmap always shows all-time data — filtering to 7d would show mostly empty calendar
+- [11-03]: Project panel x-show="$store.dashboard.hasProjects" — conditional visibility with helpful fallback message
 
 ### Pending Todos
 
@@ -150,6 +153,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-27T07:51:00Z
-Stopped at: Completed 11-02-PLAN.md — Chart visualizations: 6 Chart.js charts (daily combo, cost bars, DoW, tool/model/message donuts), Alpine.effect() reactivity, datalabels.
+Last session: 2026-03-27T08:15:00Z
+Stopped at: Completed Phase 11 — Dashboard MVP: 9-panel analytics dashboard at /u/:username/dashboard with Alpine.js + Chart.js. Deployed and verified via Playwright.
 Resume file: None
