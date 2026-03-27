@@ -1,7 +1,12 @@
-# Requirements: ShipLog
+# Requirements Archive: v1.0 ShipCard MVP
 
-**Defined:** 2026-03-25
-**Core Value:** Developers using Claude Code can see what they shipped and what it cost, and share verifiable proof via an embeddable card.
+**Archived:** 2026-03-27
+**Status:** SHIPPED
+
+This is the archived requirements specification for v1.0.
+For current requirements, see `.planning/REQUIREMENTS.md` (created for next milestone).
+
+---
 
 ## v1 Requirements
 
@@ -64,7 +69,7 @@
 - [x] **PUB-03**: MIT license
 - [x] **PUB-04**: README with card embed example, MCP config snippet, and CLI usage
 
-## v2 Requirements
+## v2 Requirements (Carried Forward)
 
 ### Enhanced Analytics
 
@@ -90,20 +95,6 @@
 - **COMM-01**: Public profile pages on shiplog.dev
 - **COMM-02**: Leaderboards (opt-in)
 - **COMM-03**: Team dashboards with cost allocation
-
-## Out of Scope
-
-| Feature | Reason |
-|---------|--------|
-| Source code upload or file content tracking | Privacy-first — only JSONL metadata, never project files |
-| Persistent background daemon | Trust killer for privacy-focused tool |
-| Telemetry without explicit opt-in | Destroys trust instantly |
-| Real-time editor plugin (WakaTime-style) | Claude Code already writes JSONL — don't add another layer |
-| Gamification / competitive leaderboards | Mismatches solo dev target user at v1 |
-| Team dashboards | Multi-user model adds complexity without v1 validation |
-| Payment processing | Post-alpha, after cards prove demand |
-| Mobile app | Web/terminal only for alpha |
-| Session replay / tool-call timelines | Too complex for alpha scope |
 
 ## Traceability
 
@@ -148,11 +139,11 @@
 | PUB-03 | Phase 5 | Complete |
 | PUB-04 | Phase 7 | Complete |
 
-**Coverage:**
-- v1 requirements: 35 total
-- Mapped to phases: 35
-- Unmapped: 0 ✓
+## Milestone Summary
+
+**Shipped:** 35 of 35 v1 requirements
+**Adjusted:** CLI-03 scope expanded (Phase 3 added SVG generation), MCP-03 scope expanded (Phase 4 added full renderCard)
+**Dropped:** None
 
 ---
-*Requirements defined: 2026-03-25*
-*Last updated: 2026-03-25 after initial definition*
+*Archived: 2026-03-27 as part of v1.0 milestone completion*

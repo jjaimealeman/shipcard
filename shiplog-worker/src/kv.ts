@@ -7,10 +7,11 @@
  *   card:{username}:{theme}:{layout}:{style}              — rendered SVG variant cache (no hide)
  *   card:{username}:{theme}:{layout}:{style}:hide={a,b}   — SVG variant with hidden stats
  *   user:{username}:data                                   — SafeStats JSON payload
+ *   user:{username}:timeseries                             — SafeTimeSeries JSON payload
  *   token:{token}:username                                 — auth token → username lookup
  */
 
-import type { SafeStats } from "./types.js";
+import type { CommunityMeta, SafeStats, SafeTimeSeries } from "./types.js";
 
 // ---------------------------------------------------------------------------
 // Card cache (CARDS_KV)
@@ -107,17 +108,48 @@ export async function getUserData(
 
 /**
  * Write a user's SafeStats payload to KV.
+ *
+ * Accepts an optional CommunityMeta object written as KV entry metadata.
+ * When provided, kv.list() returns summary stats for all users without
+ * requiring individual get() calls — enabling O(1) community page rendering.
  */
 export async function putUserData(
   kv: KVNamespace,
   username: string,
-  data: SafeStats
+  data: SafeStats,
+  metadata?: CommunityMeta
 ): Promise<void> {
-  await kv.put(`user:${username}:data`, JSON.stringify(data));
+  await kv.put(
+    `user:${username}:data`,
+    JSON.stringify(data),
+    metadata ? { metadata } : undefined
+  );
 }
 
 /**
- * Delete all data for a user: SafeStats payload + all card variants.
+ * List all users with their community summary stats from a single KV list() call.
+ *
+ * Filters for keys ending in `:data` to exclude timeseries/token keys and
+ * avoids double-counting. Users synced before metadata was introduced will
+ * have meta === null — callers must handle this gracefully.
+ *
+ * @param limit - Max number of KV keys to fetch (default 1000).
+ */
+export async function listUsers(
+  kv: KVNamespace,
+  limit = 1000
+): Promise<Array<{ username: string; meta: CommunityMeta | null }>> {
+  const listed = await kv.list<CommunityMeta>({ prefix: "user:", limit });
+  return listed.keys
+    .filter((k) => k.name.endsWith(":data"))
+    .map((k) => ({
+      username: k.name.slice("user:".length, -":data".length),
+      meta: k.metadata ?? null,
+    }));
+}
+
+/**
+ * Delete all data for a user: SafeStats payload + time-series payload + all card variants.
  * Used by `shipcard sync --delete`.
  */
 export async function deleteAllUserData(
@@ -125,8 +157,42 @@ export async function deleteAllUserData(
   username: string
 ): Promise<void> {
   await kv.delete(`user:${username}:data`);
+  await kv.delete(`user:${username}:timeseries`);
   const listed = await kv.list({ prefix: `card:${username}:` });
   await Promise.all(listed.keys.map((k) => kv.delete(k.name)));
+}
+
+// ---------------------------------------------------------------------------
+// Time-series data (USER_DATA_KV)
+// ---------------------------------------------------------------------------
+
+/**
+ * Read a user's SafeTimeSeries payload from KV.
+ * Returns null if the user has no time-series data or on JSON parse error.
+ */
+export async function getTimeSeries(
+  kv: KVNamespace,
+  username: string
+): Promise<SafeTimeSeries | null> {
+  const raw = await kv.get(`user:${username}:timeseries`);
+  if (raw === null) return null;
+  try {
+    return JSON.parse(raw) as SafeTimeSeries;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Write a user's SafeTimeSeries payload to KV.
+ * No expirationTtl — cache is valid until the next sync overwrites it.
+ */
+export async function putTimeSeries(
+  kv: KVNamespace,
+  username: string,
+  data: SafeTimeSeries
+): Promise<void> {
+  await kv.put(`user:${username}:timeseries`, JSON.stringify(data));
 }
 
 // ---------------------------------------------------------------------------
@@ -155,5 +221,30 @@ export async function putToken(
   await kv.put(`token:${token}:username`, username, {
     expirationTtl: 60 * 60 * 24 * 365, // 1 year
   });
+}
+
+// ---------------------------------------------------------------------------
+// Cards-served counter (USER_DATA_KV)
+// ---------------------------------------------------------------------------
+
+/** KV key for the global cards-served counter. */
+const CARDS_SERVED_KEY = "meta:cards_served";
+
+/**
+ * Read the current cards-served count.
+ * Returns 0 if the counter has not been initialized yet.
+ */
+export async function getCardsServedCount(kv: KVNamespace): Promise<number> {
+  const val = await kv.get(CARDS_SERVED_KEY);
+  return val ? parseInt(val, 10) : 0;
+}
+
+/**
+ * Increment the global cards-served counter by 1.
+ * Called on every successful sync (both v1 and v2) to track total syncs.
+ */
+export async function incrementCardsServed(kv: KVNamespace): Promise<void> {
+  const current = await getCardsServedCount(kv);
+  await kv.put(CARDS_SERVED_KEY, String(current + 1));
 }
 

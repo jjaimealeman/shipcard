@@ -12,7 +12,7 @@
  */
 
 import { Hono } from "hono";
-import type { AppType } from "../types.js";
+import type { AppType, CommunityMeta } from "../types.js";
 import { isValidSafeStats } from "../types.js";
 import { authMiddleware } from "../auth.js";
 import {
@@ -20,6 +20,7 @@ import {
   deleteAllUserData,
   invalidateCardVariants,
   putCardCache,
+  incrementCardsServed,
 } from "../kv.js";
 import { renderCard, renderRedactedCard } from "../svg/index.js";
 
@@ -61,9 +62,24 @@ syncRoutes.post("/", authMiddleware, async (c) => {
 
   const env = c.env;
   const username = authenticatedUsername;
+  const syncedAt = new Date().toISOString();
 
-  // Store the validated SafeStats in KV
-  await putUserData(env.USER_DATA_KV, username, body);
+  // Build community metadata for O(1) community page rendering via kv.list().
+  // v1 users also get metadata so they appear in community listings immediately.
+  const meta: CommunityMeta = {
+    syncedAt,
+    totalSessions: body.totalSessions,
+    totalCost: body.totalCost,
+    projectCount: body.projectCount,
+    totalTokens:
+      body.totalTokens.input +
+      body.totalTokens.output +
+      body.totalTokens.cacheCreate +
+      body.totalTokens.cacheRead,
+  };
+
+  // Store the validated SafeStats in KV with community metadata
+  await putUserData(env.USER_DATA_KV, username, body, meta);
 
   // Invalidate all existing cached card variants
   const variantsInvalidated = await invalidateCardVariants(env.CARDS_KV, username);
@@ -77,6 +93,9 @@ syncRoutes.post("/", authMiddleware, async (c) => {
     style: "github",
   });
   await putCardCache(env.CARDS_KV, username, "dark", "classic", "github", defaultSvg);
+
+  // Increment the global cards-served counter for community stats.
+  await incrementCardsServed(env.USER_DATA_KV);
 
   return c.json({ ok: true, username, variantsInvalidated });
 });

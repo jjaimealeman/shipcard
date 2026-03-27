@@ -32,6 +32,7 @@ export interface ParsedCliArgs {
     // Sync-specific flags
     confirm: boolean;
     delete: boolean;
+    showProjects: boolean;
   };
 }
 
@@ -67,6 +68,7 @@ export function parseCliArgs(): ParsedCliArgs {
       // Sync flags
       confirm: { type: "boolean", default: false },
       delete: { type: "boolean", default: false },
+      "show-projects": { type: "boolean", default: false },
     },
     allowPositionals: true,
     strict: false,
@@ -96,6 +98,7 @@ export function parseCliArgs(): ParsedCliArgs {
       // Sync flags
       confirm: (flags.confirm as boolean | undefined) ?? false,
       delete: (flags.delete as boolean | undefined) ?? false,
+      showProjects: (flags["show-projects"] as boolean | undefined) ?? false,
     },
   };
 }
