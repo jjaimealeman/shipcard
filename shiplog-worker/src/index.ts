@@ -2,19 +2,20 @@
  * ShipCard Worker — Hono app entry point.
  *
  * Routes:
- *   GET    /              — landing page (HTML)
- *   GET    /u/:username   — SVG stats card (cached, public)
- *   GET    /u/:username/stats  — SafeStats JSON API (public)
- *   GET    /u/:username/timeseries  — SafeTimeSeries JSON API (public)
- *   POST   /auth/exchange  — GitHub token → Worker bearer token exchange
- *   POST   /sync           — authenticated stat upload (v1)
- *   DELETE /sync           — wipe user data (auth token preserved)
- *   POST   /sync/v2        — authenticated v2 stat upload ({ safeStats, timeSeries })
- *   GET    /configure      — browser configurator HTML page (no auth)
+ *   GET    /                          — landing page (HTML)
+ *   GET    /u/:username               — SVG stats card (cached, public)
+ *   GET    /u/:username/api/stats      — SafeStats JSON (public)
+ *   GET    /u/:username/api/timeseries — SafeTimeSeries JSON (public)
+ *   POST   /auth/exchange             — GitHub token → Worker bearer token exchange
+ *   POST   /sync/v2                   — v2 stat + time-series upload ({ safeStats, timeSeries })
+ *   POST   /sync                      — authenticated stat upload (v1)
+ *   DELETE /sync                      — wipe user data (auth token preserved)
+ *   GET    /configure                 — browser configurator HTML page (no auth)
  */
 
 import { Hono } from "hono";
 import type { AppType } from "./types.js";
+import { apiRoutes } from "./routes/api.js";
 import { cardRoutes } from "./routes/card.js";
 import { authRoutes } from "./routes/auth.js";
 import { syncRoutes } from "./routes/sync.js";
@@ -26,6 +27,10 @@ const app = new Hono<AppType>();
 
 // Landing page — product front door
 app.route("/", landingRoutes);
+
+// JSON API — public, CORS-enabled; MUST be before cardRoutes so
+// /:username/api/* paths are matched before /:username catches all.
+app.route("/u", apiRoutes);
 
 // Card serving — public, no auth required
 app.route("/u", cardRoutes);
