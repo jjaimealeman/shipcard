@@ -21,7 +21,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 7: Auth Verify + Docs** - Test OAuth device flow, document npx CLI usage
 - [x] **Phase 8: Landing Page** - Polished homepage for shipcard.dev (replacing JSON health check)
 - [x] **Phase 9: CLI Time-Series Extraction** - CLI computes daily aggregates from JSONL and sends alongside SafeStats
-- [ ] **Phase 10: Worker v2 Sync + JSON API** - Worker accepts time-series data and serves JSON APIs
+- [x] **Phase 10: Worker v2 Sync + JSON API** - Worker accepts time-series data and serves JSON APIs
 - [ ] **Phase 11: Dashboard MVP** - Full analytics dashboard at /u/:username/dashboard with Alpine.js + Chart.js
 - [ ] **Phase 12: Polish + Community** - Mobile responsive, private dashboards, community feed on homepage
 
@@ -176,8 +176,8 @@ Plans:
 **Plans:** 2 plans in 2 waves (sequential — API routes depend on types + KV helpers from Plan 01)
 
 Plans:
-- [ ] 10-01-PLAN.md — SafeTimeSeries types, KV helpers, POST /sync/v2 route, updated DELETE cleanup
-- [ ] 10-02-PLAN.md — Public JSON API routes (GET /api/stats + /api/timeseries) with CORS
+- [x] 10-01-PLAN.md — SafeTimeSeries types, KV helpers, POST /sync/v2 route, updated DELETE cleanup
+- [x] 10-02-PLAN.md — Public JSON API routes (GET /api/stats + /api/timeseries) with CORS
 
 ### Phase 11: Dashboard MVP
 **Goal**: Full analytics dashboard at /u/:username/dashboard with 9 chart panels using Alpine.js + Chart.js
@@ -215,6 +215,6 @@ Phases execute sequentially: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10 -> 
 | 7. Auth Verify + Docs | 1/1 | ✓ Complete | 2026-03-26 |
 | 8. Landing Page | 1/1 | ✓ Complete | 2026-03-26 |
 | 9. CLI Time-Series | 2/2 | ✓ Complete | 2026-03-26 |
-| 10. Worker v2 API | 0/? | ○ Pending | - |
+| 10. Worker v2 API | 2/2 | ✓ Complete | 2026-03-27 |
 | 11. Dashboard MVP | 0/? | ○ Pending | - |
 | 12. Polish + Community | 0/? | ○ Pending | - |
