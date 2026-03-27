@@ -48,11 +48,11 @@ Full details: [milestones/v1-ROADMAP.md](milestones/v1-ROADMAP.md)
   4. Syncing with old-format data (no per-project stats) still works without errors or missing panels
   5. Slowest Day metric is gone from the dashboard and "Most Messages" label accurately describes what it shows
 
-**Plans:** TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 13-01: Enrich daily aggregator with per-project stats
-- [ ] 13-02: Extend SafeTimeSeries, Worker API, and privacy layer
+- [ ] 13-01-PLAN.md — Enrich daily aggregator with per-project stats and fix userMessages bug
+- [ ] 13-02-PLAN.md — Extend SafeTimeSeries, Worker API, privacy layer, and dashboard cleanup
 
 ### Phase 14: Hero Section
 
