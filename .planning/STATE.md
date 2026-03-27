@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-03-25)
 
 ## Current Position
 
-Phase: 10 of 10 (Worker v2 Sync + JSON API) — In progress
-Plan: 1 of 2 in Phase 10 complete (10-01 done)
-Status: In progress
-Last activity: 2026-03-27 — Completed 10-01-PLAN.md (Worker v2 sync endpoint: types, KV helpers, POST /sync/v2)
+Phase: 10 of 10 (Worker v2 Sync + JSON API) — Complete
+Plan: 2 of 2 in Phase 10 complete (all plans done)
+Status: Phase complete — all 10 phases done
+Last activity: 2026-03-27 — Completed 10-02-PLAN.md (JSON API: GET /u/:username/api/stats + /api/timeseries)
 
-Progress: [█████████████████████░] 20/21 plans (phases 1-9 done + 10-01)
+Progress: [██████████████████████] 21/21 plans complete
 
 ## Performance Metrics
 
@@ -122,6 +122,10 @@ Recent decisions affecting current work:
 - [10-01]: No DELETE /sync/v2 endpoint — DELETE /sync handles all three key types (data, timeseries, card variants)
 - [10-01]: syncedAt cast via `as any` for putUserData — not in SafeStats type but safe to store; future phases can read it
 - [10-01]: /sync/v2 mounted before /sync in index.ts — Hono path matching requires more specific route first
+- [10-02]: apiRoutes mounted before cardRoutes at /u — ensures /:username/api/* paths resolve before /:username single-segment catch-all
+- [10-02]: CORS wildcard on apiRoutes — data is public; tighten to dashboard origin in Phase 11 when origin is known
+- [10-02]: syncedAt envelope { data, syncedAt } wraps KV payload — dashboard gets freshness info without parsing data fields
+- [10-02]: 404 JSON for unknown users in API routes (not placeholder) — JSON API consumers need machine-readable not-found
 
 ### Pending Todos
 
@@ -137,6 +141,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-27T06:33:25Z
-Stopped at: Completed 10-01-PLAN.md — Worker v2 sync: SafeTimeSeries types, KV helpers, POST /sync/v2 route.
+Last session: 2026-03-27T06:37:12Z
+Stopped at: Completed 10-02-PLAN.md — JSON API routes: GET /u/:username/api/stats + /api/timeseries. Phase 10 complete.
 Resume file: None
