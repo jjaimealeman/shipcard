@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-03-27)
 
 **Core value:** Developers using Claude Code can see what they shipped and what it cost, and share verifiable proof via an embeddable card.
-**Current focus:** v1.0 milestone complete — planning next milestone
+**Current focus:** v1.1 Dashboard Enhancement
 
 ## Current Position
 
-Phase: 12 of 12 (v1.0 complete)
-Plan: All complete
-Status: MILESTONE SHIPPED
-Last activity: 2026-03-27 — v1.0 milestone archived
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-27 — Milestone v1.1 started
 
-Progress: [████████████████████████████] 12/12 phases complete (v1.0)
+Progress: [░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 0/? phases (v1.1)
 
 ## Performance Metrics
 
@@ -28,11 +28,15 @@ Progress: [███████████████████████
 
 ### Decisions
 
-Full decision log in PROJECT.md Key Decisions table.
+- v1.1 is dashboard enhancement on free tier; v2.0 reserved for monetized tier
+- Export buttons deferred to v3
+- Slowest Day metric dropped (dead — never changes once set)
+- Direction indicators use neutral tones, not red/green alarm colors
+- Today's Activity uses calendar day (00:00–23:59), not rolling 24h
 
 ### Pending Todos
 
-None — milestone complete.
+None — defining requirements.
 
 ### Blockers/Concerns
 
@@ -43,5 +47,5 @@ None — milestone complete.
 ## Session Continuity
 
 Last session: 2026-03-27
-Stopped at: v1.0 milestone archived
-Resume with: `/gsd:new-milestone` to start v2
+Stopped at: Defining v1.1 requirements
+Resume with: Continue `/gsd:new-milestone` — requirements → roadmap

@@ -10,7 +10,7 @@ Developers using Claude Code can see what they shipped and what it cost, and sha
 
 ## Current State
 
-**Version:** v1.0 shipped 2026-03-27
+**Version:** v1.0 shipped 2026-03-27 | v1.1 in progress
 **Package:** `shipcard` on npm (MIT licensed)
 **Codebase:** ~13,131 LOC TypeScript/HTML/JSON across 237 files
 **Stack:** Node.js/TypeScript local tool + Cloudflare Worker + KV
@@ -24,6 +24,18 @@ Developers using Claude Code can see what they shipped and what it cost, and sha
 - Analytics dashboard: 9 chart panels with Alpine.js + Chart.js
 - Community: homepage teaser, /community leaderboard, cards-served counter
 - Landing page at shipcard.dev with live card configurator
+
+## Current Milestone: v1.1 Dashboard Enhancement
+
+**Goal:** Make the dashboard the reason people adopt ShipCard — richer per-project breakdowns, today's activity hero, and meaningful sort dimensions.
+
+**Target features:**
+- Today's Activity hero section with 4 metrics (messages, sessions, tools, tokens) each showing % change vs yesterday
+- Peak Day card with date, messages, sessions, project name, and cost
+- Project Activity with sort toggles: messages | tokens | sessions | cost
+- Enriched sync payload with per-project stats (tokens, sessions, cost per project per day)
+- Remove Slowest Day (dead metric)
+- Neutral-toned direction indicators (not red/green alarm colors)
 
 ## Requirements
 
@@ -44,13 +56,23 @@ Developers using Claude Code can see what they shipped and what it cost, and sha
 
 ### Active
 
-- [ ] Additional card themes (tokyonight, dracula, synthwave, etc.)
-- [ ] Custom color parameters via URL query string
-- [ ] Support Codex CLI JSONL format
-- [ ] Support Gemini CLI log format
-- [ ] Burn rate predictor (estimated cost remaining in billing window)
-- [ ] Natural language date parsing (--since yesterday)
-- [ ] Team dashboards with cost allocation
+- [ ] Today's Activity hero — 4 metrics with individual % vs yesterday
+- [ ] Peak Day card — date, project, tokens, cost for highest-activity day
+- [ ] Project Activity toggles — sort by messages, tokens, sessions, or cost
+- [ ] Per-project stats in sync payload — tokens, sessions, cost per project per day
+- [ ] Remove Slowest Day metric
+- [ ] Neutral direction indicators for % change (not red/green)
+
+### Deferred (post-adoption)
+
+- Additional card themes (tokyonight, dracula, synthwave, etc.)
+- Custom color parameters via URL query string
+- Support Codex CLI JSONL format
+- Support Gemini CLI log format
+- Burn rate predictor (estimated cost remaining in billing window)
+- Natural language date parsing (--since yesterday)
+- Team dashboards with cost allocation
+- Per-chart export buttons (PNG/JSON/SVG) — v3
 
 ### Out of Scope
 
@@ -91,5 +113,7 @@ Developers using Claude Code can see what they shipped and what it cost, and sha
 | Two-layer privacy validation | CLI strips + Worker rejects banned fields | ✓ Good — defense in depth |
 | Phase 1 then Phase 2 sequential | Local tool must work before card has data | ✓ Good — natural dependency |
 
+| v1.1 dashboard on feature branch | v2.0 reserved for monetized tier | — Pending |
+
 ---
-*Last updated: 2026-03-27 after v1.0 milestone*
+*Last updated: 2026-03-27 after v1.1 milestone start*
