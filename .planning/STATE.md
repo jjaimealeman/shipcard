@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-03-27)
 
 **Core value:** Developers using Claude Code can see what they shipped and what it cost, and share verifiable proof via an embeddable card.
-**Current focus:** v1.1 Dashboard Enhancement — Phase 13: Data Pipeline + Cleanup
+**Current focus:** v1.1 Dashboard Enhancement — Phase 14: Peak Day Card
 
 ## Current Position
 
-Phase: 13 — Data Pipeline + Cleanup
-Plan: 01 of 2 complete
-Status: In progress
-Last activity: 2026-03-27 — Completed 13-01-PLAN.md (data pipeline enrichment)
+Phase: 13 — Data Pipeline + Cleanup (COMPLETE)
+Plan: 02 of 2 complete
+Status: Phase complete
+Last activity: 2026-03-27 — Completed 13-02-PLAN.md (SafeTimeSeries byProject + dashboard project chart)
 
-Progress: [█░░░░░░░░░░░░░░░░░░░░░░░░░░░] 1/6 plans (v1.1)
+Progress: [██░░░░░░░░░░░░░░░░░░░░░░░░░░] 2/6 plans (v1.1)
 
 ## Performance Metrics
 
@@ -43,10 +43,14 @@ Progress: [█░░░░░░░░░░░░░░░░░░░░░░
 - DailyStats.byProject is optional — existing consumers (SafeTimeSeries, card render) unchanged
 - Per-project userMessages hardcoded 0 (UserEntry JSONL has no project association field)
 - userMessagesByDate uses optional param pattern in aggregateDaily for backward compatibility
+- Worker SafeDailyStats mirrors CLI SafeDailyStats exactly (byProject added to both, no cross-package import)
+- Worker isValidSyncV2Body unchanged -- byProject is optional and passes through envelope validator silently
+- projectSortMetric state property added to Alpine dashboard store for Phase 15 to wire sort toggles
+- CLEAN-01 (Slowest Day) and CLEAN-02 (Most Messages) confirmed never existed -- no removals needed
 
 ### Pending Todos
 
-- Execute 13-02-PLAN.md (SafeTimeSeries + byProject wiring for Worker API)
+- None for Phase 13 (complete)
 
 ### Blockers/Concerns
 
@@ -56,6 +60,6 @@ Progress: [█░░░░░░░░░░░░░░░░░░░░░░
 
 ## Session Continuity
 
-Last session: 2026-03-27T22:40:34Z
-Stopped at: Completed 13-01-PLAN.md
-Resume with: `/gsd:execute-phase 13` (run 13-02-PLAN.md next)
+Last session: 2026-03-27T22:47:00Z
+Stopped at: Completed 13-02-PLAN.md (Phase 13 fully complete)
+Resume with: `/gsd:plan-phase 14` (Peak Day card)
