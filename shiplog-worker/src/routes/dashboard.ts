@@ -632,6 +632,7 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
       </div>
 
     </div><!-- /hero-grid -->
+    <!-- Phase 14 will add a "Peak Day" card here (highest messages or cost in a single day) -->
 
     <!-- -------------------------------------------------------------------
          OVERVIEW PANELS — Activity Heatmap (wide) + Daily Activity chart
@@ -840,10 +841,17 @@ document.addEventListener('alpine:init', () => {
 
     // ---------------------------------------------------------------------------
     // Computed: hasProjects — whether any day in filteredDays has project data
+    // (either byProject metrics or legacy projects name array)
     // ---------------------------------------------------------------------------
     get hasProjects() {
-      return this.filteredDays.some(d => d.projects && d.projects.length > 0);
+      return this.filteredDays.some(d =>
+        (d.byProject && Object.keys(d.byProject).length > 0) ||
+        (d.projects && d.projects.length > 0)
+      );
     },
+
+    // Phase 15 will expose this as a user-selectable toggle (messages, tokens, cost)
+    projectSortMetric: 'messages',
 
     // ---------------------------------------------------------------------------
     // Hero stat computed values (filtered to selected range)
@@ -1670,21 +1678,42 @@ function buildProjectsChart(days) {
   if (!canvas) return null;
   if (chartProjects) chartProjects.destroy();
 
-  // Count project occurrences across all filtered days
-  const projectCounts = {};
-  days.forEach(d => {
-    (d.projects || []).forEach(p => {
-      projectCounts[p] = (projectCounts[p] || 0) + 1;
-    });
-  });
+  // Aggregate per-project metrics across all filtered days
+  const projectMetrics = {};
+  const hasByProject = days.some(d => d.byProject && Object.keys(d.byProject).length > 0);
 
-  // Sort descending, take top 10
-  const sorted = Object.entries(projectCounts)
-    .sort((a, b) => b[1] - a[1])
+  if (hasByProject) {
+    // Real metrics path: use byProject data (messages, sessions, tokens, cost)
+    days.forEach(d => {
+      if (!d.byProject) return;
+      Object.entries(d.byProject).forEach(([name, stats]) => {
+        if (!projectMetrics[name]) {
+          projectMetrics[name] = { messages: 0, sessions: 0, tokens: 0, costCents: 0 };
+        }
+        projectMetrics[name].messages  += stats.messages;
+        projectMetrics[name].sessions  += stats.sessions;
+        projectMetrics[name].tokens    += stats.tokens.input + stats.tokens.output + stats.tokens.cacheCreate + stats.tokens.cacheRead;
+        projectMetrics[name].costCents += stats.costCents;
+      });
+    });
+  } else {
+    // Fallback: count days active (legacy data without byProject)
+    days.forEach(d => {
+      (d.projects || []).forEach(p => {
+        if (!projectMetrics[p]) projectMetrics[p] = { messages: 0 };
+        projectMetrics[p].messages += 1; // days active as proxy
+      });
+    });
+  }
+
+  // Sort by messages (Phase 15 will make this dynamic via projectSortMetric)
+  const metric = 'messages';
+  const sorted = Object.entries(projectMetrics)
+    .sort((a, b) => b[1][metric] - a[1][metric])
     .slice(0, 10);
 
   const labels = sorted.map(e => e[0]);
-  const data   = sorted.map(e => e[1]);
+  const data   = sorted.map(e => e[1][metric]);
 
   // Set explicit container height based on bar count to prevent Chart.js resize loop
   const barHeight = 36;
@@ -1698,7 +1727,7 @@ function buildProjectsChart(days) {
     data: {
       labels,
       datasets: [{
-        label: 'Days active',
+        label: hasByProject ? 'Messages' : 'Days active',
         data,
         backgroundColor: COLORS.green + 'cc',
         borderColor: COLORS.green,
@@ -1741,8 +1770,11 @@ function updateAllCharts(days, allDays) {
   buildTokensChart(days);
   // Heatmap always shows all-time data
   buildHeatmap(allDays || days);
-  // Project bars only if data present
-  const hasProjects = days.some(d => d.projects && d.projects.length > 0);
+  // Project bars only if data present (byProject metrics or legacy projects array)
+  const hasProjects = days.some(d =>
+    (d.byProject && Object.keys(d.byProject).length > 0) ||
+    (d.projects && d.projects.length > 0)
+  );
   if (hasProjects) buildProjectsChart(days);
 }
 
@@ -1840,7 +1872,10 @@ document.addEventListener('alpine:initialized', () => {
           ]
         );
         // Project bars — rebuild on range change (conditional visibility)
-        const hasProjects = days.some(d => d.projects && d.projects.length > 0);
+        const hasProjects = days.some(d =>
+          (d.byProject && Object.keys(d.byProject).length > 0) ||
+          (d.projects && d.projects.length > 0)
+        );
         if (hasProjects) buildProjectsChart(days);
         // Heatmap is all-time — no update needed on range change
       } else {
