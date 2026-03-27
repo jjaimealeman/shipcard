@@ -3,6 +3,7 @@
  *
  * Routes:
  *   GET    /                          — landing page (HTML)
+ *   GET    /u/:username/dashboard     — full analytics dashboard (public)
  *   GET    /u/:username               — SVG stats card (cached, public)
  *   GET    /u/:username/api/stats      — SafeStats JSON (public)
  *   GET    /u/:username/api/timeseries — SafeTimeSeries JSON (public)
@@ -22,11 +23,17 @@ import { syncRoutes } from "./routes/sync.js";
 import { syncV2Routes } from "./routes/syncV2.js";
 import { configureRoutes } from "./routes/configure.js";
 import { landingRoutes } from "./routes/landing.js";
+import { dashboardRoutes } from "./routes/dashboard.js";
 
 const app = new Hono<AppType>();
 
 // Landing page — product front door
 app.route("/", landingRoutes);
+
+// Dashboard — full analytics dashboard at /u/:username/dashboard
+// MUST be before apiRoutes and cardRoutes so /:username/dashboard
+// is matched before /:username/api/* and /:username single-segment patterns.
+app.route("/u", dashboardRoutes);
 
 // JSON API — public, CORS-enabled; MUST be before cardRoutes so
 // /:username/api/* paths are matched before /:username catches all.
