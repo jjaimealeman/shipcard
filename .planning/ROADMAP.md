@@ -203,7 +203,7 @@ Plans:
   2. Loading/error/empty states handled gracefully
   3. Homepage shows community feed (recent users, leaderboard, cards served counter)
   4. SVG card footer includes "Get yours at shipcard.dev"
-  5. Configurator supports panel selection for dashboard
+  ~~5. Configurator supports panel selection for dashboard~~ (deferred — see 12-CONTEXT.md)
 **Plans:** 4 plans in 2 waves (01 + 02 + 03 parallel, then 04)
 
 Plans:

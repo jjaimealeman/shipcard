@@ -40,7 +40,7 @@ Production-ready dashboard with mobile responsive layout, loading/empty state ha
 
 ### Card promo footer
 - "Get yours at shipcard.dev" — bottom right of SVG card, subtle/muted color (watermark feel)
-- Wrapped in `<a>` tag with `target="_blank"` — clickable but opens new tab, doesn't hijack the embedding page
+- Plain text only (no `<a>` tag) — SVG cards are embedded via `<img>` tags which sandbox all hyperlinks, making `<a>` non-functional. Text watermark is the correct approach.
 - Always shown — no opt-out, this is the growth engine
 - Applied to all card layouts (classic, compact, hero) — consistent branding everywhere
 
