@@ -461,7 +461,7 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
   }
 </style>
 </head>
-<body x-data x-init="$store.dashboard.init('__USERNAME__')">
+<body x-data x-init="$store.dashboard.load('__USERNAME__')">
 
 <!-- =========================================================================
      STICKY FILTER BAR
@@ -958,9 +958,12 @@ document.addEventListener('alpine:init', () => {
     },
 
     // ---------------------------------------------------------------------------
-    // init — fetches both API endpoints concurrently
+    // load — fetches both API endpoints concurrently
+    // Called from x-init on body; renamed from init() to prevent Alpine's
+    // automatic store.init() invocation (which passes no args → race condition).
     // ---------------------------------------------------------------------------
-    async init(username) {
+    async load(username) {
+      if (!username) return;
       this.username = username;
       this.loading = true;
       this.error = null;
