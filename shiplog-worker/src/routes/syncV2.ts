@@ -13,7 +13,7 @@
  */
 
 import { Hono } from "hono";
-import type { AppType } from "../types.js";
+import type { AppType, CommunityMeta } from "../types.js";
 import { isValidSyncV2Body } from "../types.js";
 import { authMiddleware } from "../auth.js";
 import {
@@ -21,6 +21,7 @@ import {
   putTimeSeries,
   invalidateCardVariants,
   putCardCache,
+  incrementCardsServed,
 } from "../kv.js";
 import { renderCard } from "../svg/index.js";
 
@@ -71,11 +72,26 @@ syncV2Routes.post("/", authMiddleware, async (c) => {
   const username = authenticatedUsername;
   const syncedAt = new Date().toISOString();
 
+  // Build community metadata from the validated payload.
+  // Written as KV entry metadata so kv.list() returns summary stats for all
+  // users in a single call — enables O(1) community page rendering.
+  const meta: CommunityMeta = {
+    syncedAt,
+    totalSessions: body.safeStats.totalSessions,
+    totalCost: body.safeStats.totalCost,
+    projectCount: body.safeStats.projectCount,
+    totalTokens:
+      body.safeStats.totalTokens.input +
+      body.safeStats.totalTokens.output +
+      body.safeStats.totalTokens.cacheCreate +
+      body.safeStats.totalTokens.cacheRead,
+  };
+
   // Store SafeStats enriched with syncedAt (same KV key as v1 — compatible reads).
   // TypeScript cast is intentional: SafeStats doesn't declare syncedAt but the
   // field is safely ignored by all consumers that only read known SafeStats keys.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  await putUserData(env.USER_DATA_KV, username, { ...body.safeStats, syncedAt } as any);
+  await putUserData(env.USER_DATA_KV, username, { ...body.safeStats, syncedAt } as any, meta);
 
   // Store SafeTimeSeries in new separate key
   await putTimeSeries(env.USER_DATA_KV, username, body.timeSeries);
@@ -102,6 +118,9 @@ syncV2Routes.post("/", authMiddleware, async (c) => {
     "github",
     defaultSvg
   );
+
+  // Increment the global cards-served counter for community stats.
+  await incrementCardsServed(env.USER_DATA_KV);
 
   return c.json({ ok: true, apiVersion: "v2", syncedAt, username, variantsInvalidated });
 });
