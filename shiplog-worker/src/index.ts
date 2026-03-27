@@ -3,6 +3,7 @@
  *
  * Routes:
  *   GET    /                          — landing page (HTML)
+ *   GET    /community                 — community leaderboard (HTML)
  *   GET    /u/:username/dashboard     — full analytics dashboard (public)
  *   GET    /u/:username               — SVG stats card (cached, public)
  *   GET    /u/:username/api/stats      — SafeStats JSON (public)
@@ -23,12 +24,16 @@ import { syncRoutes } from "./routes/sync.js";
 import { syncV2Routes } from "./routes/syncV2.js";
 import { configureRoutes } from "./routes/configure.js";
 import { landingRoutes } from "./routes/landing.js";
+import { communityRoutes } from "./routes/community.js";
 import { dashboardRoutes } from "./routes/dashboard.js";
 
 const app = new Hono<AppType>();
 
 // Landing page — product front door
 app.route("/", landingRoutes);
+
+// Community leaderboard — /community
+app.route("/community", communityRoutes);
 
 // Dashboard — full analytics dashboard at /u/:username/dashboard
 // MUST be before apiRoutes and cardRoutes so /:username/dashboard
