@@ -39,6 +39,7 @@ export interface ParseResult {
     linesSkipped: number;
     userMessages: number;
   };
+  userMessagesByDate: Map<string, number>;
 }
 
 // ---------------------------------------------------------------------------
@@ -56,7 +57,7 @@ export async function processFile(
   filePath: string,
   seenUuids: Set<string>,
   stats: { linesSkipped: number }
-): Promise<{ messages: ParsedMessage[]; userMessages: number }> {
+): Promise<{ messages: ParsedMessage[]; userMessages: number; userMessagesByDate: Map<string, number> }> {
   // Level 2 dedup: for each message.id, keep the AssistantEntry with the
   // highest output_tokens (i.e. the final streaming chunk for that turn).
   const bestByMessageId = new Map<string, AssistantEntry>();
@@ -66,6 +67,9 @@ export async function processFile(
 
   // Count user messages (UserEntry items) in this file.
   let userMessageCount = 0;
+
+  // Track user message counts per date (UTC date slice of timestamp).
+  const userMessagesByDate = new Map<string, number>();
 
   for await (const raw of streamJsonlFile(filePath, stats)) {
     // Level 1 dedup — skip if uuid already seen across files.
@@ -85,6 +89,9 @@ export async function processFile(
         sessionCwd.set(raw.sessionId, raw.cwd);
       }
       userMessageCount += 1;
+      // Track per-date user message counts.
+      const date = raw.timestamp.slice(0, 10);
+      userMessagesByDate.set(date, (userMessagesByDate.get(date) ?? 0) + 1);
       continue; // user entries don't produce ParsedMessages
     }
 
@@ -130,7 +137,7 @@ export async function processFile(
     });
   }
 
-  return { messages, userMessages: userMessageCount };
+  return { messages, userMessages: userMessageCount, userMessagesByDate };
 }
 
 // ---------------------------------------------------------------------------
@@ -146,12 +153,17 @@ export async function parseAllFiles(projectsDir: string): Promise<ParseResult> {
   const seenUuids = new Set<string>();
   const stats = { filesRead: 0, linesSkipped: 0, userMessages: 0 };
   const allMessages: ParsedMessage[] = [];
+  const userMessagesByDate = new Map<string, number>();
 
   for await (const filePath of discoverJsonlFiles(projectsDir)) {
     stats.filesRead += 1;
     const fileResult = await processFile(filePath, seenUuids, stats);
     allMessages.push(...fileResult.messages);
     stats.userMessages += fileResult.userMessages;
+    // Merge per-file userMessagesByDate into the combined map.
+    for (const [date, count] of fileResult.userMessagesByDate) {
+      userMessagesByDate.set(date, (userMessagesByDate.get(date) ?? 0) + count);
+    }
   }
 
   // Build sessions map: aggregate per-session metadata from all messages.
@@ -183,5 +195,6 @@ export async function parseAllFiles(projectsDir: string): Promise<ParseResult> {
     messages: allMessages,
     sessions,
     stats,
+    userMessagesByDate,
   };
 }
