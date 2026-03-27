@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-03-27)
 ## Current Position
 
 Phase: 13 — Data Pipeline + Cleanup
-Plan: —
-Status: Roadmap complete, ready to plan
-Last activity: 2026-03-27 — v1.1 roadmap created (phases 13-15)
+Plan: 01 of 2 complete
+Status: In progress
+Last activity: 2026-03-27 — Completed 13-01-PLAN.md (data pipeline enrichment)
 
-Progress: [░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 0/3 phases (v1.1)
+Progress: [█░░░░░░░░░░░░░░░░░░░░░░░░░░░] 1/6 plans (v1.1)
 
 ## Performance Metrics
 
@@ -40,19 +40,22 @@ Progress: [░░░░░░░░░░░░░░░░░░░░░░░
 - DATA pipeline phases first — dashboard can't show per-project stats without enriched sync payload
 - CLEAN-01 and CLEAN-02 bundled into Phase 13 (data layer touches same code)
 - Phase 15 (Project Activity) depends on Phase 13 but can run after Phase 14 in parallel if needed
+- DailyStats.byProject is optional — existing consumers (SafeTimeSeries, card render) unchanged
+- Per-project userMessages hardcoded 0 (UserEntry JSONL has no project association field)
+- userMessagesByDate uses optional param pattern in aggregateDaily for backward compatibility
 
 ### Pending Todos
 
-None — roadmap complete, ready for `/gsd:plan-phase 13`.
+- Execute 13-02-PLAN.md (SafeTimeSeries + byProject wiring for Worker API)
 
 ### Blockers/Concerns
 
 - [Action]: Replace placeholder OAuth client ID in login.ts with real GitHub OAuth App
 - [Action]: Set real KV namespace IDs in wrangler.jsonc before production deploy
-- [Deferred]: userMessages per day hardcoded to 0 in dailyAggregator.ts — Phase 13 will fix this
+- [RESOLVED 13-01]: userMessages per day was hardcoded 0 — now populated from real UserEntry timestamps
 
 ## Session Continuity
 
-Last session: 2026-03-27
-Stopped at: v1.1 roadmap created
-Resume with: `/gsd:plan-phase 13`
+Last session: 2026-03-27T22:40:34Z
+Stopped at: Completed 13-01-PLAN.md
+Resume with: `/gsd:execute-phase 13` (run 13-02-PLAN.md next)
