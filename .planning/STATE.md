@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-03-25)
 
 **Core value:** Developers using Claude Code can see what they shipped and what it cost, and share verifiable proof via an embeddable card.
-**Current focus:** Phase 10 - Worker v2 Sync + JSON API
+**Current focus:** Phase 11 - Dashboard MVP
 
 ## Current Position
 
-Phase: 10 of 10 (Worker v2 Sync + JSON API) — Complete
-Plan: 2 of 2 in Phase 10 complete (all plans done)
-Status: Phase complete — all 10 phases done
-Last activity: 2026-03-27 — Completed 10-02-PLAN.md (JSON API: GET /u/:username/api/stats + /api/timeseries)
+Phase: 11 of 11 (Dashboard MVP) — In progress
+Plan: 1 of 3 in Phase 11 complete
+Status: In progress — executing Phase 11
+Last activity: 2026-03-27 — Completed 11-01-PLAN.md (Dashboard skeleton: route, Alpine.js store, hero stats, filter bar, skeletons)
 
-Progress: [██████████████████████] 21/21 plans complete
+Progress: [██████████████████████░░] 22/24 plans complete
 
 ## Performance Metrics
 
@@ -126,6 +126,11 @@ Recent decisions affecting current work:
 - [10-02]: CORS wildcard on apiRoutes — data is public; tighten to dashboard origin in Phase 11 when origin is known
 - [10-02]: syncedAt envelope { data, syncedAt } wraps KV payload — dashboard gets freshness info without parsing data fields
 - [10-02]: 404 JSON for unknown users in API routes (not placeholder) — JSON API consumers need machine-readable not-found
+- [11-01]: dashboardRoutes mounted at /u BEFORE apiRoutes — Hono must match /:username/dashboard before /:username/api/* catch-all
+- [11-01]: Alpine.store('dashboard') global store with init(username) called from x-init on body — single shared state
+- [11-01]: Timeseries 404 degrades gracefully — stats still shown, sparklines empty, no broken page for v1-only users
+- [11-01]: replace(/__USERNAME__/g, username) with global flag — username appears in 4+ positions in the HTML template
+- [11-01]: 9 chart panels as skeleton+canvas pairs — Plans 02 and 03 wire Chart.js into the canvas elements
 
 ### Pending Todos
 
@@ -141,6 +146,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-27T06:37:12Z
-Stopped at: Completed 10-02-PLAN.md — JSON API routes: GET /u/:username/api/stats + /api/timeseries. Phase 10 complete.
+Last session: 2026-03-27T07:50:00Z
+Stopped at: Completed 11-01-PLAN.md — Dashboard skeleton: Hono route, Alpine.js store, hero stats sparklines, sticky filter bar, skeleton loading, 9 chart panel containers.
 Resume file: None
