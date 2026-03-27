@@ -67,13 +67,13 @@
 | PROJ-02 | Phase 15 | Pending |
 | PROJ-03 | Phase 15 | Pending |
 | PROJ-04 | Phase 15 | Pending |
-| DATA-01 | Phase 13 | Pending |
-| DATA-02 | Phase 13 | Pending |
-| DATA-03 | Phase 13 | Pending |
-| DATA-04 | Phase 13 | Pending |
-| DATA-05 | Phase 13 | Pending |
-| CLEAN-01 | Phase 13 | Pending |
-| CLEAN-02 | Phase 13 | Pending |
+| DATA-01 | Phase 13 | Complete |
+| DATA-02 | Phase 13 | Complete |
+| DATA-03 | Phase 13 | Complete |
+| DATA-04 | Phase 13 | Complete |
+| DATA-05 | Phase 13 | Complete |
+| CLEAN-01 | Phase 13 | Complete |
+| CLEAN-02 | Phase 13 | Complete |
 
 **Coverage:**
 - v1.1 requirements: 17 total

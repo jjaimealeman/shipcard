@@ -51,8 +51,8 @@ Full details: [milestones/v1-ROADMAP.md](milestones/v1-ROADMAP.md)
 **Plans:** 2 plans
 
 Plans:
-- [ ] 13-01-PLAN.md — Enrich daily aggregator with per-project stats and fix userMessages bug
-- [ ] 13-02-PLAN.md — Extend SafeTimeSeries, Worker API, privacy layer, and dashboard cleanup
+- [x] 13-01-PLAN.md — Enrich daily aggregator with per-project stats and fix userMessages bug
+- [x] 13-02-PLAN.md — Extend SafeTimeSeries, Worker API, privacy layer, and dashboard cleanup
 
 ### Phase 14: Hero Section
 
@@ -106,6 +106,6 @@ Plans:
 | 10. Worker v2 API | v1.0 | 2/2 | Complete | 2026-03-27 |
 | 11. Dashboard MVP | v1.0 | 3/3 | Complete | 2026-03-27 |
 | 12. Polish + Community | v1.0 | 4/4 | Complete | 2026-03-27 |
-| 13. Data Pipeline + Cleanup | v1.1 | 0/2 | Not started | - |
+| 13. Data Pipeline + Cleanup | v1.1 | 2/2 | Complete | 2026-03-27 |
 | 14. Hero Section | v1.1 | 0/2 | Not started | - |
 | 15. Project Activity | v1.1 | 0/1 | Not started | - |
