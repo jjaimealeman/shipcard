@@ -118,7 +118,7 @@ export function renderCard(
   const cardData = {
     title: "ShipCard Stats",
     stats: builtStats,
-    footer: "ShipCard",
+    footer: "Get yours at shipcard.dev",
   };
 
   return renderSvg(cardData, { layout, style, theme, heroStat });

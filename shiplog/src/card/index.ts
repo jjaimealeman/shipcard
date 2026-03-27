@@ -141,7 +141,7 @@ export function renderCard(
   const cardData = {
     title: "ShipCard Stats",
     stats,
-    footer: "ShipCard",
+    footer: "Get yours at shipcard.dev",
     dateRange,
   };
 
