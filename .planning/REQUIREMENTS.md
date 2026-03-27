@@ -57,29 +57,29 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| HERO-01 | — | Pending |
-| HERO-02 | — | Pending |
-| HERO-03 | — | Pending |
-| HERO-04 | — | Pending |
-| HERO-05 | — | Pending |
-| HERO-06 | — | Pending |
-| PROJ-01 | — | Pending |
-| PROJ-02 | — | Pending |
-| PROJ-03 | — | Pending |
-| PROJ-04 | — | Pending |
-| DATA-01 | — | Pending |
-| DATA-02 | — | Pending |
-| DATA-03 | — | Pending |
-| DATA-04 | — | Pending |
-| DATA-05 | — | Pending |
-| CLEAN-01 | — | Pending |
-| CLEAN-02 | — | Pending |
+| HERO-01 | Phase 14 | Pending |
+| HERO-02 | Phase 14 | Pending |
+| HERO-03 | Phase 14 | Pending |
+| HERO-04 | Phase 14 | Pending |
+| HERO-05 | Phase 14 | Pending |
+| HERO-06 | Phase 14 | Pending |
+| PROJ-01 | Phase 15 | Pending |
+| PROJ-02 | Phase 15 | Pending |
+| PROJ-03 | Phase 15 | Pending |
+| PROJ-04 | Phase 15 | Pending |
+| DATA-01 | Phase 13 | Pending |
+| DATA-02 | Phase 13 | Pending |
+| DATA-03 | Phase 13 | Pending |
+| DATA-04 | Phase 13 | Pending |
+| DATA-05 | Phase 13 | Pending |
+| CLEAN-01 | Phase 13 | Pending |
+| CLEAN-02 | Phase 13 | Pending |
 
 **Coverage:**
 - v1.1 requirements: 17 total
-- Mapped to phases: 0
-- Unmapped: 17 (awaiting roadmap)
+- Mapped to phases: 17
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-27*
-*Last updated: 2026-03-27 after initial definition*
+*Last updated: 2026-03-27 after roadmap creation — all 17 requirements mapped*

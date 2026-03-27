@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-03-27)
 
 **Core value:** Developers using Claude Code can see what they shipped and what it cost, and share verifiable proof via an embeddable card.
-**Current focus:** v1.1 Dashboard Enhancement
+**Current focus:** v1.1 Dashboard Enhancement — Phase 13: Data Pipeline + Cleanup
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 13 — Data Pipeline + Cleanup
 Plan: —
-Status: Defining requirements
-Last activity: 2026-03-27 — Milestone v1.1 started
+Status: Roadmap complete, ready to plan
+Last activity: 2026-03-27 — v1.1 roadmap created (phases 13-15)
 
-Progress: [░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 0/? phases (v1.1)
+Progress: [░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 0/3 phases (v1.1)
 
 ## Performance Metrics
 
@@ -23,6 +23,10 @@ Progress: [░░░░░░░░░░░░░░░░░░░░░░░
 - 160 commits
 - 237 files, ~13,131 LOC
 - 3 days (2026-03-25 → 2026-03-27)
+
+**v1.1 Totals (running):**
+- 3 phases planned (13-15)
+- 17 requirements mapped
 
 ## Accumulated Context
 
@@ -33,19 +37,22 @@ Progress: [░░░░░░░░░░░░░░░░░░░░░░░
 - Slowest Day metric dropped (dead — never changes once set)
 - Direction indicators use neutral tones, not red/green alarm colors
 - Today's Activity uses calendar day (00:00–23:59), not rolling 24h
+- DATA pipeline phases first — dashboard can't show per-project stats without enriched sync payload
+- CLEAN-01 and CLEAN-02 bundled into Phase 13 (data layer touches same code)
+- Phase 15 (Project Activity) depends on Phase 13 but can run after Phase 14 in parallel if needed
 
 ### Pending Todos
 
-None — defining requirements.
+None — roadmap complete, ready for `/gsd:plan-phase 13`.
 
 ### Blockers/Concerns
 
 - [Action]: Replace placeholder OAuth client ID in login.ts with real GitHub OAuth App
 - [Action]: Set real KV namespace IDs in wrangler.jsonc before production deploy
-- [Deferred]: userMessages per day hardcoded to 0 in dailyAggregator.ts
+- [Deferred]: userMessages per day hardcoded to 0 in dailyAggregator.ts — Phase 13 will fix this
 
 ## Session Continuity
 
 Last session: 2026-03-27
-Stopped at: Defining v1.1 requirements
-Resume with: Continue `/gsd:new-milestone` — requirements → roadmap
+Stopped at: v1.1 roadmap created
+Resume with: `/gsd:plan-phase 13`
