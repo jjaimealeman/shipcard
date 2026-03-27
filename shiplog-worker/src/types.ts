@@ -263,6 +263,33 @@ export function isValidSyncV2Body(payload: unknown): payload is SyncV2Body {
 }
 
 // ---------------------------------------------------------------------------
+// CommunityMeta — KV metadata for community listing
+// ---------------------------------------------------------------------------
+
+/**
+ * Metadata stored alongside each user's KV entry at sync time.
+ *
+ * Written to the `metadata` field of `user:{username}:data` via KV put().
+ * Enables O(1) community page rendering: a single kv.list() call returns
+ * all users with their summary stats — no per-user get() calls needed.
+ *
+ * Privacy boundary: mirrors only safe, aggregated fields from SafeStats.
+ * No file paths, no project names, no raw timestamps beyond syncedAt.
+ */
+export interface CommunityMeta {
+  /** ISO timestamp of last sync. */
+  syncedAt: string;
+  /** Total number of Claude Code sessions analyzed. */
+  totalSessions: number;
+  /** Formatted total cost string, e.g. "~$12.34". Matches SafeStats.totalCost. */
+  totalCost: string;
+  /** Number of distinct projects (directories) touched. */
+  projectCount: number;
+  /** Sum of input + output + cacheCreate + cacheRead tokens. */
+  totalTokens: number;
+}
+
+// ---------------------------------------------------------------------------
 // Card query params
 // ---------------------------------------------------------------------------
 
