@@ -188,6 +188,12 @@ Plans:
   3. 7d/30d/all-time filter toggles re-render all charts client-side via Alpine.js
   4. Project activity bars visible only when user synced with `--show-projects`
   5. Dark theme matches existing site aesthetic (same CSS variables)
+**Plans:** 3 plans in 2 waves (11-01 first, then 11-02 + 11-03 parallel)
+
+Plans:
+- [ ] 11-01-PLAN.md -- Dashboard skeleton: route, Alpine.js state, data fetching, sticky filter bar, skeleton loading, hero stats
+- [ ] 11-02-PLAN.md -- Chart.js visualizations: activity overview, daily cost, day-of-week, tool/model/message donuts
+- [ ] 11-03-PLAN.md -- Calendar heatmap, project activity bars, grid layout polish, visual checkpoint
 
 ### Phase 12: Polish + Community
 **Goal**: Production-ready dashboard with mobile layout, private option, and community features on homepage
