@@ -287,6 +287,51 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
     gap: 16px;
     margin-bottom: 16px;
   }
+
+  /* Responsive: 2-col at 900px */
+  @media (max-width: 900px) {
+    .panels-row {
+      grid-template-columns: 1fr 1fr;
+    }
+    .panels-overview {
+      grid-template-columns: 1fr;
+    }
+  }
+  /* Responsive: 1-col at 600px */
+  @media (max-width: 600px) {
+    .panels-row {
+      grid-template-columns: 1fr;
+    }
+    .hero-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (max-width: 420px) {
+    .hero-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* -------------------------------------------------------------------------
+   * Calendar heatmap container
+   * ---------------------------------------------------------------------- */
+  #panel-calendar-chart {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 4px;
+  }
+  #heatmap-container {
+    min-width: 600px;
+  }
+  /* cal-heatmap dark theme overrides */
+  #heatmap-container .ch-domain-text {
+    fill: var(--mid) !important;
+    font-family: 'Poppins', system-ui, sans-serif !important;
+    font-size: 10px !important;
+  }
+  #heatmap-container rect.ch-subdomain-bg {
+    fill: var(--surface) !important;
+  }
   .panel {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -556,7 +601,9 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
         </div>
         <div class="panel-body">
           <div class="panel-skel skeleton" x-show="$store.dashboard.loading" style="display:none;min-height:120px"></div>
-          <div id="panel-calendar-chart" x-show="!$store.dashboard.loading" style="display:none;width:100%"></div>
+          <div id="panel-calendar-chart" x-show="!$store.dashboard.loading" style="display:none;width:100%">
+            <div id="heatmap-container"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -1062,6 +1109,9 @@ let chartDow      = null;
 let chartTools    = null;
 let chartModels   = null;
 let chartMessages = null;
+let chartTokens   = null;
+let chartProjects = null;
+let calHeatmapInstance = null;
 
 // ---------------------------------------------------------------------------
 // Chart builders — each returns the Chart instance
@@ -1350,19 +1400,221 @@ function buildMessagesChart(days) {
   return chartMessages;
 }
 
+function buildTokensChart(days) {
+  const canvas = document.getElementById('panel-tokens-chart');
+  if (!canvas) return null;
+  if (chartTokens) chartTokens.destroy();
+
+  const labels      = days.map(d => fmtDate(d.date));
+  const inputData   = days.map(d => d.tokens.input);
+  const outputData  = days.map(d => d.tokens.output);
+  const cacheCreate = days.map(d => d.tokens.cacheCreate);
+  const cacheRead   = days.map(d => d.tokens.cacheRead);
+
+  chartTokens = new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Input',
+          data: inputData,
+          backgroundColor: COLORS.blue + 'cc',
+          borderColor: COLORS.blue,
+          borderWidth: 1,
+          borderRadius: 2,
+          stack: 'tokens',
+        },
+        {
+          label: 'Output',
+          data: outputData,
+          backgroundColor: COLORS.orange + 'cc',
+          borderColor: COLORS.orange,
+          borderWidth: 1,
+          borderRadius: 2,
+          stack: 'tokens',
+        },
+        {
+          label: 'Cache Write',
+          data: cacheCreate,
+          backgroundColor: COLORS.green + 'cc',
+          borderColor: COLORS.green,
+          borderWidth: 1,
+          borderRadius: 2,
+          stack: 'tokens',
+        },
+        {
+          label: 'Cache Read',
+          data: cacheRead,
+          backgroundColor: '#c4a882cc',
+          borderColor: '#c4a882',
+          borderWidth: 1,
+          borderRadius: 2,
+          stack: 'tokens',
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: ANIM_OPTS,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: true, position: 'top' },
+        tooltip: TOOLTIP_BASE,
+        datalabels: { display: false },
+      },
+      scales: {
+        x: { stacked: true, grid: { color: COLORS.border }, ticks: { maxTicksLimit: 10, color: COLORS.mid } },
+        y: { stacked: true, grid: { color: COLORS.border }, beginAtZero: true },
+      },
+    },
+  });
+  return chartTokens;
+}
+
+// ---------------------------------------------------------------------------
+// Calendar heatmap — cal-heatmap 4.x
+// Always shows ALL TIME regardless of range filter (heatmap = historical view)
+// ---------------------------------------------------------------------------
+function buildHeatmap(allDays) {
+  const container = document.getElementById('heatmap-container');
+  if (!container) return;
+  if (typeof CalHeatmap === 'undefined') return;
+
+  // Destroy existing instance if any, clear container child nodes safely
+  if (calHeatmapInstance) {
+    try { calHeatmapInstance.destroy(); } catch (_) { /* ignore */ }
+    calHeatmapInstance = null;
+    while (container.firstChild) container.removeChild(container.firstChild);
+  }
+
+  // Transform days into { date, value } format
+  const source = allDays.map(d => ({ date: d.date, value: d.sessions }));
+
+  // Determine the start date — align to 12 months back
+  const now = new Date();
+  const twelveMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 11, 1);
+
+  let startDate = twelveMonthsAgo;
+  if (allDays.length > 0) {
+    const firstDay = new Date(allDays[0].date + 'T00:00:00');
+    // Show from the earlier of first day (month-aligned) or 12 months ago
+    const firstDayMonthStart = new Date(firstDay.getFullYear(), firstDay.getMonth(), 1);
+    startDate = firstDayMonthStart < twelveMonthsAgo ? twelveMonthsAgo : firstDayMonthStart;
+  }
+
+  calHeatmapInstance = new CalHeatmap();
+  calHeatmapInstance.paint({
+    data: {
+      source,
+      x: 'date',
+      y: 'value',
+      groupY: 'sum',
+    },
+    date: {
+      start: startDate,
+      highlight: [new Date()],
+    },
+    range: 12,
+    scale: {
+      color: {
+        type: 'threshold',
+        range: ['#1e1e1c', '#2d3a2d', '#4a6b3a', '#788c5d', '#a4c278'],
+        domain: [1, 3, 6, 10],
+      },
+    },
+    domain: {
+      type: 'month',
+      gutter: 4,
+      label: { text: 'MMM', textAlign: 'start', position: 'top' },
+    },
+    subDomain: {
+      type: 'day',
+      radius: 2,
+      width: 12,
+      height: 12,
+      gutter: 2,
+    },
+    itemSelector: '#heatmap-container',
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Project activity horizontal bar — only shown when hasProjects
+// ---------------------------------------------------------------------------
+function buildProjectsChart(days) {
+  const canvas = document.getElementById('panel-projects-chart');
+  if (!canvas) return null;
+  if (chartProjects) chartProjects.destroy();
+
+  // Count project occurrences across all filtered days
+  const projectCounts = {};
+  days.forEach(d => {
+    (d.projects || []).forEach(p => {
+      projectCounts[p] = (projectCounts[p] || 0) + 1;
+    });
+  });
+
+  // Sort descending, take top 10
+  const sorted = Object.entries(projectCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10);
+
+  const labels = sorted.map(e => e[0]);
+  const data   = sorted.map(e => e[1]);
+
+  chartProjects = new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Days active',
+        data,
+        backgroundColor: COLORS.green + 'cc',
+        borderColor: COLORS.green,
+        borderWidth: 1,
+        borderRadius: 4,
+      }],
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: ANIM_OPTS,
+      plugins: {
+        legend: { display: false },
+        tooltip: TOOLTIP_BASE,
+        datalabels: { display: false },
+      },
+      scales: {
+        x: { grid: { color: COLORS.border }, beginAtZero: true },
+        y: { grid: { color: COLORS.border }, ticks: { color: COLORS.mid } },
+      },
+    },
+  });
+  return chartProjects;
+}
+
 // ---------------------------------------------------------------------------
 // Chart initialization — runs once after Alpine store finishes loading
 // (chart.update('active') used for subsequent range changes)
 // ---------------------------------------------------------------------------
 
-/** Initialize or update all 6 charts with the given days array. */
-function updateAllCharts(days) {
+/** Initialize or update all charts with the given days array. */
+function updateAllCharts(days, allDays) {
   buildDailyChart(days);
   buildCostChart(days);
   buildDowChart(days);
   buildToolsChart(days);
   buildModelsChart(days);
   buildMessagesChart(days);
+  buildTokensChart(days);
+  // Heatmap always shows all-time data
+  buildHeatmap(allDays || days);
+  // Project bars only if data present
+  const hasProjects = days.some(d => d.projects && d.projects.length > 0);
+  if (hasProjects) buildProjectsChart(days);
 }
 
 /** Update chart data without rebuilding (smooth animated morph). */
@@ -1408,6 +1660,9 @@ document.addEventListener('alpine:initialized', () => {
   Alpine.effect(() => {
     const days = store.filteredDays; // reactive dependency
     if (!store.loading && days.length > 0) {
+      // Grab all-time days for heatmap (not filtered)
+      const allDays = store.timeseries ? store.timeseries.days : days;
+
       // If charts already exist, do a smooth update instead of full rebuild
       if (chartDaily) {
         // Daily combo chart
@@ -1444,9 +1699,23 @@ document.addEventListener('alpine:initialized', () => {
         const totalMsgs  = days.reduce((s, d) => s + (d.messages || 0), 0);
         const thinking   = days.reduce((s, d) => s + (d.thinkingBlocks || 0), 0);
         patchChart(chartMessages, ['You','Claude','Thinking'], [[userMsgs, Math.max(0, totalMsgs - userMsgs), thinking]]);
+        // Token stacked bar
+        patchChart(chartTokens,
+          days.map(d => fmtDate(d.date)),
+          [
+            days.map(d => d.tokens.input),
+            days.map(d => d.tokens.output),
+            days.map(d => d.tokens.cacheCreate),
+            days.map(d => d.tokens.cacheRead),
+          ]
+        );
+        // Project bars — rebuild on range change (conditional visibility)
+        const hasProjects = days.some(d => d.projects && d.projects.length > 0);
+        if (hasProjects) buildProjectsChart(days);
+        // Heatmap is all-time — no update needed on range change
       } else {
         // First render — build all charts
-        updateAllCharts(days);
+        updateAllCharts(days, allDays);
       }
     }
   });
