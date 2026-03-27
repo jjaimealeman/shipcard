@@ -173,6 +173,11 @@ Plans:
   3. `GET /u/:username/api/stats` returns SafeStats JSON
   4. `GET /u/:username/api/timeseries` returns SafeTimeSeries JSON
   5. v1 `POST /sync` and `GET /u/:username` SVG card remain unchanged
+**Plans:** 2 plans in 2 waves (sequential — API routes depend on types + KV helpers from Plan 01)
+
+Plans:
+- [ ] 10-01-PLAN.md — SafeTimeSeries types, KV helpers, POST /sync/v2 route, updated DELETE cleanup
+- [ ] 10-02-PLAN.md — Public JSON API routes (GET /api/stats + /api/timeseries) with CORS
 
 ### Phase 11: Dashboard MVP
 **Goal**: Full analytics dashboard at /u/:username/dashboard with 9 chart panels using Alpine.js + Chart.js
