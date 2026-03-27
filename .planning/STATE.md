@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-03-25)
 ## Current Position
 
 Phase: 12 of 12 (Polish & Community) — In progress
-Plan: 3 of ? in Phase 12 complete
+Plan: 3 of ? in Phase 12 complete (12-02 completed retroactively)
 Status: In progress — Phase 12 underway
-Last activity: 2026-03-27 — Completed 12-03-PLAN.md (CommunityMeta KV metadata, listUsers(), cards-served counter, both sync routes write metadata)
+Last activity: 2026-03-27 — Completed 12-02-PLAN.md (Mobile-first CSS, dropdown filter bar, Chart.js height fix, heatmap 30-day cap on mobile)
 
 Progress: [███████████████████████████] 27/27 plans complete so far (Phase 12 rolling)
 
@@ -145,6 +145,10 @@ Recent decisions affecting current work:
 - [12-03]: listUsers() filters :data suffix — avoids double-counting timeseries keys under user: prefix
 - [12-03]: cards-served counter in USER_DATA_KV (not CARDS_KV) — logically grouped with user data
 - [12-03]: Both v1 and v2 sync routes write CommunityMeta — ensures all users appear in community listings
+- [12-02]: panel-body explicit height 220px mobile / 280px desktop — Chart.js with maintainAspectRatio: false requires parent with explicit height
+- [12-02]: mobile-range-select shown by default, btn-group hidden — pure CSS toggle avoids Alpine render flash on mobile
+- [12-02]: heatmap window.innerWidth one-time check (no resize listener) — builds once at render with 30-day cap on < 640px screens
+- [12-02]: heatmap min-width: 600px removed — SVG width now dynamic; mobile day cap prevents overflow
 
 ### Pending Todos
 
