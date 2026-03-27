@@ -68,6 +68,11 @@ Production-ready dashboard with mobile responsive layout, loading/empty state ha
 - Private/unlisted dashboards — user mentioned in success criteria but not discussed; defer specifics to implementation or future phase
 - Configurator panel selection for dashboard — in success criteria, defer details to planning
 - Multiple leaderboard category routes (e.g., /leader/projects, /leader/sessions) — start with single community page, split later if needed
+- **Public roadmap page** on shipcard.dev — show what's coming, what's planned, what's NOT planned
+- **Stripe integration** — $1/month billing, free vs paid tier gating logic
+- **Pricing page** — communicate free vs paid tiers clearly
+- **"Built for Claude Code" positioning** — explicit on landing page copy, lean into the niche
+- **Multi-platform expansion** (gemini.shipcard.dev, codex.shipcard.dev) — name is platform-agnostic, keep option open but don't promise or build until Claude Code is nailed with 1,000+ users
 
 </deferred>
 
