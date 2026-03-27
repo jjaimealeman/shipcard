@@ -186,10 +186,28 @@ export function isValidSafeStats(payload: unknown): payload is SafeStats {
 // ---------------------------------------------------------------------------
 
 /**
+ * Per-project daily stats breakdown.
+ *
+ * Mirrors the CLI's PerProjectDailyStats type exactly.
+ * Only present when the user synced with --show-projects.
+ * Do NOT import from shiplog — the Worker maintains its own copy.
+ */
+export interface PerProjectDailyStats {
+  sessions: number;
+  messages: number;
+  userMessages: number;
+  tokens: { input: number; output: number; cacheCreate: number; cacheRead: number };
+  costCents: number;
+  toolCalls: Record<string, number>;
+  thinkingBlocks: number;
+  models: Record<string, number>;
+}
+
+/**
  * A single day's stats in the SafeTimeSeries payload.
  *
- * Mirrors the CLI's SafeDailyStats type. The `projects` field is optional —
- * only present when the user synced with --show-projects.
+ * Mirrors the CLI's SafeDailyStats type. The `projects` and `byProject` fields
+ * are optional — only present when the user synced with --show-projects.
  */
 export interface SafeDailyStats {
   date: string;
@@ -208,6 +226,8 @@ export interface SafeDailyStats {
   toolCalls: Record<string, number>;
   /** Only present when --show-projects flag is set. */
   projects?: string[];
+  /** Per-project breakdown. Only present when --show-projects flag is set. */
+  byProject?: Record<string, PerProjectDailyStats>;
 }
 
 /**

@@ -15,7 +15,7 @@
  */
 
 import type { AnalyticsResult } from "../engine/types.js";
-import type { DailyStats } from "../engine/dailyAggregator.js";
+import type { DailyStats, PerProjectDailyStats } from "../engine/dailyAggregator.js";
 
 // ---------------------------------------------------------------------------
 // SafeStats type (mirrors shipcard-worker/src/types.ts — do NOT import from Worker)
@@ -78,6 +78,8 @@ export interface SafeDailyStats {
   toolCalls: Record<string, number>;
   /** Only present when --show-projects flag is set. */
   projects?: string[];
+  /** Per-project breakdown. Only present when --show-projects flag is set. */
+  byProject?: Record<string, PerProjectDailyStats>;
 }
 
 /**
@@ -163,6 +165,9 @@ export function toSafeTimeSeries(
       };
       if (showProjects) {
         safe.projects = day.projects;
+        if (day.byProject) {
+          safe.byProject = day.byProject;
+        }
       }
       return safe;
     }),
