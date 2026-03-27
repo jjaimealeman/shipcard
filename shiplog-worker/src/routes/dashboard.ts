@@ -956,6 +956,501 @@ document.addEventListener('alpine:init', () => {
     },
   });
 });
+
+// ---------------------------------------------------------------------------
+// Chart.js — color palette and global defaults
+// ---------------------------------------------------------------------------
+const COLORS = {
+  orange:  '#d97757',
+  blue:    '#6a9bcc',
+  green:   '#788c5d',
+  fg:      '#faf9f5',
+  mid:     '#b0aea5',
+  surface: '#1e1e1c',
+  border:  '#2a2a28',
+  bg:      '#141413',
+};
+const CHART_COLORS = [
+  '#d97757','#6a9bcc','#788c5d','#c4a882',
+  '#8b7ec8','#cc6b8e','#5bb5a2','#d4a053',
+];
+
+// Tooltip base options (reused across all charts)
+const TOOLTIP_BASE = {
+  backgroundColor: '#1e1e1c',
+  borderColor:     '#2a2a28',
+  borderWidth:     1,
+  titleColor:      '#faf9f5',
+  bodyColor:       '#b0aea5',
+  padding:         8,
+};
+
+// Animation settings
+const ANIM_OPTS = { duration: 400, easing: 'easeInOutQuart' };
+
+// ---------------------------------------------------------------------------
+// Data aggregation helpers
+// ---------------------------------------------------------------------------
+
+/** Format date string (YYYY-MM-DD) → "MMM DD" */
+function fmtDate(dateStr) {
+  const d = new Date(dateStr + 'T00:00:00');
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+/** Aggregate sessions per day-of-week. Returns { labels, data } for Mon–Sun. */
+function aggregateByWeekday(days) {
+  const DOW_LABELS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const counts = new Array(7).fill(0);
+  days.forEach(d => {
+    // getDay() → 0=Sun…6=Sat; shift so Mon=0
+    const dow = (new Date(d.date + 'T00:00:00').getDay() + 6) % 7;
+    counts[dow] += d.sessions;
+  });
+  return { labels: DOW_LABELS, data: counts };
+}
+
+/** Aggregate a Record<string,number> field across all days. */
+function aggregateField(days, field) {
+  const totals = {};
+  days.forEach(d => {
+    const obj = d[field] || {};
+    Object.entries(obj).forEach(([k, v]) => {
+      totals[k] = (totals[k] || 0) + v;
+    });
+  });
+  return totals;
+}
+
+/** Return top-N entries; merge the rest into "Other". */
+function topN(obj, n) {
+  const sorted = Object.entries(obj).sort((a, b) => b[1] - a[1]);
+  if (sorted.length <= n) return { labels: sorted.map(e => e[0]), data: sorted.map(e => e[1]) };
+  const top = sorted.slice(0, n);
+  const otherSum = sorted.slice(n).reduce((s, e) => s + e[1], 0);
+  return {
+    labels: [...top.map(e => e[0]), 'Other'],
+    data:   [...top.map(e => e[1]), otherSum],
+  };
+}
+
+/** Clean model display name: strip "claude-" prefix, truncate. */
+function cleanModelName(name) {
+  return name.replace(/^claude-/, '').replace(/-\d{4}-\d{2}-\d{2}$/, '');
+}
+
+// ---------------------------------------------------------------------------
+// Datalabels formatter for donuts — "Label: N (X%)"
+// ---------------------------------------------------------------------------
+function donutFormatter(value, ctx) {
+  if (value === 0) return null;
+  const data   = ctx.chart.data.datasets[0].data;
+  const total  = data.reduce((s, v) => s + v, 0);
+  if (total === 0) return null;
+  const pct = ((value / total) * 100).toFixed(1);
+  const label = ctx.chart.data.labels[ctx.dataIndex];
+  const valFmt = value >= 1000 ? (value / 1000).toFixed(1) + 'k' : String(value);
+  return label + ': ' + valFmt + ' (' + pct + '%)';
+}
+
+// ---------------------------------------------------------------------------
+// Chart instances (stored module-level for update on range change)
+// ---------------------------------------------------------------------------
+let chartDaily    = null;
+let chartCost     = null;
+let chartDow      = null;
+let chartTools    = null;
+let chartModels   = null;
+let chartMessages = null;
+
+// ---------------------------------------------------------------------------
+// Chart builders — each returns the Chart instance
+// ---------------------------------------------------------------------------
+
+function buildDailyChart(days) {
+  const canvas = document.getElementById('panel-daily-chart');
+  if (!canvas) return null;
+  if (chartDaily) chartDaily.destroy();
+
+  const labels   = days.map(d => fmtDate(d.date));
+  const sessions = days.map(d => d.sessions);
+  const tokensK  = days.map(d => (d.tokens.input + d.tokens.output + d.tokens.cacheCreate + d.tokens.cacheRead) / 1000);
+
+  chartDaily = new Chart(canvas, {
+    data: {
+      labels,
+      datasets: [
+        {
+          type: 'bar',
+          label: 'Sessions',
+          data: sessions,
+          backgroundColor: COLORS.orange + 'aa',
+          borderColor: COLORS.orange,
+          borderWidth: 1,
+          borderRadius: 3,
+          yAxisID: 'yLeft',
+          order: 2,
+        },
+        {
+          type: 'line',
+          label: 'Tokens (k)',
+          data: tokensK,
+          borderColor: COLORS.blue,
+          backgroundColor: COLORS.blue + '22',
+          borderWidth: 2,
+          pointRadius: 0,
+          fill: true,
+          tension: 0.4,
+          yAxisID: 'yRight',
+          order: 1,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: ANIM_OPTS,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: true, position: 'top' },
+        tooltip: TOOLTIP_BASE,
+        datalabels: { display: false },
+      },
+      scales: {
+        x: { grid: { color: COLORS.border }, ticks: { maxTicksLimit: 10, color: COLORS.mid } },
+        yLeft:  { grid: { color: COLORS.border }, beginAtZero: true, position: 'left',  title: { display: true, text: 'Sessions', color: COLORS.mid } },
+        yRight: { grid: { drawOnChartArea: false }, beginAtZero: true, position: 'right', title: { display: true, text: 'Tokens (k)', color: COLORS.mid } },
+      },
+    },
+  });
+  return chartDaily;
+}
+
+function buildCostChart(days) {
+  const canvas = document.getElementById('panel-cost-chart');
+  if (!canvas) return null;
+  if (chartCost) chartCost.destroy();
+
+  const labels = days.map(d => fmtDate(d.date));
+  const costs  = days.map(d => +(d.costCents / 100).toFixed(4));
+
+  chartCost = new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Cost ($)',
+        data: costs,
+        backgroundColor: COLORS.green + 'cc',
+        borderColor: COLORS.green,
+        borderWidth: 1,
+        borderRadius: 3,
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: ANIM_OPTS,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          ...TOOLTIP_BASE,
+          callbacks: {
+            label: ctx => '$' + ctx.parsed.y.toFixed(4),
+          },
+        },
+        datalabels: { display: false },
+      },
+      scales: {
+        x: { grid: { color: COLORS.border }, ticks: { maxTicksLimit: 10, color: COLORS.mid } },
+        y: { grid: { color: COLORS.border }, beginAtZero: true, ticks: { callback: v => '$' + v } },
+      },
+    },
+  });
+  return chartCost;
+}
+
+function buildDowChart(days) {
+  const canvas = document.getElementById('panel-dow-chart');
+  if (!canvas) return null;
+  if (chartDow) chartDow.destroy();
+
+  const { labels, data } = aggregateByWeekday(days);
+
+  chartDow = new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Sessions',
+        data,
+        backgroundColor: CHART_COLORS.slice(0, 7),
+        borderRadius: 4,
+      }],
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: ANIM_OPTS,
+      plugins: {
+        legend: { display: false },
+        tooltip: TOOLTIP_BASE,
+        datalabels: { display: false },
+      },
+      scales: {
+        x: { grid: { color: COLORS.border }, beginAtZero: true },
+        y: { grid: { color: COLORS.border } },
+      },
+    },
+  });
+  return chartDow;
+}
+
+function buildToolsChart(days) {
+  const canvas = document.getElementById('panel-tools-chart');
+  if (!canvas) return null;
+  if (chartTools) chartTools.destroy();
+
+  const totals = aggregateField(days, 'toolCalls');
+  const { labels, data } = topN(totals, 7);
+
+  chartTools = new Chart(canvas, {
+    type: 'doughnut',
+    data: {
+      labels,
+      datasets: [{
+        data,
+        backgroundColor: CHART_COLORS,
+        borderColor: COLORS.surface,
+        borderWidth: 2,
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: ANIM_OPTS,
+      cutout: '60%',
+      plugins: {
+        legend: { display: false },
+        tooltip: TOOLTIP_BASE,
+        datalabels: {
+          display: ctx => {
+            const data  = ctx.chart.data.datasets[0].data;
+            const total = data.reduce((s, v) => s + v, 0);
+            return total > 0 && (ctx.dataset.data[ctx.dataIndex] / total) > 0.05;
+          },
+          color: COLORS.fg,
+          font: { size: 10, family: "'Poppins', system-ui, sans-serif" },
+          formatter: donutFormatter,
+          textShadowBlur: 3,
+          textShadowColor: COLORS.bg,
+        },
+      },
+    },
+  });
+  return chartTools;
+}
+
+function buildModelsChart(days) {
+  const canvas = document.getElementById('panel-models-chart');
+  if (!canvas) return null;
+  if (chartModels) chartModels.destroy();
+
+  const totals = aggregateField(days, 'models');
+  // Clean model names
+  const cleaned = {};
+  Object.entries(totals).forEach(([k, v]) => {
+    const name = cleanModelName(k);
+    cleaned[name] = (cleaned[name] || 0) + v;
+  });
+  const { labels, data } = topN(cleaned, 7);
+
+  chartModels = new Chart(canvas, {
+    type: 'doughnut',
+    data: {
+      labels,
+      datasets: [{
+        data,
+        backgroundColor: CHART_COLORS,
+        borderColor: COLORS.surface,
+        borderWidth: 2,
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: ANIM_OPTS,
+      cutout: '60%',
+      plugins: {
+        legend: { display: false },
+        tooltip: TOOLTIP_BASE,
+        datalabels: {
+          display: ctx => {
+            const data  = ctx.chart.data.datasets[0].data;
+            const total = data.reduce((s, v) => s + v, 0);
+            return total > 0 && (ctx.dataset.data[ctx.dataIndex] / total) > 0.05;
+          },
+          color: COLORS.fg,
+          font: { size: 10, family: "'Poppins', system-ui, sans-serif" },
+          formatter: donutFormatter,
+          textShadowBlur: 3,
+          textShadowColor: COLORS.bg,
+        },
+      },
+    },
+  });
+  return chartModels;
+}
+
+function buildMessagesChart(days) {
+  const canvas = document.getElementById('panel-messages-chart');
+  if (!canvas) return null;
+  if (chartMessages) chartMessages.destroy();
+
+  const userMsgs     = days.reduce((s, d) => s + (d.userMessages || 0), 0);
+  const totalMsgs    = days.reduce((s, d) => s + (d.messages    || 0), 0);
+  const thinking     = days.reduce((s, d) => s + (d.thinkingBlocks || 0), 0);
+  const assistMsgs   = Math.max(0, totalMsgs - userMsgs);
+
+  chartMessages = new Chart(canvas, {
+    type: 'doughnut',
+    data: {
+      labels: ['You', 'Claude', 'Thinking'],
+      datasets: [{
+        data: [userMsgs, assistMsgs, thinking],
+        backgroundColor: [COLORS.orange, COLORS.blue, COLORS.green],
+        borderColor: COLORS.surface,
+        borderWidth: 2,
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: ANIM_OPTS,
+      cutout: '60%',
+      plugins: {
+        legend: { display: false },
+        tooltip: TOOLTIP_BASE,
+        datalabels: {
+          display: ctx => {
+            const data  = ctx.chart.data.datasets[0].data;
+            const total = data.reduce((s, v) => s + v, 0);
+            return total > 0 && (ctx.dataset.data[ctx.dataIndex] / total) > 0.05;
+          },
+          color: COLORS.fg,
+          font: { size: 11, family: "'Poppins', system-ui, sans-serif" },
+          formatter: donutFormatter,
+          textShadowBlur: 3,
+          textShadowColor: COLORS.bg,
+        },
+      },
+    },
+  });
+  return chartMessages;
+}
+
+// ---------------------------------------------------------------------------
+// Chart initialization — runs once after Alpine store finishes loading
+// (chart.update('active') used for subsequent range changes)
+// ---------------------------------------------------------------------------
+
+/** Initialize or update all 6 charts with the given days array. */
+function updateAllCharts(days) {
+  buildDailyChart(days);
+  buildCostChart(days);
+  buildDowChart(days);
+  buildToolsChart(days);
+  buildModelsChart(days);
+  buildMessagesChart(days);
+}
+
+/** Update chart data without rebuilding (smooth animated morph). */
+function patchChart(chart, labels, datasets) {
+  if (!chart) return;
+  chart.data.labels = labels;
+  datasets.forEach((ds, i) => {
+    if (chart.data.datasets[i]) {
+      chart.data.datasets[i].data = ds;
+    }
+  });
+  chart.update('active');
+}
+
+// ---------------------------------------------------------------------------
+// Bootstrap: wait for Alpine to finish initializing the store, then
+// watch for loading → false and set up $watch on range changes.
+// ---------------------------------------------------------------------------
+document.addEventListener('alpine:init', () => {
+  // Register ChartDataLabels plugin so donut labels are active
+  if (typeof ChartDataLabels !== 'undefined') {
+    Chart.register(ChartDataLabels);
+  }
+
+  // Set global chart defaults to match dark theme
+  if (typeof Chart !== 'undefined') {
+    Chart.defaults.color         = COLORS.mid;
+    Chart.defaults.borderColor   = COLORS.border;
+    Chart.defaults.font.family   = "'Poppins', system-ui, sans-serif";
+    Chart.defaults.font.size     = 12;
+    Chart.defaults.plugins.legend.labels.usePointStyle    = true;
+    Chart.defaults.plugins.legend.labels.pointStyleWidth  = 8;
+  }
+});
+
+// After Alpine boots, set up the reactive watcher on filteredDays / range.
+// We use a MutationObserver on body to wait for Alpine to attach, then
+// rely on a polling check for the store to be ready.
+document.addEventListener('alpine:initialized', () => {
+  const store = Alpine.store('dashboard');
+
+  // Watch range changes → update charts with smooth morph
+  Alpine.effect(() => {
+    const days = store.filteredDays; // reactive dependency
+    if (!store.loading && days.length > 0) {
+      // If charts already exist, do a smooth update instead of full rebuild
+      if (chartDaily) {
+        // Daily combo chart
+        patchChart(chartDaily,
+          days.map(d => fmtDate(d.date)),
+          [
+            days.map(d => d.sessions),
+            days.map(d => (d.tokens.input + d.tokens.output + d.tokens.cacheCreate + d.tokens.cacheRead) / 1000),
+          ]
+        );
+        // Cost chart
+        patchChart(chartCost,
+          days.map(d => fmtDate(d.date)),
+          [days.map(d => +(d.costCents / 100).toFixed(4))]
+        );
+        // DoW chart
+        const dow = aggregateByWeekday(days);
+        patchChart(chartDow, dow.labels, [dow.data]);
+        // Tools donut
+        const toolTotals = aggregateField(days, 'toolCalls');
+        const { labels: tl, data: td } = topN(toolTotals, 7);
+        patchChart(chartTools, tl, [td]);
+        // Models donut
+        const modelTotals = aggregateField(days, 'models');
+        const cleanedM = {};
+        Object.entries(modelTotals).forEach(([k, v]) => {
+          const n = cleanModelName(k);
+          cleanedM[n] = (cleanedM[n] || 0) + v;
+        });
+        const { labels: ml, data: md } = topN(cleanedM, 7);
+        patchChart(chartModels, ml, [md]);
+        // Messages donut
+        const userMsgs   = days.reduce((s, d) => s + (d.userMessages || 0), 0);
+        const totalMsgs  = days.reduce((s, d) => s + (d.messages || 0), 0);
+        const thinking   = days.reduce((s, d) => s + (d.thinkingBlocks || 0), 0);
+        patchChart(chartMessages, ['You','Claude','Thinking'], [[userMsgs, Math.max(0, totalMsgs - userMsgs), thinking]]);
+      } else {
+        // First render — build all charts
+        updateAllCharts(days);
+      }
+    }
+  });
+});
 </script>
 
 </body>
