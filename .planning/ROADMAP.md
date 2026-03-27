@@ -20,6 +20,10 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 6: Worker Card Params** - Wire hide param and redacted card in Worker
 - [x] **Phase 7: Auth Verify + Docs** - Test OAuth device flow, document npx CLI usage
 - [x] **Phase 8: Landing Page** - Polished homepage for shipcard.dev (replacing JSON health check)
+- [ ] **Phase 9: CLI Time-Series Extraction** - CLI computes daily aggregates from JSONL and sends alongside SafeStats
+- [ ] **Phase 10: Worker v2 Sync + JSON API** - Worker accepts time-series data and serves JSON APIs
+- [ ] **Phase 11: Dashboard MVP** - Full analytics dashboard at /u/:username/dashboard with Alpine.js + Chart.js
+- [ ] **Phase 12: Polish + Community** - Mobile responsive, private dashboards, community feed on homepage
 
 ## Phase Details
 
@@ -144,10 +148,56 @@ Plans:
 Plans:
 - [x] 08-01-PLAN.md — Complete landing page: self-hosted fonts, HTML/CSS/JS page with configurator, index.ts wiring
 
+### Phase 9: CLI Time-Series Extraction
+**Goal**: CLI computes daily aggregates from JSONL files and sends them alongside SafeStats via a v2 sync endpoint
+**Depends on**: Phase 8
+**Success Criteria** (what must be TRUE):
+  1. Parser counts user messages and thinking blocks (currently skipped)
+  2. New daily aggregation engine groups ParsedMessages into DailyStats by date
+  3. SafeTimeSeries type enforces privacy boundary (no paths, opt-in project names)
+  4. `shipcard sync` sends v2 payload with time-series data alongside SafeStats
+  5. `--show-projects` flag includes project display names (last path segment)
+  6. Graceful fallback to v1 `/sync` if Worker returns 404 on `/sync/v2`
+**Plans:** 2 plans in 2 waves (sequential — 09-01 parser+engine, then 09-02 privacy+sync)
+
+Plans:
+- [ ] 09-01-PLAN.md — Parser enhancement (thinkingBlocks, userMessages) + daily aggregation engine
+- [ ] 09-02-PLAN.md — SafeTimeSeries privacy envelope, --show-projects flag, v2 sync with 404 fallback
+
+### Phase 10: Worker v2 Sync + JSON API
+**Goal**: Worker accepts time-series data, stores it in KV, and serves JSON API endpoints for the dashboard
+**Depends on**: Phase 9
+**Success Criteria** (what must be TRUE):
+  1. `POST /sync/v2` accepts and validates SafeTimeSeries alongside SafeStats
+  2. Time-series stored in KV at `user:{username}:timeseries`
+  3. `GET /u/:username/api/stats` returns SafeStats JSON
+  4. `GET /u/:username/api/timeseries` returns SafeTimeSeries JSON
+  5. v1 `POST /sync` and `GET /u/:username` SVG card remain unchanged
+
+### Phase 11: Dashboard MVP
+**Goal**: Full analytics dashboard at /u/:username/dashboard with 9 chart panels using Alpine.js + Chart.js
+**Depends on**: Phase 10
+**Success Criteria** (what must be TRUE):
+  1. `GET /u/:username/dashboard` renders an HTML analytics dashboard
+  2. Dashboard displays: hero stats, activity overview, calendar heatmap, daily activity chart, day-of-week bars, tool/model/message donuts, project activity bars
+  3. 7d/30d/all-time filter toggles re-render all charts client-side via Alpine.js
+  4. Project activity bars visible only when user synced with `--show-projects`
+  5. Dark theme matches existing site aesthetic (same CSS variables)
+
+### Phase 12: Polish + Community
+**Goal**: Production-ready dashboard with mobile layout, private option, and community features on homepage
+**Depends on**: Phase 11
+**Success Criteria** (what must be TRUE):
+  1. Dashboard is responsive at mobile widths (375px+)
+  2. Loading/error/empty states handled gracefully
+  3. Homepage shows community feed (recent users, leaderboard, cards served counter)
+  4. SVG card footer includes "Get yours at shipcard.dev"
+  5. Configurator supports panel selection for dashboard
+
 ## Progress
 
 **Execution Order:**
-Phases execute sequentially: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
+Phases execute sequentially: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10 -> 11 -> 12
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -159,3 +209,7 @@ Phases execute sequentially: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | 6. Worker Card Params | 1/1 | ✓ Complete | 2026-03-26 |
 | 7. Auth Verify + Docs | 1/1 | ✓ Complete | 2026-03-26 |
 | 8. Landing Page | 1/1 | ✓ Complete | 2026-03-26 |
+| 9. CLI Time-Series | 0/2 | ○ Pending | - |
+| 10. Worker v2 API | 0/? | ○ Pending | - |
+| 11. Dashboard MVP | 0/? | ○ Pending | - |
+| 12. Polish + Community | 0/? | ○ Pending | - |
