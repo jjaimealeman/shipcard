@@ -20,7 +20,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 6: Worker Card Params** - Wire hide param and redacted card in Worker
 - [x] **Phase 7: Auth Verify + Docs** - Test OAuth device flow, document npx CLI usage
 - [x] **Phase 8: Landing Page** - Polished homepage for shipcard.dev (replacing JSON health check)
-- [ ] **Phase 9: CLI Time-Series Extraction** - CLI computes daily aggregates from JSONL and sends alongside SafeStats
+- [x] **Phase 9: CLI Time-Series Extraction** - CLI computes daily aggregates from JSONL and sends alongside SafeStats
 - [ ] **Phase 10: Worker v2 Sync + JSON API** - Worker accepts time-series data and serves JSON APIs
 - [ ] **Phase 11: Dashboard MVP** - Full analytics dashboard at /u/:username/dashboard with Alpine.js + Chart.js
 - [ ] **Phase 12: Polish + Community** - Mobile responsive, private dashboards, community feed on homepage
@@ -161,8 +161,8 @@ Plans:
 **Plans:** 2 plans in 2 waves (sequential — 09-01 parser+engine, then 09-02 privacy+sync)
 
 Plans:
-- [ ] 09-01-PLAN.md — Parser enhancement (thinkingBlocks, userMessages) + daily aggregation engine
-- [ ] 09-02-PLAN.md — SafeTimeSeries privacy envelope, --show-projects flag, v2 sync with 404 fallback
+- [x] 09-01-PLAN.md — Parser enhancement (thinkingBlocks, userMessages) + daily aggregation engine
+- [x] 09-02-PLAN.md — SafeTimeSeries privacy envelope, --show-projects flag, v2 sync with 404 fallback
 
 ### Phase 10: Worker v2 Sync + JSON API
 **Goal**: Worker accepts time-series data, stores it in KV, and serves JSON API endpoints for the dashboard
@@ -209,7 +209,7 @@ Phases execute sequentially: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10 -> 
 | 6. Worker Card Params | 1/1 | ✓ Complete | 2026-03-26 |
 | 7. Auth Verify + Docs | 1/1 | ✓ Complete | 2026-03-26 |
 | 8. Landing Page | 1/1 | ✓ Complete | 2026-03-26 |
-| 9. CLI Time-Series | 0/2 | ○ Pending | - |
+| 9. CLI Time-Series | 2/2 | ✓ Complete | 2026-03-26 |
 | 10. Worker v2 API | 0/? | ○ Pending | - |
 | 11. Dashboard MVP | 0/? | ○ Pending | - |
 | 12. Polish + Community | 0/? | ○ Pending | - |
