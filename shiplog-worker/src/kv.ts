@@ -7,10 +7,11 @@
  *   card:{username}:{theme}:{layout}:{style}              — rendered SVG variant cache (no hide)
  *   card:{username}:{theme}:{layout}:{style}:hide={a,b}   — SVG variant with hidden stats
  *   user:{username}:data                                   — SafeStats JSON payload
+ *   user:{username}:timeseries                             — SafeTimeSeries JSON payload
  *   token:{token}:username                                 — auth token → username lookup
  */
 
-import type { SafeStats } from "./types.js";
+import type { SafeStats, SafeTimeSeries } from "./types.js";
 
 // ---------------------------------------------------------------------------
 // Card cache (CARDS_KV)
@@ -117,7 +118,7 @@ export async function putUserData(
 }
 
 /**
- * Delete all data for a user: SafeStats payload + all card variants.
+ * Delete all data for a user: SafeStats payload + time-series payload + all card variants.
  * Used by `shipcard sync --delete`.
  */
 export async function deleteAllUserData(
@@ -125,8 +126,42 @@ export async function deleteAllUserData(
   username: string
 ): Promise<void> {
   await kv.delete(`user:${username}:data`);
+  await kv.delete(`user:${username}:timeseries`);
   const listed = await kv.list({ prefix: `card:${username}:` });
   await Promise.all(listed.keys.map((k) => kv.delete(k.name)));
+}
+
+// ---------------------------------------------------------------------------
+// Time-series data (USER_DATA_KV)
+// ---------------------------------------------------------------------------
+
+/**
+ * Read a user's SafeTimeSeries payload from KV.
+ * Returns null if the user has no time-series data or on JSON parse error.
+ */
+export async function getTimeSeries(
+  kv: KVNamespace,
+  username: string
+): Promise<SafeTimeSeries | null> {
+  const raw = await kv.get(`user:${username}:timeseries`);
+  if (raw === null) return null;
+  try {
+    return JSON.parse(raw) as SafeTimeSeries;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Write a user's SafeTimeSeries payload to KV.
+ * No expirationTtl — cache is valid until the next sync overwrites it.
+ */
+export async function putTimeSeries(
+  kv: KVNamespace,
+  username: string,
+  data: SafeTimeSeries
+): Promise<void> {
+  await kv.put(`user:${username}:timeseries`, JSON.stringify(data));
 }
 
 // ---------------------------------------------------------------------------
