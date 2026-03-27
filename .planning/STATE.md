@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-03-25)
 
 **Core value:** Developers using Claude Code can see what they shipped and what it cost, and share verifiable proof via an embeddable card.
-**Current focus:** Phase 12 - Polish & Community — In Progress
+**Current focus:** Phase 12 - Polish & Community — COMPLETE
 
 ## Current Position
 
-Phase: 12 of 12 (Polish & Community) — In progress
-Plan: 3 of ? in Phase 12 complete (12-02 completed retroactively)
-Status: In progress — Phase 12 underway
-Last activity: 2026-03-27 — Completed 12-02-PLAN.md (Mobile-first CSS, dropdown filter bar, Chart.js height fix, heatmap 30-day cap on mobile)
+Phase: 12 of 12 (Polish & Community) — Complete
+Plan: 4 of 4 in Phase 12 complete
+Status: ALL PHASES COMPLETE
+Last activity: 2026-03-27 — Completed 12-04-PLAN.md (Community teaser on homepage, /community leaderboard with Alpine.js sorting)
 
-Progress: [███████████████████████████] 27/27 plans complete so far (Phase 12 rolling)
+Progress: [████████████████████████████] 12/12 phases complete
 
 ## Performance Metrics
 
@@ -149,6 +149,10 @@ Recent decisions affecting current work:
 - [12-02]: mobile-range-select shown by default, btn-group hidden — pure CSS toggle avoids Alpine render flash on mobile
 - [12-02]: heatmap window.innerWidth one-time check (no resize listener) — builds once at render with 30-day cap on < 640px screens
 - [12-02]: heatmap min-width: 600px removed — SVG width now dynamic; mobile day cap prevents overflow
+- [12-04]: Placeholder injection for landing page: <!--PLACEHOLDER--> HTML comments replaced in async handler — avoids restructuring large template literal
+- [12-04]: communityRoutes mounted after landingRoutes and before /u routes — /community is top-level named route
+- [12-04]: Alpine.js JSON hydration via window.__USERS__ global in inline <script> — no fetch needed, data server-rendered
+- [12-04]: costNum float extracted server-side from totalCost string — enables numeric Alpine sort without client-side parsing
 
 ### Pending Todos
 
@@ -164,6 +168,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-27T17:17:20Z
-Stopped at: Completed 12-03-PLAN.md — CommunityMeta KV metadata, listUsers(), cards-served counter, both sync routes updated
+Last session: 2026-03-27T17:24:40Z
+Stopped at: Completed 12-04-PLAN.md — Community teaser on homepage, /community leaderboard with Alpine.js sorting
 Resume file: None
