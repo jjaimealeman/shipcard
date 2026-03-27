@@ -21,6 +21,12 @@
       "id": "682c4a90e7ee445ba9dab2ed7eb2722f",
     },
   ],
+  // Build-time defines — __GIT_HASH__ is injected by deploy command:
+  //   npx wrangler deploy --define __GIT_HASH__:'"$(git rev-parse --short HEAD)"'
+  // __APP_VERSION__ reads from this file's vars:
+  "define": {
+    "__APP_VERSION__": "\"0.1.0\""
+  },
   // Secrets are set via wrangler CLI, NOT in this file:
   //   npx wrangler secret put GITHUB_CLIENT_SECRET
   //   npx wrangler secret put TOKEN_SECRET

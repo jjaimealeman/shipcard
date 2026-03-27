@@ -308,6 +308,22 @@ const CONFIGURATOR_HTML = `<!DOCTYPE html>
     color: var(--mid);
     line-height: 1.5;
   }
+  .version-badge {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    border-right: none;
+    border-top-left-radius: 8px;
+    padding: 4px 10px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--mid);
+    letter-spacing: 0.02em;
+    z-index: 10;
+  }
   .footer {
     text-align: center;
     padding: 16px;
@@ -720,6 +736,7 @@ const CONFIGURATOR_HTML = `<!DOCTYPE html>
   render();
 })();
 </script>
+<div class="version-badge">v${__APP_VERSION__}</div>
 </body>
 </html>`;
 

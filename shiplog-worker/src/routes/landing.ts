@@ -441,6 +441,23 @@ const LANDING_HTML = `<!DOCTYPE html>
   }
   .footer-links a:hover { color: var(--orange); }
 
+  .version-badge {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    border-right: none;
+    border-top-left-radius: 8px;
+    padding: 4px 10px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--mid);
+    letter-spacing: 0.02em;
+    z-index: 10;
+  }
+
   /* ---------- RESPONSIVE ---------- */
   @media (max-width: 768px) {
     .config-grid {
@@ -808,6 +825,7 @@ const LANDING_HTML = `<!DOCTYPE html>
   refreshCard();
 })();
 </script>
+<div class="version-badge">v${__APP_VERSION__}</div>
 </body>
 </html>`;
 
