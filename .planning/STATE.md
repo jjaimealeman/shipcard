@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-03-25)
 ## Current Position
 
 Phase: 11 of 11 (Dashboard MVP) — In progress
-Plan: 1 of 3 in Phase 11 complete
+Plan: 2 of 3 in Phase 11 complete
 Status: In progress — executing Phase 11
-Last activity: 2026-03-27 — Completed 11-01-PLAN.md (Dashboard skeleton: route, Alpine.js store, hero stats, filter bar, skeletons)
+Last activity: 2026-03-27 — Completed 11-02-PLAN.md (Chart visualizations: 6 Chart.js charts, Alpine.effect() reactivity, datalabels donuts)
 
-Progress: [██████████████████████░░] 22/24 plans complete
+Progress: [███████████████████████░] 23/24 plans complete
 
 ## Performance Metrics
 
@@ -131,6 +131,10 @@ Recent decisions affecting current work:
 - [11-01]: Timeseries 404 degrades gracefully — stats still shown, sparklines empty, no broken page for v1-only users
 - [11-01]: replace(/__USERNAME__/g, username) with global flag — username appears in 4+ positions in the HTML template
 - [11-01]: 9 chart panels as skeleton+canvas pairs — Plans 02 and 03 wire Chart.js into the canvas elements
+- [11-02]: Alpine.effect() as reactive bridge between Alpine.store and Chart.js instances — no $watch per chart needed
+- [11-02]: Build vs. patch strategy — first render builds charts (new Chart), range changes use patchChart() for smooth morph via chart.update('active')
+- [11-02]: Chart.register(ChartDataLabels) in alpine:init — guarantees registration before any chart is built
+- [11-02]: Donut label threshold 5% — labels hidden for segments below threshold to prevent overlap
 
 ### Pending Todos
 
@@ -146,6 +150,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-27T07:50:00Z
-Stopped at: Completed 11-01-PLAN.md — Dashboard skeleton: Hono route, Alpine.js store, hero stats sparklines, sticky filter bar, skeleton loading, 9 chart panel containers.
+Last session: 2026-03-27T07:51:00Z
+Stopped at: Completed 11-02-PLAN.md — Chart visualizations: 6 Chart.js charts (daily combo, cost bars, DoW, tool/model/message donuts), Alpine.effect() reactivity, datalabels.
 Resume file: None
