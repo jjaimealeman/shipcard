@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-03-25)
 
 ## Current Position
 
-Phase: 9 of 9 (CLI Time-Series) — In progress
-Plan: 1 of N in Phase 9 complete (09-01 done)
-Status: In progress
-Last activity: 2026-03-27 — Completed 09-01-PLAN.md (parser enhancement + daily aggregation engine)
+Phase: 9 of 9 (CLI Time-Series) — Complete
+Plan: 2 of 2 in Phase 9 complete (09-01 and 09-02 done)
+Status: Phase 9 complete
+Last activity: 2026-03-26 — Completed 09-02-PLAN.md (SafeTimeSeries privacy envelope + v2 sync)
 
-Progress: [██████████████████] 18/18 plans (phases 1-8 done + 09-01)
+Progress: [████████████████████] 19/19 plans (phases 1-8 done + 09-01 + 09-02)
 
 ## Performance Metrics
 
@@ -114,6 +114,10 @@ Recent decisions affecting current work:
 - [09-01]: userMessages per day = 0 with TODO — UserEntry timestamps not linked to ParsedMessages, global count sufficient for now
 - [09-01]: costCents as Math.round(dollars * 100) integer — safe for chart arithmetic, avoids float drift
 - [09-01]: dailyAggregator.ts is independent of aggregator.ts — parallel path keeps time-series concerns separate
+- [09-02]: projects stripped from SafeDailyStats by default — user must --show-projects to include (privacy-first)
+- [09-02]: 404-only fallback — only 404 on /sync/v2 triggers v1 fallback; other errors surface to user
+- [09-02]: runEngineFull() returns both AnalyticsResult + ParsedMessage[] — avoids double-parse for sync
+- [09-02]: POST /sync/v2 sends { safeStats, timeSeries } combined payload — backward-compatible versioned contract
 
 ### Pending Todos
 
@@ -129,6 +133,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-27T05:00:22Z
-Stopped at: Completed 09-01-PLAN.md — parser enhancement (thinkingBlocks, userMessages) + daily aggregation engine (DailyStats, aggregateDaily).
+Last session: 2026-03-26T23:10:00Z
+Stopped at: Completed 09-02-PLAN.md — SafeTimeSeries privacy envelope, --show-projects flag, runEngineFull, and v2 sync with 404 fallback.
 Resume file: None
