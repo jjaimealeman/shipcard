@@ -23,7 +23,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 9: CLI Time-Series Extraction** - CLI computes daily aggregates from JSONL and sends alongside SafeStats
 - [x] **Phase 10: Worker v2 Sync + JSON API** - Worker accepts time-series data and serves JSON APIs
 - [x] **Phase 11: Dashboard MVP** - Full analytics dashboard at /u/:username/dashboard with Alpine.js + Chart.js
-- [ ] **Phase 12: Polish + Community** - Mobile responsive, SVG promo footer, empty states, community feed
+- [x] **Phase 12: Polish + Community** - Mobile responsive, SVG promo footer, empty states, community feed
 
 ## Phase Details
 
@@ -207,10 +207,10 @@ Plans:
 **Plans:** 4 plans in 2 waves (01 + 02 + 03 parallel, then 04)
 
 Plans:
-- [ ] 12-01-PLAN.md — SVG promo footer ("Get yours at shipcard.dev") + dashboard empty/error states
-- [ ] 12-02-PLAN.md — Mobile responsive dashboard CSS + heatmap mobile day cap
-- [ ] 12-03-PLAN.md — KV metadata on sync + community helper functions + cards-served counter
-- [ ] 12-04-PLAN.md — Homepage community teaser + /community leaderboard page
+- [x] 12-01-PLAN.md — SVG promo footer ("Get yours at shipcard.dev") + dashboard empty/error states
+- [x] 12-02-PLAN.md — Mobile responsive dashboard CSS + heatmap mobile day cap
+- [x] 12-03-PLAN.md — KV metadata on sync + community helper functions + cards-served counter
+- [x] 12-04-PLAN.md — Homepage community teaser + /community leaderboard page
 
 ## Progress
 
@@ -230,4 +230,4 @@ Phases execute sequentially: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10 -> 
 | 9. CLI Time-Series | 2/2 | ✓ Complete | 2026-03-26 |
 | 10. Worker v2 API | 2/2 | ✓ Complete | 2026-03-27 |
 | 11. Dashboard MVP | 3/3 | ✓ Complete | 2026-03-27 |
-| 12. Polish + Community | 0/4 | ○ Pending | - |
+| 12. Polish + Community | 4/4 | ✓ Complete | 2026-03-27 |
