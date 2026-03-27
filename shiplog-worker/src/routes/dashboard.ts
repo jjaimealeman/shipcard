@@ -387,6 +387,9 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
   .panel.panel-wide {
     min-height: 200px;
   }
+  #panel-projects .panel-body {
+    height: auto;
+  }
   .panel.panel-tall {
     min-height: 340px;
   }
@@ -556,14 +559,30 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
     <div class="section-title">Overview</div>
     <div class="hero-grid">
 
-      <!-- Total Tokens -->
+      <!-- Collecting Since -->
       <div class="stat-card" :class="{ loading: $store.dashboard.loading }">
-        <div class="stat-label">Total Tokens</div>
-        <!-- Skeleton -->
+        <div class="stat-label">Collecting Since</div>
         <div class="skel-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
         <div class="skel-sub skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
         <div class="skel-sparkline skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <!-- Data -->
+        <div class="stat-value" x-show="!$store.dashboard.loading" x-text="$store.dashboard.heroTenure" style="display:none"></div>
+        <div class="stat-sub" x-show="!$store.dashboard.loading" style="display:none">
+          <strong x-text="$store.dashboard.heroFirstDate"></strong>
+        </div>
+        <div class="sparkline-wrap" x-show="!$store.dashboard.loading" style="display:none">
+          <svg viewBox="0 0 200 36" preserveAspectRatio="none">
+            <polygon :points="$store.dashboard.sparkSessionsArea(200,36)" class="sparkline-area" fill="var(--orange)" />
+            <polyline :points="$store.dashboard.sparkSessions(200,36)" stroke="var(--orange)" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Total Tokens -->
+      <div class="stat-card" :class="{ loading: $store.dashboard.loading }">
+        <div class="stat-label">Total Tokens</div>
+        <div class="skel-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="skel-sub skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="skel-sparkline skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
         <div class="stat-value" x-show="!$store.dashboard.loading" x-text="$store.dashboard.heroTokens" style="display:none"></div>
         <div class="stat-sub" x-show="!$store.dashboard.loading" style="display:none">
           <strong x-text="$store.dashboard.heroCacheHitPct"></strong> cache hit rate
@@ -608,24 +627,6 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
           <svg viewBox="0 0 200 36" preserveAspectRatio="none">
             <polygon :points="$store.dashboard.sparkCpsArea(200,36)" class="sparkline-area" fill="var(--green)" />
             <polyline :points="$store.dashboard.sparkCps(200,36)" stroke="var(--green)" />
-          </svg>
-        </div>
-      </div>
-
-      <!-- Coding Tenure -->
-      <div class="stat-card" :class="{ loading: $store.dashboard.loading }">
-        <div class="stat-label">Coding Since</div>
-        <div class="skel-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="skel-sub skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="skel-sparkline skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="stat-value" x-show="!$store.dashboard.loading" x-text="$store.dashboard.heroTenure" style="display:none"></div>
-        <div class="stat-sub" x-show="!$store.dashboard.loading" style="display:none">
-          <strong x-text="$store.dashboard.heroFirstDate"></strong>
-        </div>
-        <div class="sparkline-wrap" x-show="!$store.dashboard.loading" style="display:none">
-          <svg viewBox="0 0 200 36" preserveAspectRatio="none">
-            <polygon :points="$store.dashboard.sparkSessionsArea(200,36)" class="sparkline-area" fill="var(--orange)" />
-            <polyline :points="$store.dashboard.sparkSessions(200,36)" stroke="var(--orange)" />
           </svg>
         </div>
       </div>
@@ -1280,7 +1281,20 @@ function buildDowChart(days) {
       datasets: [{
         label: 'Sessions',
         data,
-        backgroundColor: CHART_COLORS.slice(0, 7),
+        backgroundColor: [
+          '#d97757cc', // Mon - warm orange
+          '#c4a882cc', // Tue - sand
+          '#788c5dcc', // Wed - olive
+          '#5bb5a2cc', // Thu - teal
+          '#6a9bcccc', // Fri - blue
+          '#8b7ec8cc', // Sat - lavender
+          '#cc6b8ecc', // Sun - rose
+        ],
+        borderColor: [
+          '#d97757', '#c4a882', '#788c5d', '#5bb5a2',
+          '#6a9bcc', '#8b7ec8', '#cc6b8e',
+        ],
+        borderWidth: 1,
         borderRadius: 4,
       }],
     },
@@ -1672,6 +1686,13 @@ function buildProjectsChart(days) {
   const labels = sorted.map(e => e[0]);
   const data   = sorted.map(e => e[1]);
 
+  // Set explicit container height based on bar count to prevent Chart.js resize loop
+  const barHeight = 36;
+  const containerHeight = Math.max(180, sorted.length * barHeight + 40);
+  const container = document.getElementById('panel-projects-content');
+  if (container) container.style.height = containerHeight + 'px';
+  canvas.style.height = containerHeight + 'px';
+
   chartProjects = new Chart(canvas, {
     type: 'bar',
     data: {
@@ -1754,6 +1775,7 @@ document.addEventListener('alpine:init', () => {
     Chart.defaults.font.family   = "'Poppins', system-ui, sans-serif";
     Chart.defaults.font.size     = 12;
     Chart.defaults.plugins.legend.labels.usePointStyle    = true;
+    Chart.defaults.plugins.legend.labels.pointStyle       = 'circle';
     Chart.defaults.plugins.legend.labels.pointStyleWidth  = 8;
   }
 });
