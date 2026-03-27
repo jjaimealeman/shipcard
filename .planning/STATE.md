@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-03-25)
 
 **Core value:** Developers using Claude Code can see what they shipped and what it cost, and share verifiable proof via an embeddable card.
-**Current focus:** Phase 11 - Dashboard MVP — Complete
+**Current focus:** Phase 12 - Polish & Community — In Progress
 
 ## Current Position
 
-Phase: 11 of 12 (Dashboard MVP) — Complete
-Plan: 3 of 3 in Phase 11 complete (all plans done)
-Status: Phase complete — 11 of 12 phases done
-Last activity: 2026-03-27 — Completed 11-03-PLAN.md (Cal-heatmap, project bars, grid layout, Alpine init() race fix)
+Phase: 12 of 12 (Polish & Community) — In progress
+Plan: 1 of ? in Phase 12 complete
+Status: In progress — Phase 12 underway
+Last activity: 2026-03-27 — Completed 12-01-PLAN.md (SVG promo footer "Get yours at shipcard.dev", dashboard empty/error state guard)
 
-Progress: [████████████████████████] 24/24 plans complete
+Progress: [█████████████████████████] 25/25 plans complete so far (Phase 12 rolling)
 
 ## Performance Metrics
 
@@ -138,6 +138,8 @@ Recent decisions affecting current work:
 - [11-03]: Renamed store.init() to store.load() — Alpine auto-calls store.init() with no args, causing race with x-init username call
 - [11-03]: Calendar heatmap always shows all-time data — filtering to 7d would show mostly empty calendar
 - [11-03]: Project panel x-show="$store.dashboard.hasProjects" — conditional visibility with helpful fallback message
+- [12-01]: SVG footer text "Get yours at shipcard.dev" right-aligned (text-anchor=end, x=CARD_WIDTH-PADDING) — no <a> tag since SVG via img src sandboxes hyperlinks
+- [12-01]: Dashboard content wrapper guards !loading && !notFound && !error — skeleton visible during load, hidden on any non-data state
 
 ### Pending Todos
 
@@ -153,6 +155,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-27T08:15:00Z
-Stopped at: Completed Phase 11 — Dashboard MVP: 9-panel analytics dashboard at /u/:username/dashboard with Alpine.js + Chart.js. Deployed and verified via Playwright.
+Last session: 2026-03-27T17:15:35Z
+Stopped at: Completed 12-01-PLAN.md — SVG promo footer + dashboard empty/error state guard
 Resume file: None
