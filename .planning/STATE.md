@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-03-25)
 
 **Core value:** Developers using Claude Code can see what they shipped and what it cost, and share verifiable proof via an embeddable card.
-**Current focus:** Phase 9 - CLI Time-Series Extraction
+**Current focus:** Phase 10 - Worker v2 Sync + JSON API
 
 ## Current Position
 
-Phase: 9 of 9 (CLI Time-Series) — Complete
-Plan: 2 of 2 in Phase 9 complete (09-01 and 09-02 done)
-Status: Phase 9 complete
-Last activity: 2026-03-26 — Completed 09-02-PLAN.md (SafeTimeSeries privacy envelope + v2 sync)
+Phase: 10 of 10 (Worker v2 Sync + JSON API) — In progress
+Plan: 1 of 2 in Phase 10 complete (10-01 done)
+Status: In progress
+Last activity: 2026-03-27 — Completed 10-01-PLAN.md (Worker v2 sync endpoint: types, KV helpers, POST /sync/v2)
 
-Progress: [████████████████████] 19/19 plans (phases 1-8 done + 09-01 + 09-02)
+Progress: [█████████████████████░] 20/21 plans (phases 1-9 done + 10-01)
 
 ## Performance Metrics
 
@@ -118,6 +118,10 @@ Recent decisions affecting current work:
 - [09-02]: 404-only fallback — only 404 on /sync/v2 triggers v1 fallback; other errors surface to user
 - [09-02]: runEngineFull() returns both AnalyticsResult + ParsedMessage[] — avoids double-parse for sync
 - [09-02]: POST /sync/v2 sends { safeStats, timeSeries } combined payload — backward-compatible versioned contract
+- [10-01]: isValidSyncV2Body delegates to isValidSafeStats — no duplication of privacy validation logic
+- [10-01]: No DELETE /sync/v2 endpoint — DELETE /sync handles all three key types (data, timeseries, card variants)
+- [10-01]: syncedAt cast via `as any` for putUserData — not in SafeStats type but safe to store; future phases can read it
+- [10-01]: /sync/v2 mounted before /sync in index.ts — Hono path matching requires more specific route first
 
 ### Pending Todos
 
@@ -133,6 +137,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-26T23:10:00Z
-Stopped at: Completed 09-02-PLAN.md — SafeTimeSeries privacy envelope, --show-projects flag, runEngineFull, and v2 sync with 404 fallback.
+Last session: 2026-03-27T06:33:25Z
+Stopped at: Completed 10-01-PLAN.md — Worker v2 sync: SafeTimeSeries types, KV helpers, POST /sync/v2 route.
 Resume file: None
