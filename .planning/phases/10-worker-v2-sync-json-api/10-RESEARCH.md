@@ -41,7 +41,7 @@ The main discretionary decisions are: KV key structure (split vs blob), sync mod
 ### Recommended File Structure (additive only)
 
 ```
-shiplog-worker/src/
+shipcard-worker/src/
 ├── index.ts                    # Mount new syncV2Routes + apiRoutes
 ├── types.ts                    # Add SafeTimeSeries + isValidSyncV2Body
 ├── kv.ts                       # Add getTimeSeries, putTimeSeries, deleteTimeSeries
@@ -315,9 +315,9 @@ export async function deleteAllUserData(
 ## Open Questions
 
 1. **SafeTimeSeries type location in Worker**
-   - What we know: CLI defines `SafeTimeSeries` in `shiplog/src/cli/safestats.ts`. Worker has no copy yet.
+   - What we know: CLI defines `SafeTimeSeries` in `shipcard/src/cli/safestats.ts`. Worker has no copy yet.
    - What's unclear: Should the Worker import a shared package, or copy the type (as SafeStats already does)?
-   - Recommendation: Copy the type into `shiplog-worker/src/types.ts` following the existing pattern (the comment in safestats.ts explicitly says "do NOT import from Worker" — same reasoning applies in reverse).
+   - Recommendation: Copy the type into `shipcard-worker/src/types.ts` following the existing pattern (the comment in safestats.ts explicitly says "do NOT import from Worker" — same reasoning applies in reverse).
 
 2. **CORS scope — same-origin or wildcard**
    - What we know: Dashboard will be Phase 11. No dashboard origin is decided yet.
@@ -333,9 +333,9 @@ export async function deleteAllUserData(
 ## Sources
 
 ### Primary (HIGH confidence)
-- Existing `shiplog-worker/src/` codebase — ground truth for all patterns
-- `shiplog/src/cli/safestats.ts` — `SafeTimeSeries` type definition
-- `shiplog/src/cli/commands/sync.ts` — v2 payload shape: `{ safeStats, timeSeries }`
+- Existing `shipcard-worker/src/` codebase — ground truth for all patterns
+- `shipcard/src/cli/safestats.ts` — `SafeTimeSeries` type definition
+- `shipcard/src/cli/commands/sync.ts` — v2 payload shape: `{ safeStats, timeSeries }`
 - Context7: `/llmstxt/hono_dev_llms-small_txt` — CORS middleware, routing patterns
 
 ### Secondary (MEDIUM confidence)

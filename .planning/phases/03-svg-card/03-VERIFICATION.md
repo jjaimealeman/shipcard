@@ -29,23 +29,23 @@ score: 4/4 must-haves verified
 
 | Artifact | Expected | Status | Details |
 |----------|----------|--------|---------|
-| `shiplog/src/card/xml.ts` | escapeXml() | VERIFIED | 21 lines, exports escapeXml, &-first replacement order correct |
-| `shiplog/src/card/format.ts` | abbreviateNumber(), formatCost(), truncate() | VERIFIED | 50 lines, all three functions exported, correct thresholds (1M, 1k) |
-| `shiplog/src/card/themes/types.ts` | ThemeColors interface | VERIFIED | 24 lines, exports ThemeColors with all 7 fields (bg, border, title, text, value, icon, footer) |
-| `shiplog/src/card/themes/index.ts` | resolveTheme() registry | VERIFIED | 58 lines, imports all 6 palettes, REGISTRY map, resolveTheme() exported |
-| `shiplog/src/card/themes/github.ts` | github dark/light | VERIFIED | 30 lines, exact GitHub UI colors per spec |
-| `shiplog/src/card/themes/branded.ts` | branded dark/light | VERIFIED | 37 lines, violet/indigo dev-tool aesthetic |
-| `shiplog/src/card/themes/minimal.ts` | minimal dark/light | VERIFIED | 37 lines, near-monochrome typographic palette |
-| `shiplog/src/card/layouts/classic.ts` | renderClassic() | VERIFIED | 118 lines, single-column dynamic height, full escapeXml coverage |
-| `shiplog/src/card/layouts/compact.ts` | renderCompact() | VERIFIED | 114 lines, two-column grid, even/odd index parity |
-| `shiplog/src/card/layouts/hero.ts` | renderHero() | VERIFIED | 155 lines, 36px hero stat + divider + secondary row |
-| `shiplog/src/card/renderer.ts` | renderSvg() dispatcher | VERIFIED | 108 lines, resolveTheme() called, switch dispatches to all 3 layouts |
-| `shiplog/src/card/index.ts` | renderCard() public API | VERIFIED | 149 lines, AnalyticsResult → CardData → renderSvg(), all 5 stats, hide filter |
-| `shiplog/src/card/git.ts` | findGitRoot() | VERIFIED | 33 lines, spawnSync array args (no shell injection), cwd fallback |
-| `shiplog/src/card/preview.ts` | openInBrowser() | VERIFIED | 53 lines, darwin/win32/linux dispatch, detached+unref fire-and-forget |
-| `shiplog/src/cli/args.ts` | 7 new card flags | VERIFIED | heroStat mapped from hero-stat, hide multiple:true, output with -o alias |
-| `shiplog/src/cli/commands/card.ts` | runCard() with --local | VERIFIED | 164 lines, --local path calls renderCard(), writes SVG file, prints markdown snippet |
-| `shiplog/src/cli/index.ts` | card command dispatch + help | VERIFIED | card case wired in switch, Card flags section in help text |
+| `shipcard/src/card/xml.ts` | escapeXml() | VERIFIED | 21 lines, exports escapeXml, &-first replacement order correct |
+| `shipcard/src/card/format.ts` | abbreviateNumber(), formatCost(), truncate() | VERIFIED | 50 lines, all three functions exported, correct thresholds (1M, 1k) |
+| `shipcard/src/card/themes/types.ts` | ThemeColors interface | VERIFIED | 24 lines, exports ThemeColors with all 7 fields (bg, border, title, text, value, icon, footer) |
+| `shipcard/src/card/themes/index.ts` | resolveTheme() registry | VERIFIED | 58 lines, imports all 6 palettes, REGISTRY map, resolveTheme() exported |
+| `shipcard/src/card/themes/github.ts` | github dark/light | VERIFIED | 30 lines, exact GitHub UI colors per spec |
+| `shipcard/src/card/themes/branded.ts` | branded dark/light | VERIFIED | 37 lines, violet/indigo dev-tool aesthetic |
+| `shipcard/src/card/themes/minimal.ts` | minimal dark/light | VERIFIED | 37 lines, near-monochrome typographic palette |
+| `shipcard/src/card/layouts/classic.ts` | renderClassic() | VERIFIED | 118 lines, single-column dynamic height, full escapeXml coverage |
+| `shipcard/src/card/layouts/compact.ts` | renderCompact() | VERIFIED | 114 lines, two-column grid, even/odd index parity |
+| `shipcard/src/card/layouts/hero.ts` | renderHero() | VERIFIED | 155 lines, 36px hero stat + divider + secondary row |
+| `shipcard/src/card/renderer.ts` | renderSvg() dispatcher | VERIFIED | 108 lines, resolveTheme() called, switch dispatches to all 3 layouts |
+| `shipcard/src/card/index.ts` | renderCard() public API | VERIFIED | 149 lines, AnalyticsResult → CardData → renderSvg(), all 5 stats, hide filter |
+| `shipcard/src/card/git.ts` | findGitRoot() | VERIFIED | 33 lines, spawnSync array args (no shell injection), cwd fallback |
+| `shipcard/src/card/preview.ts` | openInBrowser() | VERIFIED | 53 lines, darwin/win32/linux dispatch, detached+unref fire-and-forget |
+| `shipcard/src/cli/args.ts` | 7 new card flags | VERIFIED | heroStat mapped from hero-stat, hide multiple:true, output with -o alias |
+| `shipcard/src/cli/commands/card.ts` | runCard() with --local | VERIFIED | 164 lines, --local path calls renderCard(), writes SVG file, prints markdown snippet |
+| `shipcard/src/cli/index.ts` | card command dispatch + help | VERIFIED | card case wired in switch, Card flags section in help text |
 
 ### Key Link Verification
 

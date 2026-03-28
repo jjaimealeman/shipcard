@@ -31,7 +31,7 @@ re_verification: false
 
 | Artifact                                           | Expected                                     | Status     | Details                                                   |
 | -------------------------------------------------- | -------------------------------------------- | ---------- | --------------------------------------------------------- |
-| `shiplog-worker/src/routes/dashboard.ts`           | All hero section code (CSS + HTML + getters) | VERIFIED   | 2388 lines; contains all required getters and HTML        |
+| `shipcard-worker/src/routes/dashboard.ts`           | All hero section code (CSS + HTML + getters) | VERIFIED   | 2388 lines; contains all required getters and HTML        |
 | Alpine getter: `_todayDate`                        | Local timezone YYYY-MM-DD                    | VERIFIED   | Line 1266-1268; uses `toLocaleDateString('en-CA')`        |
 | Alpine getter: `_yesterdayDate`                    | Local timezone YYYY-MM-DD                    | VERIFIED   | Line 1270-1274; uses `toLocaleDateString('en-CA')`        |
 | Alpine getter: `_todayStats` / `_yesterdayStats`   | Scans `timeseries.days` (not filteredDays)   | VERIFIED   | Lines 1277-1285; explicit comment: "Scans ALL days"       |

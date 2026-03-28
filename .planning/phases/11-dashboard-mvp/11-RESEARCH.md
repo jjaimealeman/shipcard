@@ -59,7 +59,7 @@ The Alpine.js `@alpinejs/intersect` plugin handles "animate in when scrolled int
 
 ### Recommended Project Structure
 ```
-shiplog-worker/src/
+shipcard-worker/src/
 ├── routes/
 │   ├── dashboard.ts     ← NEW: GET /u/:username/dashboard
 │   ├── landing.ts       (existing)
@@ -72,7 +72,7 @@ shiplog-worker/src/
 **What:** Template literal HTML string returned via `c.html()`. Same pattern as `configure.ts`.
 **When to use:** Any Worker route that serves an HTML page.
 ```typescript
-// Source: shiplog-worker/src/routes/configure.ts (existing pattern)
+// Source: shipcard-worker/src/routes/configure.ts (existing pattern)
 import { Hono } from "hono";
 import type { AppType } from "../types.js";
 
@@ -93,7 +93,7 @@ dashboardRoutes.get("/:username/dashboard", (c) => {
 
 **Route mounting in index.ts (critical — must go before cardRoutes at /u):**
 ```typescript
-// Source: shiplog-worker/src/index.ts (existing pattern — apiRoutes already does this)
+// Source: shipcard-worker/src/index.ts (existing pattern — apiRoutes already does this)
 app.route("/u", apiRoutes);      // /:username/api/*
 app.route("/u", dashboardRoutes); // /:username/dashboard  ← NEW: before cardRoutes
 app.route("/u", cardRoutes);      // /:username (catch-all)
@@ -213,7 +213,7 @@ Alpine.data('barChart', () => ({
 **When to use:** The 7d / 30d / All time toggle — must match visual language exactly.
 
 ```html
-<!-- Source: shiplog-worker/src/routes/landing.ts (existing CSS pattern) -->
+<!-- Source: shipcard-worker/src/routes/landing.ts (existing CSS pattern) -->
 <div class="btn-group">
   <button :class="{ active: $store.dashboard.range === '7d' }"
           @click="$store.dashboard.range = '7d'">7d</button>
@@ -548,9 +548,9 @@ const tenure = weeks > 0 ? `${weeks}w ${diffDays % 7}d` : `${diffDays}d`;
 ### Primary (HIGH confidence)
 - `/alpinejs/alpine` (Context7) — x-data, x-effect, Alpine.store(), @intersect plugin, CDN install
 - `/websites/chartjs` (Context7) — Chart types, update API, animation, tooltip config
-- `shiplog-worker/src/routes/configure.ts` — Exact `c.html()` route pattern to follow
-- `shiplog-worker/src/routes/landing.ts` — CSS variables, `.btn-group` segmented control CSS
-- `shiplog-worker/src/types.ts` — `SafeTimeSeries`, `SafeDailyStats`, `SafeStats` field names
+- `shipcard-worker/src/routes/configure.ts` — Exact `c.html()` route pattern to follow
+- `shipcard-worker/src/routes/landing.ts` — CSS variables, `.btn-group` segmented control CSS
+- `shipcard-worker/src/types.ts` — `SafeTimeSeries`, `SafeDailyStats`, `SafeStats` field names
 
 ### Secondary (MEDIUM confidence)
 - jsDelivr package pages — Chart.js 4.5.1, Alpine.js 3.15.8 confirmed current versions

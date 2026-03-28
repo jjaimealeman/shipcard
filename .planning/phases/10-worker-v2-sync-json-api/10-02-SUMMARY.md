@@ -29,9 +29,9 @@ tech-stack:
 
 key-files:
   created:
-    - shiplog-worker/src/routes/api.ts
+    - shipcard-worker/src/routes/api.ts
   modified:
-    - shiplog-worker/src/index.ts
+    - shipcard-worker/src/index.ts
 
 key-decisions:
   - "apiRoutes mounted before cardRoutes at /u — ensures /:username/api/* paths resolve before /:username single-segment catch-all"
@@ -63,7 +63,7 @@ completed: 2026-03-27
 - **Files modified:** 2
 
 ## Accomplishments
-- Created `shiplog-worker/src/routes/api.ts` with `apiRoutes` Hono sub-app exporting two GET handlers
+- Created `shipcard-worker/src/routes/api.ts` with `apiRoutes` Hono sub-app exporting two GET handlers
 - Applied wildcard CORS via `hono/cors` so the Phase 11 dashboard can fetch data from any origin
 - Mounted `apiRoutes` at `/u` before `cardRoutes` in `index.ts` to prevent route shadowing
 - Both endpoints return `{ data, syncedAt }` envelope — dashboard gets freshness info without parsing dates from data fields
@@ -78,8 +78,8 @@ Each task was committed atomically:
 **Plan metadata:** (docs commit below)
 
 ## Files Created/Modified
-- `shiplog-worker/src/routes/api.ts` - New: apiRoutes sub-app with GET stats + timeseries handlers and CORS middleware
-- `shiplog-worker/src/index.ts` - Updated: import + mount apiRoutes before cardRoutes; updated JSDoc route listing
+- `shipcard-worker/src/routes/api.ts` - New: apiRoutes sub-app with GET stats + timeseries handlers and CORS middleware
+- `shipcard-worker/src/index.ts` - Updated: import + mount apiRoutes before cardRoutes; updated JSDoc route listing
 
 ## Decisions Made
 - **apiRoutes before cardRoutes at /u**: Hono evaluates routes in registration order. Even though `/:username` (1 segment) and `/:username/api/stats` (3 segments) are unlikely to conflict in Hono's segment-aware router, the convention of "more specific sub-app first" is safer and explicit.

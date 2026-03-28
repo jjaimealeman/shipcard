@@ -12,7 +12,7 @@
 Before detailing integration points, a snapshot of what already exists:
 
 ```
-shiplog/src/
+shipcard/src/
   card/
     themes/         # ThemeColors registry (github, branded, minimal × dark/light)
     layouts/        # SVG layout templates (classic, compact, hero)
@@ -25,7 +25,7 @@ shiplog/src/
     args.ts         # manual argv parser (no commander)
   mcp/              # 3 MCP tools over stdio
 
-shiplog-worker/src/
+shipcard-worker/src/
   svg/
     themes/         # duplicate ThemeColors registry (Worker has its own copy)
     layouts/        # duplicate layout templates
@@ -46,7 +46,7 @@ KV namespaces (existing):
 
 ### 1. Theme System (new themes + PRO gating)
 
-**Where theme definitions live:** In both packages independently (Worker and CLI maintain copies). This is the existing pattern — there is no shared code between Node.js and Worker runtimes. The Worker's `shiplog-worker/src/svg/themes/` and the CLI's `shiplog/src/card/themes/` are kept in sync manually at development time.
+**Where theme definitions live:** In both packages independently (Worker and CLI maintain copies). This is the existing pattern — there is no shared code between Node.js and Worker runtimes. The Worker's `shipcard-worker/src/svg/themes/` and the CLI's `shipcard/src/card/themes/` are kept in sync manually at development time.
 
 **What changes for new themes:**
 - Add new palette files in both locations (e.g. `neon.ts`, `ocean.ts`)
@@ -74,7 +74,7 @@ The `isPro()` function lives in a new `billing.ts` module in the Worker (see sec
 
 ### 2. Stripe Integration on CF Worker
 
-**New Worker module:** `shiplog-worker/src/billing.ts`
+**New Worker module:** `shipcard-worker/src/billing.ts`
 
 This module owns:
 - Subscription state reads/writes to `USER_DATA_KV`
@@ -127,7 +127,7 @@ const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
 ```
 This pattern is required for the Workers runtime (no Node.js `http` module available). Announced GA in October 2025 (Cloudflare blog).
 
-**New Worker route:** `shiplog-worker/src/routes/billing.ts` wired at `app.route("/billing", billingRoutes)`.
+**New Worker route:** `shipcard-worker/src/routes/billing.ts` wired at `app.route("/billing", billingRoutes)`.
 
 **Checkout route:** `POST /billing/checkout` — creates a Stripe Checkout session, returns the URL. CLI `shipcard upgrade` command calls this and opens the browser.
 
@@ -355,7 +355,7 @@ The existing JSONL reader becomes `ClaudeCodeAdapter` implementing this interfac
 
 **MCP changes:** The MCP tools accept `projectsDir` override today. Add optional `adapter` parameter to each tool.
 
-**New module:** `shiplog/src/parser/adapters/` directory with `claude-code.ts` as the first adapter. The existing `reader.ts` and `schema.ts` move into `adapters/claude-code.ts`. The parser `index.ts` becomes an adapter registry.
+**New module:** `shipcard/src/parser/adapters/` directory with `claude-code.ts` as the first adapter. The existing `reader.ts` and `schema.ts` move into `adapters/claude-code.ts`. The parser `index.ts` becomes an adapter registry.
 
 **SafeStats/SafeTimeSeries:** These are already agent-agnostic (no Claude-specific field names in the cloud payload). The only change needed: add `source: string` to `SafeStats` so the Worker knows which adapter generated the data (useful for community page filtering). Default value: `"claude-code"` — backward compatible.
 
@@ -413,7 +413,7 @@ if (process.stdout.isTTY && !flags.confirm) {
 - `shipcard theme create` — Clack wizard for BYOT color picker
 - `shipcard link create` — Clack form for slug + card options
 
-**Dependency:** `@clack/prompts` added to `shiplog/package.json`. This is NOT a zero-dep requirement violation — the zero-dep constraint applies to MCP server and parsing core, not the CLI's UX layer. Verify this assumption against project constraints before phase planning.
+**Dependency:** `@clack/prompts` added to `shipcard/package.json`. This is NOT a zero-dep requirement violation — the zero-dep constraint applies to MCP server and parsing core, not the CLI's UX layer. Verify this assumption against project constraints before phase planning.
 
 ---
 
@@ -423,33 +423,33 @@ if (process.stdout.isTTY && !flags.confirm) {
 
 | File | Purpose |
 |------|---------|
-| `shiplog-worker/src/billing.ts` | `isPro()`, subscription KV reads/writes |
-| `shiplog-worker/src/routes/billing.ts` | Stripe webhook + checkout endpoints |
-| `shiplog-worker/src/routes/slug.ts` | Custom slug resolution |
-| `shiplog/src/parser/adapters/claude-code.ts` | Claude Code source adapter (extracted from reader.ts) |
-| `shiplog/src/parser/adapters/index.ts` | Adapter registry |
-| `shiplog/src/cli/commands/upgrade.ts` | `shipcard upgrade` Clack wizard |
-| `shiplog/src/cli/commands/theme.ts` | `shipcard theme create/list` BYOT CLI |
-| `shiplog/src/cli/commands/link.ts` | `shipcard link create/delete` slug CLI |
+| `shipcard-worker/src/billing.ts` | `isPro()`, subscription KV reads/writes |
+| `shipcard-worker/src/routes/billing.ts` | Stripe webhook + checkout endpoints |
+| `shipcard-worker/src/routes/slug.ts` | Custom slug resolution |
+| `shipcard/src/parser/adapters/claude-code.ts` | Claude Code source adapter (extracted from reader.ts) |
+| `shipcard/src/parser/adapters/index.ts` | Adapter registry |
+| `shipcard/src/cli/commands/upgrade.ts` | `shipcard upgrade` Clack wizard |
+| `shipcard/src/cli/commands/theme.ts` | `shipcard theme create/list` BYOT CLI |
+| `shipcard/src/cli/commands/link.ts` | `shipcard link create/delete` slug CLI |
 
 ### Modified Files
 
 | File | What Changes |
 |------|-------------|
-| `shiplog-worker/src/types.ts` | Add `Env.STRIPE_SECRET_KEY`, `Env.STRIPE_WEBHOOK_SECRET`, `Env.AI`; add `Subscription`, `Insights`, `CardConfig` (slug) types |
-| `shiplog-worker/src/kv.ts` | Add `getSubscription/putSubscription`, `getInsights/putInsights`, `getSlug/putSlug/listSlugs`, `getCustomTheme/putCustomTheme` |
-| `shiplog-worker/src/index.ts` | Mount billing routes; add slug routes; export `scheduled` handler alongside `fetch` |
-| `shiplog-worker/src/routes/card.ts` | Add PRO theme gating; support custom theme colors; support slug resolution |
-| `shiplog-worker/src/routes/syncV2.ts` | Add `waitUntil` prerender for PRO users |
-| `shiplog-worker/src/routes/api.ts` | Add `GET /u/:username/api/insights` endpoint |
-| `shiplog-worker/src/svg/renderer.ts` | Accept optional `colors: ThemeColors` override param (BYOT) |
-| `shiplog-worker/wrangler.jsonc` | Add Stripe secrets, AI binding, cron trigger |
-| `shiplog/src/parser/reader.ts` | Extract into adapter pattern (claude-code adapter) |
-| `shiplog/src/parser/schema.ts` | Move into `adapters/claude-code.ts` |
-| `shiplog/src/cli/index.ts` | Add upgrade, theme, link commands |
-| `shiplog/src/cli/args.ts` | Add new command parsing |
-| `shiplog/src/cli/commands/sync.ts` | Add Clack interactive path |
-| `shiplog/src/cli/commands/login.ts` | Add Clack spinners/states |
+| `shipcard-worker/src/types.ts` | Add `Env.STRIPE_SECRET_KEY`, `Env.STRIPE_WEBHOOK_SECRET`, `Env.AI`; add `Subscription`, `Insights`, `CardConfig` (slug) types |
+| `shipcard-worker/src/kv.ts` | Add `getSubscription/putSubscription`, `getInsights/putInsights`, `getSlug/putSlug/listSlugs`, `getCustomTheme/putCustomTheme` |
+| `shipcard-worker/src/index.ts` | Mount billing routes; add slug routes; export `scheduled` handler alongside `fetch` |
+| `shipcard-worker/src/routes/card.ts` | Add PRO theme gating; support custom theme colors; support slug resolution |
+| `shipcard-worker/src/routes/syncV2.ts` | Add `waitUntil` prerender for PRO users |
+| `shipcard-worker/src/routes/api.ts` | Add `GET /u/:username/api/insights` endpoint |
+| `shipcard-worker/src/svg/renderer.ts` | Accept optional `colors: ThemeColors` override param (BYOT) |
+| `shipcard-worker/wrangler.jsonc` | Add Stripe secrets, AI binding, cron trigger |
+| `shipcard/src/parser/reader.ts` | Extract into adapter pattern (claude-code adapter) |
+| `shipcard/src/parser/schema.ts` | Move into `adapters/claude-code.ts` |
+| `shipcard/src/cli/index.ts` | Add upgrade, theme, link commands |
+| `shipcard/src/cli/args.ts` | Add new command parsing |
+| `shipcard/src/cli/commands/sync.ts` | Add Clack interactive path |
+| `shipcard/src/cli/commands/login.ts` | Add Clack spinners/states |
 
 ---
 
@@ -609,7 +609,7 @@ Clack assumes a TTY. Always guard with `process.stdout.isTTY`. CI environments, 
 
 ## Sources
 
-- Existing codebase: direct inspection of `shiplog/src/` and `shiplog-worker/src/` (HIGH confidence)
+- Existing codebase: direct inspection of `shipcard/src/` and `shipcard-worker/src/` (HIGH confidence)
 - Hono Stripe webhook pattern: https://hono.dev/examples/stripe-webhook (HIGH confidence)
 - Cloudflare native Stripe SDK support: https://blog.cloudflare.com/announcing-stripe-support-in-workers/ (HIGH confidence — October 2025 announcement)
 - Cloudflare Workers cron triggers: https://developers.cloudflare.com/workers/configuration/cron-triggers/ (HIGH confidence)

@@ -31,7 +31,7 @@ re_verification: false
 
 | Artifact | Expected | Status | Details |
 |----------|----------|--------|---------|
-| `shiplog-worker/src/routes/dashboard.ts` | Sort toggle HTML, CSS mobile override, buildProjectsChart metric wiring, Alpine.effect reactive dependency | VERIFIED | 2442 lines; all required patterns present and wired |
+| `shipcard-worker/src/routes/dashboard.ts` | Sort toggle HTML, CSS mobile override, buildProjectsChart metric wiring, Alpine.effect reactive dependency | VERIFIED | 2442 lines; all required patterns present and wired |
 
 ### Key Link Verification
 

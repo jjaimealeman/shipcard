@@ -70,7 +70,7 @@ See FEATURES.md for authoritative hex values for all 10 curated themes (Catppucc
 
 ### Architecture Approach
 
-The existing architecture (two independent packages: `shiplog/` CLI and `shiplog-worker/` Cloudflare Worker) is sound and requires only targeted additions, not restructuring. The packages share no runtime code by design — theme definitions are duplicated intentionally to avoid coordinated deploy requirements.
+The existing architecture (two independent packages: `shipcard/` CLI and `shipcard-worker/` Cloudflare Worker) is sound and requires only targeted additions, not restructuring. The packages share no runtime code by design — theme definitions are duplicated intentionally to avoid coordinated deploy requirements.
 
 **Major new components:**
 1. `billing.ts` (new Worker module) — owns `isPro(username, env): Promise<boolean>`, D1 subscription reads/writes, and webhook event handling; the single source of truth for PRO status; called from card route, sync route, BYOT API, slug API
@@ -148,7 +148,7 @@ Based on research, the build order follows a strict dependency chain: subscripti
 ### Clack UX Track (Parallel)
 **Rationale:** Fully independent of all phases. Touches only CLI command UX, not data model or Worker logic. Can be worked alongside any phase or as a cleanup sweep. The one hard constraint is the TTY guard — every Clack call must check `process.stdout.isTTY === true` before executing.
 **Delivers:** Clack UX for `shipcard login` (spinners, styled states) and `shipcard sync` (inline confirmation replaces `--confirm` flag pattern), plus UX polish for new commands created in Phases 3-4 (`upgrade`, `theme create`, `link create`)
-**Uses:** `@clack/prompts ^1.1.0` added to `shiplog/package.json`
+**Uses:** `@clack/prompts ^1.1.0` added to `shipcard/package.json`
 **Avoids:** Pitfall A9 (TTY guard on every Clack code path, `process.stdout.isTTY === true` check)
 **Research flag:** No additional research needed
 
@@ -205,7 +205,7 @@ Based on research, the build order follows a strict dependency chain: subscripti
 - github-readme-stats theme system + BYOT URL params: https://github.com/anuraghazra/github-readme-stats
 - WCAG contrast requirements: https://webaim.org/articles/contrast/
 - Hono Stripe webhook pattern: https://hono.dev/examples/stripe-webhook
-- Existing codebase (direct inspection of `shiplog/src/` and `shiplog-worker/src/`)
+- Existing codebase (direct inspection of `shipcard/src/` and `shipcard-worker/src/`)
 
 ### Secondary (MEDIUM confidence)
 - Stripe fee math at $1/mo (2.9% + $0.30 verified against Stripe published rates)

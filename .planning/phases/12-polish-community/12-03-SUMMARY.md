@@ -27,10 +27,10 @@ tech-stack:
 key-files:
   created: []
   modified:
-    - shiplog-worker/src/types.ts
-    - shiplog-worker/src/kv.ts
-    - shiplog-worker/src/routes/syncV2.ts
-    - shiplog-worker/src/routes/sync.ts
+    - shipcard-worker/src/types.ts
+    - shipcard-worker/src/kv.ts
+    - shipcard-worker/src/routes/syncV2.ts
+    - shipcard-worker/src/routes/sync.ts
 
 key-decisions:
   - "CommunityMeta stores flattened totalTokens (sum of all 4 fields) — community pages don't need breakdown"
@@ -79,10 +79,10 @@ Each task was committed atomically:
 
 ## Files Created/Modified
 
-- `shiplog-worker/src/types.ts` - Added CommunityMeta interface with syncedAt, totalSessions, totalCost, projectCount, totalTokens
-- `shiplog-worker/src/kv.ts` - Updated putUserData() signature, added listUsers(), getCardsServedCount(), incrementCardsServed()
-- `shiplog-worker/src/routes/syncV2.ts` - Builds CommunityMeta before putUserData(), increments counter post-sync
-- `shiplog-worker/src/routes/sync.ts` - Same metadata pattern for v1 syncs, counter increment added
+- `shipcard-worker/src/types.ts` - Added CommunityMeta interface with syncedAt, totalSessions, totalCost, projectCount, totalTokens
+- `shipcard-worker/src/kv.ts` - Updated putUserData() signature, added listUsers(), getCardsServedCount(), incrementCardsServed()
+- `shipcard-worker/src/routes/syncV2.ts` - Builds CommunityMeta before putUserData(), increments counter post-sync
+- `shipcard-worker/src/routes/sync.ts` - Same metadata pattern for v1 syncs, counter increment added
 
 ## Decisions Made
 

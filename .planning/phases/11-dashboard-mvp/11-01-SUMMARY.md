@@ -16,9 +16,9 @@ tech-stack:
 
 key-files:
   created:
-    - shiplog-worker/src/routes/dashboard.ts
+    - shipcard-worker/src/routes/dashboard.ts
   modified:
-    - shiplog-worker/src/index.ts
+    - shipcard-worker/src/index.ts
 
 decisions:
   - id: "11-01-a"
@@ -63,8 +63,8 @@ The foundation of the Phase 11 analytics dashboard. A single Hono route at `GET 
 
 | Task | Name | Commit | Key Files |
 |------|------|--------|-----------|
-| 1 | Dashboard route: HTML skeleton, Alpine store, hero stats, filter bar, skeleton loading | 340f442 | shiplog-worker/src/routes/dashboard.ts (979 lines) |
-| 2 | Wire dashboard route into Worker entry point | 10fd0d8 | shiplog-worker/src/index.ts |
+| 1 | Dashboard route: HTML skeleton, Alpine store, hero stats, filter bar, skeleton loading | 340f442 | shipcard-worker/src/routes/dashboard.ts (979 lines) |
+| 2 | Wire dashboard route into Worker entry point | 10fd0d8 | shipcard-worker/src/index.ts |
 
 ## Verification Results
 

@@ -26,7 +26,7 @@ tech-stack:
 key-files:
   created: []
   modified:
-    - shiplog-worker/src/routes/dashboard.ts
+    - shipcard-worker/src/routes/dashboard.ts
 
 key-decisions:
   - "Used toLocaleDateString('en-CA') for YYYY-MM-DD in local timezone — UTC would break for evening users"
@@ -72,7 +72,7 @@ Each task was committed atomically:
 
 ## Files Created/Modified
 
-- `shiplog-worker/src/routes/dashboard.ts` - Added today/yesterday getters to Alpine store + CSS + HTML section
+- `shipcard-worker/src/routes/dashboard.ts` - Added today/yesterday getters to Alpine store + CSS + HTML section
 
 ## Decisions Made
 

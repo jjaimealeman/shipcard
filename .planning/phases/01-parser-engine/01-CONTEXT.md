@@ -21,7 +21,7 @@ JSONL parser and analytics engine — the foundation everything else builds on. 
 
 ### Cost estimation approach
 - **Pricing source: LiteLLM community JSON** — `https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json` (~2,594 models, updated multiple times daily, no API key needed)
-- **Caching layers:** Runtime fetch → local cache (`~/.shiplog/pricing.json`, 24h TTL) → bundled fallback snapshot at build time → user override file for custom pricing
+- **Caching layers:** Runtime fetch → local cache (`~/.shipcard/pricing.json`, 24h TTL) → bundled fallback snapshot at build time → user override file for custom pricing
 - **Token counts are exact** from JSONL (`input_tokens`, `output_tokens`, `cache_creation_input_tokens`, `cache_read_input_tokens`)
 - **Unknown models:** Fall back to a conservative default rate (e.g., Sonnet pricing) and flag as "estimated from default"
 - **Cost label:** Minimal — just `~$47.20` (tilde prefix signals estimation). No source attribution in default output.

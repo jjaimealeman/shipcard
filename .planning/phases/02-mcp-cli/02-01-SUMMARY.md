@@ -36,13 +36,13 @@ tech-stack:
 
 key-files:
   created:
-    - shiplog/src/cli/args.ts
-    - shiplog/src/cli/config.ts
-    - shiplog/src/cli/format.ts
-    - shiplog/src/cli/commands/summary.ts
-    - shiplog/src/cli/commands/costs.ts
-    - shiplog/src/cli/commands/card.ts
-    - shiplog/src/cli/index.ts
+    - shipcard/src/cli/args.ts
+    - shipcard/src/cli/config.ts
+    - shipcard/src/cli/format.ts
+    - shipcard/src/cli/commands/summary.ts
+    - shipcard/src/cli/commands/costs.ts
+    - shipcard/src/cli/commands/card.ts
+    - shipcard/src/cli/index.ts
   modified: []
 
 key-decisions:
@@ -92,13 +92,13 @@ Each task was committed atomically:
 
 ## Files Created/Modified
 
-- `shiplog/src/cli/args.ts` — parseCliArgs() wrapping node:util.parseArgs with typed flags
-- `shiplog/src/cli/config.ts` — loadConfig() reading ~/.shiplog.json, returns {} on missing/invalid
-- `shiplog/src/cli/format.ts` — renderTable(), formatSummary(), formatCosts() with UTF-8 box-drawing
-- `shiplog/src/cli/commands/summary.ts` — runSummary() with table/JSON output and empty state handling
-- `shiplog/src/cli/commands/costs.ts` — runCosts() with by-project and by-model breakdown
-- `shiplog/src/cli/commands/card.ts` — runCard() outputting raw JSON, Phase 3 note to stderr
-- `shiplog/src/cli/index.ts` — shebang entry point, help text, subcommand dispatch, config merge
+- `shipcard/src/cli/args.ts` — parseCliArgs() wrapping node:util.parseArgs with typed flags
+- `shipcard/src/cli/config.ts` — loadConfig() reading ~/.shiplog.json, returns {} on missing/invalid
+- `shipcard/src/cli/format.ts` — renderTable(), formatSummary(), formatCosts() with UTF-8 box-drawing
+- `shipcard/src/cli/commands/summary.ts` — runSummary() with table/JSON output and empty state handling
+- `shipcard/src/cli/commands/costs.ts` — runCosts() with by-project and by-model breakdown
+- `shipcard/src/cli/commands/card.ts` — runCard() outputting raw JSON, Phase 3 note to stderr
+- `shipcard/src/cli/index.ts` — shebang entry point, help text, subcommand dispatch, config merge
 
 ## Decisions Made
 
@@ -116,7 +116,7 @@ Each task was committed atomically:
 - **Found during:** Task 1 (format.ts implementation)
 - **Issue:** Plan mentioned `cacheCreation` but the actual schema.ts interface uses `cacheCreate`
 - **Fix:** Used the correct field name `tokens.cacheCreate` in formatSummary()
-- **Files modified:** `shiplog/src/cli/format.ts`
+- **Files modified:** `shipcard/src/cli/format.ts`
 - **Verification:** `npx tsc --noEmit` returned zero errors after fix
 - **Committed in:** `d52c9a3` (Task 1 commit)
 

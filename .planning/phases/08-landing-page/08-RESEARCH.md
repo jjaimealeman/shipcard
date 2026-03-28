@@ -50,7 +50,7 @@ The existing Worker has everything required. The landing page is a self-containe
 No new files beyond one route file:
 
 ```
-shiplog-worker/src/
+shipcard-worker/src/
 ├── routes/
 │   ├── card.ts           # /u/:username — unchanged
 │   ├── auth.ts           # /auth — unchanged
@@ -65,7 +65,7 @@ shiplog-worker/src/
 The existing configure.ts uses exactly this pattern. The route handler returns the entire HTML string via `c.html()`:
 
 ```typescript
-// Source: configure.ts pattern (shiplog-worker/src/routes/configure.ts line 519)
+// Source: configure.ts pattern (shipcard-worker/src/routes/configure.ts line 519)
 import { Hono } from "hono";
 import type { AppType } from "../types.js";
 
@@ -295,9 +295,9 @@ function copyText(text, btn) {
 ## Sources
 
 ### Primary (HIGH confidence)
-- `shiplog-worker/src/routes/configure.ts` — direct implementation template; complete pattern reference
-- `shiplog-worker/src/routes/card.ts` — card endpoint; confirmed same-origin, no CORS needed
-- `shiplog-worker/src/index.ts` — confirmed health check route location to replace
+- `shipcard-worker/src/routes/configure.ts` — direct implementation template; complete pattern reference
+- `shipcard-worker/src/routes/card.ts` — card endpoint; confirmed same-origin, no CORS needed
+- `shipcard-worker/src/index.ts` — confirmed health check route location to replace
 - Cloudflare Workers return-html example: https://developers.cloudflare.com/workers/examples/return-html/
 - Cloudflare Workers static assets docs: https://developers.cloudflare.com/workers/static-assets/
 - Cloudflare Workers static assets binding: https://developers.cloudflare.com/workers/static-assets/binding/

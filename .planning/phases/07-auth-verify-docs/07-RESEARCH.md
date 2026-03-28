@@ -55,11 +55,11 @@ the 4.48 fix where `.dev.vars` loading was broken.
 ### npm Publish
 | Tool | Purpose |
 |------|---------|
-| `npm publish` | Publish unscoped package (run from `shiplog/` after build) |
+| `npm publish` | Publish unscoped package (run from `shipcard/` after build) |
 
 **No new installation needed:**
 ```bash
-# From shiplog/ directory
+# From shipcard/ directory
 npm run build
 npm publish
 ```
@@ -211,7 +211,7 @@ won't be used for device flow, but must be a valid HTTPS URL.
 **What goes wrong:** `wrangler dev` starts successfully, but all environment secrets resolve as
 `undefined`. The Worker's `POST /auth/exchange` tries to call GitHub API without credentials.
 
-**Why it happens:** The `.dev.vars` file in `shiplog-worker/` currently has only commented-out
+**Why it happens:** The `.dev.vars` file in `shipcard-worker/` currently has only commented-out
 placeholder values. The real secrets must be uncommented and filled in.
 
 **How to avoid:** Before running `wrangler dev`, edit `.dev.vars` to have real (uncommented) values:
@@ -230,7 +230,7 @@ TOKEN_SECRET="<any-32-byte-hex>"
 **Why it happens:** It seems faster to just test the real thing.
 
 **How to avoid:** Test the full round-trip locally first:
-1. `wrangler dev` in `shiplog-worker/` (Terminal 1)
+1. `wrangler dev` in `shipcard-worker/` (Terminal 1)
 2. Set `"workerUrl": "http://localhost:8787"` in `~/.shipcard/config.json`
 3. Run `shipcard login` and verify full flow
 4. Run `shipcard sync --confirm` and verify KV write
@@ -295,7 +295,7 @@ the message. It is caught by the existing `catch (err)` block in `runLogin()`.
 
 ### Testing the Full Round-Trip Locally
 ```bash
-# 1. Populate .dev.vars (shiplog-worker/.dev.vars)
+# 1. Populate .dev.vars (shipcard-worker/.dev.vars)
 GITHUB_CLIENT_ID="Ov23lijo8A2inPwKNCnx"
 GITHUB_CLIENT_SECRET="your-real-secret"
 TOKEN_SECRET="any-32-char-hex-string-here-will-do"
@@ -306,7 +306,7 @@ cd /path/to/shiplog-worker && npx wrangler dev
 # 3. Temporarily point CLI at local Worker
 # Edit ~/.shipcard/config.json → add "workerUrl": "http://localhost:8787"
 
-# 4. Build CLI (from shiplog/)
+# 4. Build CLI (from shipcard/)
 npm run build
 
 # 5. Run login
@@ -402,7 +402,7 @@ Needs:
 - New "Running without installing" section documenting `npx shipcard <command>` pattern
 - All `@jjaimealeman/shipcard` references replaced
 
-### docs/mcp-config.md (at `/home/jaime/www/_github/SaaS/shiplog/docs/mcp-config.md`)
+### docs/mcp-config.md (at `/home/jaime/www/_github/SaaS/shipcard/docs/mcp-config.md`)
 Current state: Uses `@jjaimealeman/shipcard` throughout.
 Needs: All occurrences replaced with `shipcard`.
 
@@ -438,8 +438,8 @@ grep -r "@jjaimealeman" /path/to/SaaS --include="*.md" --include="*.json" \
 ## Sources
 
 ### Primary (HIGH confidence)
-- Codebase inspection: `shiplog/src/cli/commands/login.ts`, `shiplog-worker/src/routes/auth.ts`,
-  `shiplog/package.json`, `shiplog-worker/wrangler.jsonc`, `shiplog-worker/src/kv.ts`
+- Codebase inspection: `shipcard/src/cli/commands/login.ts`, `shipcard-worker/src/routes/auth.ts`,
+  `shipcard/package.json`, `shipcard-worker/wrangler.jsonc`, `shipcard-worker/src/kv.ts`
 - GitHub OAuth Device Flow official docs: https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps
 - v1 Milestone Audit: `.planning/v1-MILESTONE-AUDIT.md`
 

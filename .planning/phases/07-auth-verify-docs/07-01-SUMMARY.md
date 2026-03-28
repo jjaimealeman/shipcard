@@ -15,11 +15,11 @@ Renamed npm package from `@jjaimealeman/shipcard` to unscoped `shipcard` across 
 
 | File | Change |
 |------|--------|
-| shiplog/package.json | `"name": "shipcard"` (unscoped) |
+| shipcard/package.json | `"name": "shipcard"` (unscoped) |
 | README.md | Updated install/npx commands to unscoped `shipcard` |
 | USAGE.md | Updated MCP config to `-p shipcard` |
-| shiplog/docs/mcp-config.md | All `@jjaimealeman/shipcard` → `shipcard` |
-| shiplog-worker/src/types.ts | Fixed `looksLikeFilePath` — `~` → `~/` to avoid rejecting cost strings |
+| shipcard/docs/mcp-config.md | All `@jjaimealeman/shipcard` → `shipcard` |
+| shipcard-worker/src/types.ts | Fixed `looksLikeFilePath` — `~` → `~/` to avoid rejecting cost strings |
 
 ## Commits
 

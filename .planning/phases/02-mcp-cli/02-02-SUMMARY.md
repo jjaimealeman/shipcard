@@ -7,9 +7,9 @@ tags: [mcp, stdio, zod, json-rpc, typescript, node]
 # Dependency graph
 requires:
   - phase: 01-parser-engine
-    provides: runEngine() function and AnalyticsResult type from shiplog/src/index.ts
+    provides: runEngine() function and AnalyticsResult type from shipcard/src/index.ts
 provides:
-  - MCP server entry point (shiplog/src/mcp/server.ts) with stdio transport
+  - MCP server entry point (shipcard/src/mcp/server.ts) with stdio transport
   - shiplog:summary tool returning sessions/tokens/models/projects/cost as JSON
   - shiplog:costs tool returning byProject and byModel cost breakdown as JSON
   - shiplog:card tool returning full AnalyticsResult as JSON
@@ -23,13 +23,13 @@ tech-stack:
 
 key-files:
   created:
-    - shiplog/src/mcp/server.ts
-    - shiplog/src/mcp/tools/summary.ts
-    - shiplog/src/mcp/tools/costs.ts
-    - shiplog/src/mcp/tools/card.ts
+    - shipcard/src/mcp/server.ts
+    - shipcard/src/mcp/tools/summary.ts
+    - shipcard/src/mcp/tools/costs.ts
+    - shipcard/src/mcp/tools/card.ts
   modified:
-    - shiplog/package.json
-    - shiplog/package-lock.json
+    - shipcard/package.json
+    - shipcard/package-lock.json
 
 key-decisions:
   - "Tool-per-file pattern: each tool is a separate module exporting registerXxxTool(server)"
@@ -77,12 +77,12 @@ Each task was committed atomically:
 
 ## Files Created/Modified
 
-- `shiplog/src/mcp/server.ts` - Entry point: shebang, McpServer, StdioServerTransport, registers all 3 tools
-- `shiplog/src/mcp/tools/summary.ts` - registerSummaryTool: returns result.summary as JSON text
-- `shiplog/src/mcp/tools/costs.ts` - registerCostsTool: returns { byProject, byModel } as JSON text
-- `shiplog/src/mcp/tools/card.ts` - registerCardTool: returns full AnalyticsResult as JSON text
-- `shiplog/package.json` - Added @modelcontextprotocol/sdk and zod to dependencies
-- `shiplog/package-lock.json` - Lockfile updated with 91 new packages
+- `shipcard/src/mcp/server.ts` - Entry point: shebang, McpServer, StdioServerTransport, registers all 3 tools
+- `shipcard/src/mcp/tools/summary.ts` - registerSummaryTool: returns result.summary as JSON text
+- `shipcard/src/mcp/tools/costs.ts` - registerCostsTool: returns { byProject, byModel } as JSON text
+- `shipcard/src/mcp/tools/card.ts` - registerCardTool: returns full AnalyticsResult as JSON text
+- `shipcard/package.json` - Added @modelcontextprotocol/sdk and zod to dependencies
+- `shipcard/package-lock.json` - Lockfile updated with 91 new packages
 
 ## Decisions Made
 

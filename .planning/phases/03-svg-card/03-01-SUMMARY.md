@@ -11,7 +11,7 @@ requires:
   - phase: 02-mcp-cli
     provides: EngineOptions, runEngine() to produce AnalyticsResult at runtime
 provides:
-  - renderCard(result, options) public API in shiplog/src/card/index.ts
+  - renderCard(result, options) public API in shipcard/src/card/index.ts
   - Three layouts: classic (single-column), compact (two-column grid), hero (big stat + details)
   - Three styles x two themes: github/branded/minimal each with dark/light variant
   - escapeXml() for all user-controlled string interpolation into SVG
@@ -32,18 +32,18 @@ tech-stack:
 
 key-files:
   created:
-    - shiplog/src/card/xml.ts
-    - shiplog/src/card/format.ts
-    - shiplog/src/card/themes/types.ts
-    - shiplog/src/card/themes/index.ts
-    - shiplog/src/card/themes/github.ts
-    - shiplog/src/card/themes/branded.ts
-    - shiplog/src/card/themes/minimal.ts
-    - shiplog/src/card/layouts/classic.ts
-    - shiplog/src/card/layouts/compact.ts
-    - shiplog/src/card/layouts/hero.ts
-    - shiplog/src/card/renderer.ts
-    - shiplog/src/card/index.ts
+    - shipcard/src/card/xml.ts
+    - shipcard/src/card/format.ts
+    - shipcard/src/card/themes/types.ts
+    - shipcard/src/card/themes/index.ts
+    - shipcard/src/card/themes/github.ts
+    - shipcard/src/card/themes/branded.ts
+    - shipcard/src/card/themes/minimal.ts
+    - shipcard/src/card/layouts/classic.ts
+    - shipcard/src/card/layouts/compact.ts
+    - shipcard/src/card/layouts/hero.ts
+    - shipcard/src/card/renderer.ts
+    - shipcard/src/card/index.ts
   modified: []
 
 key-decisions:
@@ -94,18 +94,18 @@ completed: 2026-03-26
 
 ## Files Created/Modified
 
-- `shiplog/src/card/xml.ts` - escapeXml() with &-first replacement order
-- `shiplog/src/card/format.ts` - abbreviateNumber(), formatCost(), truncate()
-- `shiplog/src/card/themes/types.ts` - ThemeColors interface (isolated to prevent circular imports)
-- `shiplog/src/card/themes/index.ts` - StyleName, ThemeName, resolveTheme() registry
-- `shiplog/src/card/themes/github.ts` - GitHub dark/light palettes (matches GitHub UI colors)
-- `shiplog/src/card/themes/branded.ts` - Branded dark/light palettes (violet/indigo dev-tool aesthetic)
-- `shiplog/src/card/themes/minimal.ts` - Minimal dark/light palettes (near-monochrome typographic)
-- `shiplog/src/card/layouts/classic.ts` - renderClassic(): single-column, dynamic height, right-aligned values
-- `shiplog/src/card/layouts/compact.ts` - renderCompact(): two-column grid, stacked label+value cells
-- `shiplog/src/card/layouts/hero.ts` - renderHero(): 36px hero stat + compact secondary row with divider
-- `shiplog/src/card/renderer.ts` - CardData type, STAT_ICONS map, RenderOptions, renderSvg() dispatcher
-- `shiplog/src/card/index.ts` - renderCard() public API, CardOptions type, stat building from AnalyticsResult
+- `shipcard/src/card/xml.ts` - escapeXml() with &-first replacement order
+- `shipcard/src/card/format.ts` - abbreviateNumber(), formatCost(), truncate()
+- `shipcard/src/card/themes/types.ts` - ThemeColors interface (isolated to prevent circular imports)
+- `shipcard/src/card/themes/index.ts` - StyleName, ThemeName, resolveTheme() registry
+- `shipcard/src/card/themes/github.ts` - GitHub dark/light palettes (matches GitHub UI colors)
+- `shipcard/src/card/themes/branded.ts` - Branded dark/light palettes (violet/indigo dev-tool aesthetic)
+- `shipcard/src/card/themes/minimal.ts` - Minimal dark/light palettes (near-monochrome typographic)
+- `shipcard/src/card/layouts/classic.ts` - renderClassic(): single-column, dynamic height, right-aligned values
+- `shipcard/src/card/layouts/compact.ts` - renderCompact(): two-column grid, stacked label+value cells
+- `shipcard/src/card/layouts/hero.ts` - renderHero(): 36px hero stat + compact secondary row with divider
+- `shipcard/src/card/renderer.ts` - CardData type, STAT_ICONS map, RenderOptions, renderSvg() dispatcher
+- `shipcard/src/card/index.ts` - renderCard() public API, CardOptions type, stat building from AnalyticsResult
 
 ## Decisions Made
 

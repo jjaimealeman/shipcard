@@ -60,11 +60,11 @@ npm install --save-dev tsup
 ### Rename Strategy
 
 The rename from `shiplog` to `shipcard` touches:
-- Directory name: `shiplog/` → `shipcard/`
-- Directory name: `shiplog-worker/` → `shipcard-worker/` (or keep as-is for Worker infra, just rename `name` field)
+- Directory name: `shipcard/` → `shipcard/`
+- Directory name: `shipcard-worker/` → `shipcard-worker/` (or keep as-is for Worker infra, just rename `name` field)
 - `package.json` name fields
 - `bin` entries: `shiplog` → `shipcard`, `shiplog-mcp` → `shipcard-mcp`
-- Config file paths: `~/.shiplog/config.json` → `~/.shipcard/config.json`, `~/.shiplog.json` → `~/.shipcard.json`
+- Config file paths: `~/.shipcard/config.json` → `~/.shipcard/config.json`, `~/.shiplog.json` → `~/.shipcard.json`
 - Wrangler `name` field: `shiplog-worker` → `shipcard`
 - All import references, type names, and variable names in source
 - README, USAGE.md, STYLES.md content
@@ -246,10 +246,10 @@ Or with HTML img for width control:
 
 ### Pitfall 1: Rename Incomplete — shiplog References Survive
 
-**What goes wrong:** `shipcard login` stores config at `~/.shiplog/config.json` instead of `~/.shipcard/config.json` because the path string was missed in the rename.
+**What goes wrong:** `shipcard login` stores config at `~/.shipcard/config.json` instead of `~/.shipcard/config.json` because the path string was missed in the rename.
 **Why it happens:** Config paths are string literals, not derived from `package.json`. Easy to miss with a naive grep.
 **How to avoid:** Grep for all occurrences of `shiplog` (case-insensitive) before declaring rename done. Check: source files, test fixtures, wrangler.jsonc Worker name, wrangler secrets, README examples, USAGE.md, and any hardcoded strings in auth.ts / config.ts.
-**Warning signs:** `~/.shiplog/` directory created after install.
+**Warning signs:** `~/.shipcard/` directory created after install.
 
 ### Pitfall 2: KV Namespace IDs Are Placeholders
 
@@ -412,7 +412,7 @@ grep -r "shiplog" /home/jaime/www/_github/SaaS/shipcard --include="*.ts" --inclu
 3. **GitHub OAuth App callback URL**
    - What we know: Must be `https://shipcard.dev/auth/callback` for production; the CLI uses device flow (no redirect needed for CLI auth)
    - What's unclear: Whether the existing Worker auth routes use device flow (no callback needed) or web flow (callback needed)
-   - Recommendation: Check `shiplog-worker/src/auth.ts` — if using `@octokit/auth-oauth-device` on CLI side only, the OAuth App's callback URL is irrelevant for CLI flow. Still create the OAuth App with a callback URL pointing to shipcard.dev for completeness.
+   - Recommendation: Check `shipcard-worker/src/auth.ts` — if using `@octokit/auth-oauth-device` on CLI side only, the OAuth App's callback URL is irrelevant for CLI flow. Still create the OAuth App with a callback URL pointing to shipcard.dev for completeness.
 
 ---
 

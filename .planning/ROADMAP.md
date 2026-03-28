@@ -110,7 +110,7 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 16-01-PLAN.md — Rename shiplog/ to shipcard/ and update all references
+- [ ] 16-01-PLAN.md — Rename shipcard/ to shipcard/ and update all references
 - [ ] 16-02-PLAN.md — Create SourceAdapter interface, ClaudeCodeAdapter, wire into engine, version 2.0.0
 
 ### Phase 17: Theme System

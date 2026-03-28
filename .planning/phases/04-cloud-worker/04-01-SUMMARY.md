@@ -10,7 +10,7 @@ requires:
     provides: SVG renderer modules (renderer.ts, layouts, themes, xml, format) copied verbatim into worker
 
 provides:
-  - Hono Worker project at shiplog-worker/ with wrangler.jsonc KV bindings
+  - Hono Worker project at shipcard-worker/ with wrangler.jsonc KV bindings
   - SafeStats privacy-boundary type (no paths, no project names, no timestamps)
   - GET /card/:username serving SVG with anti-camo Cache-Control headers
   - KV cache layer with per-variant key scheme (card:{username}:{theme}:{layout}:{style})
@@ -34,31 +34,31 @@ tech-stack:
 
 key-files:
   created:
-    - shiplog-worker/package.json
-    - shiplog-worker/wrangler.jsonc
-    - shiplog-worker/tsconfig.json
-    - shiplog-worker/.gitignore
-    - shiplog-worker/src/types.ts
-    - shiplog-worker/src/index.ts
-    - shiplog-worker/src/kv.ts
-    - shiplog-worker/src/routes/card.ts
-    - shiplog-worker/src/svg/index.ts
-    - shiplog-worker/src/svg/renderer.ts
-    - shiplog-worker/src/svg/xml.ts
-    - shiplog-worker/src/svg/format.ts
-    - shiplog-worker/src/svg/themes/types.ts
-    - shiplog-worker/src/svg/themes/github.ts
-    - shiplog-worker/src/svg/themes/branded.ts
-    - shiplog-worker/src/svg/themes/minimal.ts
-    - shiplog-worker/src/svg/themes/index.ts
-    - shiplog-worker/src/svg/layouts/classic.ts
-    - shiplog-worker/src/svg/layouts/compact.ts
-    - shiplog-worker/src/svg/layouts/hero.ts
+    - shipcard-worker/package.json
+    - shipcard-worker/wrangler.jsonc
+    - shipcard-worker/tsconfig.json
+    - shipcard-worker/.gitignore
+    - shipcard-worker/src/types.ts
+    - shipcard-worker/src/index.ts
+    - shipcard-worker/src/kv.ts
+    - shipcard-worker/src/routes/card.ts
+    - shipcard-worker/src/svg/index.ts
+    - shipcard-worker/src/svg/renderer.ts
+    - shipcard-worker/src/svg/xml.ts
+    - shipcard-worker/src/svg/format.ts
+    - shipcard-worker/src/svg/themes/types.ts
+    - shipcard-worker/src/svg/themes/github.ts
+    - shipcard-worker/src/svg/themes/branded.ts
+    - shipcard-worker/src/svg/themes/minimal.ts
+    - shipcard-worker/src/svg/themes/index.ts
+    - shipcard-worker/src/svg/layouts/classic.ts
+    - shipcard-worker/src/svg/layouts/compact.ts
+    - shipcard-worker/src/svg/layouts/hero.ts
   modified: []
 
 key-decisions:
   - "Bundler module resolution in tsconfig.json — Workers runtime uses a bundler, not Node16 resolution"
-  - "SVG renderer copied verbatim from shiplog/src/card/ into shiplog-worker/src/svg/ — no cross-package import"
+  - "SVG renderer copied verbatim from shipcard/src/card/ into shipcard-worker/src/svg/ — no cross-package import"
   - "renderCard() in svg/index.ts accepts SafeStats (not AnalyticsResult) — privacy boundary enforced at the module boundary"
   - "No expirationTtl on card cache KV puts — cache is valid until next sync invalidates it (sync-driven design)"
   - "svgResponse() helper extracts anti-camo headers — ensures all SVG paths (cached, rendered, placeholder) get Cache-Control: no-cache"
@@ -76,7 +76,7 @@ completed: 2026-03-26
 
 # Phase 4 Plan 1: Worker Scaffold Summary
 
-**Hono Worker at shiplog-worker/ with KV-cached GET /card/:username, SafeStats privacy type, and anti-camo Cache-Control headers preventing GitHub camo staleness**
+**Hono Worker at shipcard-worker/ with KV-cached GET /card/:username, SafeStats privacy type, and anti-camo Cache-Control headers preventing GitHub camo staleness**
 
 ## Performance
 
@@ -89,7 +89,7 @@ completed: 2026-03-26
 ## Accomplishments
 
 - Cloudflare Worker project scaffolded with Hono routing, wrangler.jsonc with CARDS_KV and USER_DATA_KV bindings
-- SVG renderer (renderer, layouts, themes, xml, format) copied verbatim from Phase 3 shiplog/src/card/ into shiplog-worker/src/svg/ — zero cross-package imports
+- SVG renderer (renderer, layouts, themes, xml, format) copied verbatim from Phase 3 shipcard/src/card/ into shipcard-worker/src/svg/ — zero cross-package imports
 - SafeStats type defined as the privacy boundary: no file paths, no project names (just count), no raw timestamps
 - GET /card/:username endpoint: KV cache hit → serve, cache miss → render from SafeStats or return placeholder SVG
 - Cache-Control: no-cache, no-store, must-revalidate on every SVG response (anti-GitHub-camo-cache)
@@ -106,20 +106,20 @@ Each task was committed atomically:
 
 ## Files Created/Modified
 
-- `shiplog-worker/package.json` — name: shiplog-worker, hono + wrangler deps
-- `shiplog-worker/wrangler.jsonc` — Worker config with CARDS_KV and USER_DATA_KV bindings
-- `shiplog-worker/tsconfig.json` — ESNext + Bundler module resolution
-- `shiplog-worker/.gitignore` — node_modules, .dev.vars, .wrangler/, worker-configuration.d.ts
-- `shiplog-worker/src/types.ts` — Env interface, SafeStats, CardQueryParams, AppType
-- `shiplog-worker/src/index.ts` — Hono app, health check, route registration
-- `shiplog-worker/src/kv.ts` — Typed KV helpers (card cache, user data, tokens)
-- `shiplog-worker/src/routes/card.ts` — GET /card/:username with svgResponse() helper
-- `shiplog-worker/src/svg/index.ts` — renderCard(SafeStats), renderPlaceholderCard(), renderRedactedCard()
-- `shiplog-worker/src/svg/renderer.ts` — renderSvg() dispatcher (copied from Phase 3)
-- `shiplog-worker/src/svg/xml.ts` — escapeXml() (copied)
-- `shiplog-worker/src/svg/format.ts` — abbreviateNumber, formatCost, truncate (copied)
-- `shiplog-worker/src/svg/themes/*.ts` — types, github, branded, minimal, index (all copied)
-- `shiplog-worker/src/svg/layouts/*.ts` — classic, compact, hero (all copied)
+- `shipcard-worker/package.json` — name: shiplog-worker, hono + wrangler deps
+- `shipcard-worker/wrangler.jsonc` — Worker config with CARDS_KV and USER_DATA_KV bindings
+- `shipcard-worker/tsconfig.json` — ESNext + Bundler module resolution
+- `shipcard-worker/.gitignore` — node_modules, .dev.vars, .wrangler/, worker-configuration.d.ts
+- `shipcard-worker/src/types.ts` — Env interface, SafeStats, CardQueryParams, AppType
+- `shipcard-worker/src/index.ts` — Hono app, health check, route registration
+- `shipcard-worker/src/kv.ts` — Typed KV helpers (card cache, user data, tokens)
+- `shipcard-worker/src/routes/card.ts` — GET /card/:username with svgResponse() helper
+- `shipcard-worker/src/svg/index.ts` — renderCard(SafeStats), renderPlaceholderCard(), renderRedactedCard()
+- `shipcard-worker/src/svg/renderer.ts` — renderSvg() dispatcher (copied from Phase 3)
+- `shipcard-worker/src/svg/xml.ts` — escapeXml() (copied)
+- `shipcard-worker/src/svg/format.ts` — abbreviateNumber, formatCost, truncate (copied)
+- `shipcard-worker/src/svg/themes/*.ts` — types, github, branded, minimal, index (all copied)
+- `shipcard-worker/src/svg/layouts/*.ts` — classic, compact, hero (all copied)
 
 ## Decisions Made
 
@@ -139,7 +139,7 @@ Each task was committed atomically:
 - **Found during:** Task 1 (TypeScript compilation)
 - **Issue:** `tsconfig.json` referenced `@cloudflare/workers-types` in the `types` array, but the package was not in package.json. `npx tsc --noEmit` failed with "Cannot find type definition file for '@cloudflare/workers-types'"
 - **Fix:** Ran `npm install --save-dev @cloudflare/workers-types` to add the package
-- **Files modified:** shiplog-worker/package.json
+- **Files modified:** shipcard-worker/package.json
 - **Verification:** `npx tsc --noEmit` exits 0 with no errors
 - **Committed in:** 69b0b7a (Task 1 commit — package.json updated by npm install)
 

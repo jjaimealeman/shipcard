@@ -6,11 +6,11 @@
 
 ## Summary
 
-This phase has two parts: (1) rename `shiplog/` → `shipcard/` and `shiplog-worker/` → `shipcard-worker/` as a prerequisite rename, and (2) introduce a `SourceAdapter` interface so the engine only ever sees `ParsedMessage[]` regardless of which agent produced the data.
+This phase has two parts: (1) rename `shipcard/` → `shipcard/` and `shipcard-worker/` → `shipcard-worker/` as a prerequisite rename, and (2) introduce a `SourceAdapter` interface so the engine only ever sees `ParsedMessage[]` regardless of which agent produced the data.
 
 The codebase is already well-positioned for the adapter refactor. The parser and engine are separated by a clean boundary: `parseAllFiles()` returns `ParseResult` containing `ParsedMessage[]`, and the engine's `aggregate()` only touches `ParsedMessage[]`. The entry point in `src/index.ts` (`runEngineFull`) is the only place that wires parser → engine — that's where the adapter gets plugged in. No changes needed in CLI commands, MCP tools, or the aggregator.
 
-The directory rename is mechanical but high-volume. `shiplog/` is referenced 638+ times across `.planning/` docs and in `shiplog-worker/` source. The rename is a file system operation + sed-style path replacement, not a logic change. It must be done first and verified with a clean build before any adapter work begins.
+The directory rename is mechanical but high-volume. `shipcard/` is referenced 638+ times across `.planning/` docs and in `shipcard-worker/` source. The rename is a file system operation + sed-style path replacement, not a logic change. It must be done first and verified with a clean build before any adapter work begins.
 
 **Primary recommendation:** Create a minimal `SourceAdapter` interface in `src/adapters/` that wraps the existing `parseAllFiles()`. The interface has two required methods: `discover()` for file paths and `parse()` returning `ParsedMessage[]`. Register `ClaudeCodeAdapter` as the only concrete implementation. Wire it into `runEngineFull()` via an `adapterRegistry` that defaults to `ClaudeCodeAdapter` with no config change required from existing users.
 
@@ -180,7 +180,7 @@ const parseResult = await adapter.parse(projectsDir);
 - `shipcard/tsconfig.json` — no path references, no change needed
 - `shipcard-worker/package.json` — name field is already `shipcard-worker`, no change needed
 - `shipcard-worker/wrangler.jsonc` — check for any `shiplog` references
-- All `.planning/` docs — `shiplog/` path references (638+ occurrences across historical PLANs)
+- All `.planning/` docs — `shipcard/` path references (638+ occurrences across historical PLANs)
 - `CLAUDE.md`, `README.md`, `DEPLOY.md`, `USAGE.md` at project root — scan for references
 
 **Key insight:** The `.planning/` historical PLAN files are read-only history. They document what was built, not what gets executed. Updating them is "open-source pride" hygiene, not functional necessity. Consider a targeted sed pass rather than manual edits.
@@ -237,9 +237,9 @@ const parseResult = await adapter.parse(projectsDir);
 
 ### Pitfall 4: Planning Doc Rename Missing Some References
 
-**What goes wrong:** Running sed on `.planning/` but missing edge cases like `shiplog-worker/` vs `shiplog/`, or references in wrangler.jsonc.
+**What goes wrong:** Running sed on `.planning/` but missing edge cases like `shipcard-worker/` vs `shipcard/`, or references in wrangler.jsonc.
 
-**Why it happens:** Multiple patterns: `shiplog/`, `shiplog-worker/`, `"shiplog"`, `shiplog:` in YAML-style plan files.
+**Why it happens:** Multiple patterns: `shipcard/`, `shipcard-worker/`, `"shiplog"`, `shiplog:` in YAML-style plan files.
 
 **How to avoid:** Run `grep -r "shiplog" .planning/ | wc -l` before and after to verify count drops to zero. Also scan `CLAUDE.md`, `README.md`, `DEPLOY.md`, `USAGE.md`.
 
@@ -311,12 +311,12 @@ export interface EngineOptions {
 | Old Approach | Current Approach | When Changed | Impact |
 |--------------|------------------|--------------|--------|
 | `parseAllFiles()` called directly in `runEngineFull()` | `getAdapter().parse()` called in `runEngineFull()` | Phase 16 | Single wiring point — adapters plug in here |
-| `shiplog/` directory | `shipcard/` directory | Phase 16 (rename) | Consistent naming throughout codebase |
+| `shipcard/` directory | `shipcard/` directory | Phase 16 (rename) | Consistent naming throughout codebase |
 | Parser owns file discovery | Adapter owns file discovery | Phase 16 | Each agent knows where its files live |
 
 **Deprecated/outdated:**
-- `shiplog/` directory path: replaced by `shipcard/` — all references must be updated
-- `shiplog-worker/` directory path: replaced by `shipcard-worker/`
+- `shipcard/` directory path: replaced by `shipcard/` — all references must be updated
+- `shipcard-worker/` directory path: replaced by `shipcard-worker/`
 - Direct `parseAllFiles()` import in `src/index.ts`: replaced by `getAdapter().parse()`
 
 ## Open Questions
@@ -339,8 +339,8 @@ export interface EngineOptions {
 ## Sources
 
 ### Primary (HIGH confidence)
-- Direct codebase inspection: `shiplog/src/` — all parser, engine, CLI, MCP source files read
-- `shiplog/package.json` + `tsconfig.json` — build configuration verified
+- Direct codebase inspection: `shipcard/src/` — all parser, engine, CLI, MCP source files read
+- `shipcard/package.json` + `tsconfig.json` — build configuration verified
 - `.planning/phases/16-agent-agnostic-architecture/16-CONTEXT.md` — user decisions read
 - `.planning/REQUIREMENTS.md` — ARCH-01, ARCH-02, ARCH-03 requirements verified
 

@@ -15,7 +15,7 @@ tech-stack:
 
 key-files:
   modified:
-    - shiplog-worker/src/routes/dashboard.ts
+    - shipcard-worker/src/routes/dashboard.ts
 
 decisions:
   - id: "11-03-a"
@@ -63,7 +63,7 @@ metrics:
 **Plan metadata:** (bundled with phase completion commit)
 
 ## Files Modified
-- `shiplog-worker/src/routes/dashboard.ts` - Added heatmap init, project chart, grid CSS; renamed init→load
+- `shipcard-worker/src/routes/dashboard.ts` - Added heatmap init, project chart, grid CSS; renamed init→load
 
 ## Decisions Made
 - Renamed `store.init()` → `store.load()` to prevent Alpine.js automatic invocation race condition
@@ -78,7 +78,7 @@ metrics:
 - **Found during:** Visual checkpoint verification (Playwright testing)
 - **Issue:** Alpine.js auto-calls `store.init()` with no args, causing fetch to `/u/undefined/api/stats` → 404, which raced with the legitimate `x-init` call and overwrote `notFound` to true
 - **Fix:** Renamed method from `init()` to `load()`, added guard `if (!username) return`
-- **Files modified:** shiplog-worker/src/routes/dashboard.ts
+- **Files modified:** shipcard-worker/src/routes/dashboard.ts
 - **Verification:** Playwright confirmed 2 API calls (both 200), no duplicates, store fully populated
 - **Committed in:** 440428a
 

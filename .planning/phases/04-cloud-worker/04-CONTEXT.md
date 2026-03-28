@@ -17,14 +17,14 @@ Cloudflare Worker that serves SVG stats cards at the edge and accepts stat syncs
 - GitHub username is the identity key — no self-chosen slugs, no signup
 - GitHub OAuth device flow for authentication (like `gh auth login` — auto-opens browser with code URL, degrades to manual in headless environments)
 - Worker issues a bearer token after successful OAuth, used for all subsequent syncs
-- Auth token stored locally in `~/.shiplog/config.json`
+- Auth token stored locally in `~/.shipcard/config.json`
 
 ### Sync payload & privacy
 - Full analytics payload (everything the engine produces) minus file paths and raw JSONL content
 - User controls visibility per-stat via the configurator before syncing — stats toggled off never leave the machine
 - Project names can be redacted (replaced with `private-1`, `private-2`) — user decides per-project in configurator
 - `shiplog sync` always opens the browser configurator — every sync is reviewed visually
-- Config persists choices in `~/.shiplog/config.json` so the configurator pre-loads previous settings
+- Config persists choices in `~/.shipcard/config.json` so the configurator pre-loads previous settings
 
 ### Configurator (sync preview)
 - Worker-hosted HTML page (e.g., `shiplog.workers.dev/configure`), not localhost

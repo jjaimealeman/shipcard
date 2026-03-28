@@ -14,9 +14,9 @@ Refactor the parser engine so any agent's JSONL format can plug in through a cle
 ## Implementation Decisions
 
 ### Directory rename (Plan 1)
-- Rename `shiplog/` → `shipcard/` and `shiplog-worker/` → `shipcard-worker/`
+- Rename `shipcard/` → `shipcard/` and `shipcard-worker/` → `shipcard-worker/`
 - Update all internal import paths, tsconfig, wrangler.jsonc, and package.json references
-- Update planning docs that reference `shiplog/` paths
+- Update planning docs that reference `shipcard/` paths
 - Verify builds pass after rename — this is a prerequisite for the adapter refactor
 - This is the first plan in Phase 16, done before any architecture changes
 

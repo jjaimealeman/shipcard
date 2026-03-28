@@ -16,13 +16,13 @@
 | Build | TypeScript `^5.0.0`, plain `tsc` | Locked |
 | Theme system | 3 styles (github, branded, minimal) × 2 themes (dark, light) = 6 palettes | Extending |
 
-The `shiplog/` and `shiplog-worker/` packages share a single version number. Both are on v1.0.0. v2.0 work adds to both.
+The `shipcard/` and `shipcard-worker/` packages share a single version number. Both are on v1.0.0. v2.0 work adds to both.
 
 ---
 
 ## New Dependencies Required for v2.0
 
-### 1. Stripe Integration (`shiplog-worker/`)
+### 1. Stripe Integration (`shipcard-worker/`)
 
 **Recommendation: `stripe ^17.x` — NOT v21.0.1**
 
@@ -32,7 +32,7 @@ Run `npm view stripe dist-tags` at implementation time to confirm the correct st
 
 | Technology | Version | Location | Purpose |
 |------------|---------|---------|--------|
-| `stripe` | `^17.x` (latest stable before v21 breaking changes) | `shiplog-worker/` | Stripe API client — subscriptions, webhooks, checkout sessions |
+| `stripe` | `^17.x` (latest stable before v21 breaking changes) | `shipcard-worker/` | Stripe API client — subscriptions, webhooks, checkout sessions |
 
 **Initialization pattern for Cloudflare Workers (verified from Stripe/Cloudflare official announcement):**
 
@@ -67,7 +67,7 @@ function getStripe(env: Env): ReturnType<typeof Stripe> {
 
 ---
 
-### 2. D1 Database (`shiplog-worker/`)
+### 2. D1 Database (`shipcard-worker/`)
 
 **Recommendation: Add Cloudflare D1 binding — zero new npm dependencies.**
 
@@ -75,7 +75,7 @@ KV is wrong for subscription state. KV is eventually consistent and has no atomi
 
 | Technology | Version | Location | Purpose |
 |------------|---------|---------|--------|
-| Cloudflare D1 | platform service (no npm package) | `shiplog-worker/` | Subscription state, user plan tier, Stripe customer mapping |
+| Cloudflare D1 | platform service (no npm package) | `shipcard-worker/` | Subscription state, user plan tier, Stripe customer mapping |
 
 **wrangler.jsonc addition:**
 ```jsonc
@@ -117,13 +117,13 @@ D1 handles ShipCard's scale up to hundreds of thousands of users on the free tie
 
 ---
 
-### 3. `@clack/prompts` (`shiplog/`)
+### 3. `@clack/prompts` (`shipcard/`)
 
 **Recommendation: `@clack/prompts ^1.1.0`**
 
 | Technology | Version | Location | Purpose |
 |------------|---------|---------|--------|
-| `@clack/prompts` | `^1.1.0` | `shiplog/` (CLI only, not MCP) | Interactive CLI prompts with styled UI |
+| `@clack/prompts` | `^1.1.0` | `shipcard/` (CLI only, not MCP) | Interactive CLI prompts with styled UI |
 
 **Current state (verified from official docs and GitHub, 2026-03-28):**
 - Latest: `1.1.0` released 2026-03-03
@@ -184,9 +184,9 @@ program
 
 ### 4. Theme Infrastructure (both packages)
 
-**Recommendation: TypeScript objects in `shiplog/` + JSON serialized to `USER_DATA_KV` in worker. Zero new npm dependencies.**
+**Recommendation: TypeScript objects in `shipcard/` + JSON serialized to `USER_DATA_KV` in worker. Zero new npm dependencies.**
 
-The existing theme system in `shiplog/src/card/themes/` is already well-structured:
+The existing theme system in `shipcard/src/card/themes/` is already well-structured:
 - `ThemeColors` interface: 7 slots (bg, border, title, text, value, icon, footer)
 - `StyleName` type union and `resolveTheme()` registry function
 - 3 styles × 2 dark/light variants = 6 palettes today
@@ -210,7 +210,7 @@ export type ThemeName =
   | `custom:${string}`;
 ```
 
-Each curated theme is a `ThemeColors` object file in `shiplog/src/card/themes/`. No runtime parsing. No external files. Pure TypeScript objects that compile to ~200 bytes each.
+Each curated theme is a `ThemeColors` object file in `shipcard/src/card/themes/`. No runtime parsing. No external files. Pure TypeScript objects that compile to ~200 bytes each.
 
 **BYOT (Bring Your Own Theme) — custom theme storage:**
 
@@ -244,12 +244,12 @@ No new npm packages. KV values are unlimited strings (25 MB max). A `ThemeColors
 
 ### 5. AI Insights (pre-computed weekly digest)
 
-**Recommendation: `@anthropic-ai/sdk ^0.80.0` in `shiplog-worker/` + Cloudflare Workers cron trigger.**
+**Recommendation: `@anthropic-ai/sdk ^0.80.0` in `shipcard-worker/` + Cloudflare Workers cron trigger.**
 
 | Technology | Version | Location | Purpose |
 |------------|---------|---------|--------|
-| `@anthropic-ai/sdk` | `^0.80.0` | `shiplog-worker/` | Call Claude API from scheduled Worker |
-| Cloudflare Workers Cron | platform feature (no npm) | `shiplog-worker/` | Weekly scheduled digest generation |
+| `@anthropic-ai/sdk` | `^0.80.0` | `shipcard-worker/` | Call Claude API from scheduled Worker |
+| Cloudflare Workers Cron | platform feature (no npm) | `shipcard-worker/` | Weekly scheduled digest generation |
 
 **Architecture: scheduled Worker, pre-computed, served from KV.**
 
@@ -300,9 +300,9 @@ export default {
 
 **Recommendation: Zero new npm dependencies — this is a data modeling and refactoring decision.**
 
-**Current state:** The `SafeStats` and `SafeTimeSeries` types are structurally generic but the parser layer (`shiplog/src/parser/`) is Claude Code-specific.
+**Current state:** The `SafeStats` and `SafeTimeSeries` types are structurally generic but the parser layer (`shipcard/src/parser/`) is Claude Code-specific.
 
-**Abstraction: `AgentParser` interface in `shiplog/src/engine/`**
+**Abstraction: `AgentParser` interface in `shipcard/src/engine/`**
 
 ```typescript
 // New: agent-agnostic session representation
@@ -329,7 +329,7 @@ export interface AgentParser {
 }
 ```
 
-The existing Claude Code parser in `shiplog/src/parser/` is refactored to implement `AgentParser`. The `engine/aggregator.ts` layer accepts `AgentSession[]` regardless of source.
+The existing Claude Code parser in `shipcard/src/parser/` is refactored to implement `AgentParser`. The `engine/aggregator.ts` layer accepts `AgentSession[]` regardless of source.
 
 **What other agents expose — current state:**
 
@@ -349,20 +349,20 @@ The existing Claude Code parser in `shiplog/src/parser/` is refactored to implem
 
 ## Updated Dependency Tables
 
-### `shiplog/` — new in v2.0
+### `shipcard/` — new in v2.0
 
 | Package | Version | Reason |
 |---------|---------|--------|
 | `@clack/prompts` | `^1.1.0` | Interactive CLI prompts for themes, login improvements, insights opt-in |
 
-### `shiplog-worker/` — new in v2.0
+### `shipcard-worker/` — new in v2.0
 
 | Package | Version | Reason |
 |---------|---------|--------|
 | `stripe` | `^17.x` (pin before v21) | Subscriptions, webhooks, Stripe Checkout |
 | `@anthropic-ai/sdk` | `^0.80.0` | Weekly insight generation from scheduled Worker |
 
-### `shiplog-worker/` — platform additions (no npm)
+### `shipcard-worker/` — platform additions (no npm)
 
 | Service | How Added | Reason |
 |---------|----------|--------|

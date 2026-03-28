@@ -435,10 +435,10 @@ The "yesterday" row appears as a muted strip below the main metric. Suggested CS
 ## Sources
 
 ### Primary (HIGH confidence)
-- Codebase: `/home/jaime/www/_github/SaaS/shiplog-worker/src/routes/dashboard.ts` — full Alpine store, HTML markup, CSS variables, all chart patterns
-- Codebase: `/home/jaime/www/_github/SaaS/shiplog-worker/src/types.ts` — `SafeDailyStats`, `PerProjectDailyStats` type shapes
-- Codebase: `/home/jaime/www/_github/SaaS/shiplog/src/cli/safestats.ts` — confirms `byProject` is optional, populated only with `--show-projects`
-- Codebase: `/home/jaime/www/_github/SaaS/shiplog/src/engine/dailyAggregator.ts` — confirms `DailyStats` fields: `messages`, `sessions`, `tokens`, `costCents`, `byProject`
+- Codebase: `/home/jaime/www/_github/SaaS/shipcard-worker/src/routes/dashboard.ts` — full Alpine store, HTML markup, CSS variables, all chart patterns
+- Codebase: `/home/jaime/www/_github/SaaS/shipcard-worker/src/types.ts` — `SafeDailyStats`, `PerProjectDailyStats` type shapes
+- Codebase: `/home/jaime/www/_github/SaaS/shipcard/src/cli/safestats.ts` — confirms `byProject` is optional, populated only with `--show-projects`
+- Codebase: `/home/jaime/www/_github/SaaS/shipcard/src/engine/dailyAggregator.ts` — confirms `DailyStats` fields: `messages`, `sessions`, `tokens`, `costCents`, `byProject`
 - `.planning/phases/14-hero-section/14-CONTEXT.md` — user decisions, layout choices, color decisions
 
 ### Secondary (MEDIUM confidence)

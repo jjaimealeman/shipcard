@@ -27,15 +27,15 @@ tech-stack:
 key-files:
   created: []
   modified:
-    - shiplog-worker/src/svg/index.ts
-    - shiplog-worker/src/svg/layouts/classic.ts
-    - shiplog-worker/src/svg/layouts/compact.ts
-    - shiplog-worker/src/svg/layouts/hero.ts
-    - shiplog/src/card/index.ts
-    - shiplog/src/card/layouts/classic.ts
-    - shiplog/src/card/layouts/compact.ts
-    - shiplog/src/card/layouts/hero.ts
-    - shiplog-worker/src/routes/dashboard.ts
+    - shipcard-worker/src/svg/index.ts
+    - shipcard-worker/src/svg/layouts/classic.ts
+    - shipcard-worker/src/svg/layouts/compact.ts
+    - shipcard-worker/src/svg/layouts/hero.ts
+    - shipcard/src/card/index.ts
+    - shipcard/src/card/layouts/classic.ts
+    - shipcard/src/card/layouts/compact.ts
+    - shipcard/src/card/layouts/hero.ts
+    - shipcard-worker/src/routes/dashboard.ts
 
 key-decisions:
   - "Footer right-aligned (text-anchor=end, x=CARD_WIDTH-PADDING) — no <a> tag since SVG loaded via <img src> sandboxes hyperlinks"
@@ -77,15 +77,15 @@ Each task was committed atomically:
 
 ## Files Created/Modified
 
-- `shiplog-worker/src/svg/index.ts` - footer text changed to "Get yours at shipcard.dev"
-- `shiplog-worker/src/svg/layouts/classic.ts` - footer x and text-anchor updated
-- `shiplog-worker/src/svg/layouts/compact.ts` - footer x and text-anchor updated
-- `shiplog-worker/src/svg/layouts/hero.ts` - footer x and text-anchor updated
-- `shiplog/src/card/index.ts` - footer text changed to "Get yours at shipcard.dev"
-- `shiplog/src/card/layouts/classic.ts` - footer x and text-anchor updated
-- `shiplog/src/card/layouts/compact.ts` - footer x and text-anchor updated
-- `shiplog/src/card/layouts/hero.ts` - footer x and text-anchor updated
-- `shiplog-worker/src/routes/dashboard.ts` - content wrapper x-show updated to include !error guard
+- `shipcard-worker/src/svg/index.ts` - footer text changed to "Get yours at shipcard.dev"
+- `shipcard-worker/src/svg/layouts/classic.ts` - footer x and text-anchor updated
+- `shipcard-worker/src/svg/layouts/compact.ts` - footer x and text-anchor updated
+- `shipcard-worker/src/svg/layouts/hero.ts` - footer x and text-anchor updated
+- `shipcard/src/card/index.ts` - footer text changed to "Get yours at shipcard.dev"
+- `shipcard/src/card/layouts/classic.ts` - footer x and text-anchor updated
+- `shipcard/src/card/layouts/compact.ts` - footer x and text-anchor updated
+- `shipcard/src/card/layouts/hero.ts` - footer x and text-anchor updated
+- `shipcard-worker/src/routes/dashboard.ts` - content wrapper x-show updated to include !error guard
 
 ## Decisions Made
 

@@ -56,7 +56,7 @@ npm install @modelcontextprotocol/sdk zod
 ### Recommended File Structure for Phase 2
 
 ```
-shiplog/src/
+shipcard/src/
 ├── cli/
 │   ├── index.ts          # CLI entry point (#!/usr/bin/env node shebang)
 │   ├── args.ts           # util.parseArgs wrapper, flag types, date arg parsing
@@ -582,7 +582,7 @@ Cursor: add to `~/.cursor/mcp.json`.
 - SDK type definitions: `/tmp/mcp-inspect/node_modules/@modelcontextprotocol/sdk/dist/esm/server/stdio.d.ts` — `StdioServerTransport` constructor
 - Node.js v22 live test: `util.parseArgs()` with `allowPositionals: true` — verified return shape
 - MCP official TypeScript docs: `https://modelcontextprotocol.io/docs/develop/build-server` — confirmed `console.log` corruption issue, exact import paths, package.json config
-- Phase 1 engine API: `shiplog/src/index.ts` — `runEngine(options)` signature, `AnalyticsResult` shape
+- Phase 1 engine API: `shipcard/src/index.ts` — `runEngine(options)` signature, `AnalyticsResult` shape
 
 ### Secondary (MEDIUM confidence)
 

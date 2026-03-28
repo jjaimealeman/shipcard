@@ -31,11 +31,11 @@ tech-stack:
 
 key-files:
   created:
-    - shiplog-worker/src/routes/syncV2.ts
+    - shipcard-worker/src/routes/syncV2.ts
   modified:
-    - shiplog-worker/src/types.ts
-    - shiplog-worker/src/kv.ts
-    - shiplog-worker/src/index.ts
+    - shipcard-worker/src/types.ts
+    - shipcard-worker/src/kv.ts
+    - shipcard-worker/src/index.ts
 
 key-decisions:
   - "isValidSyncV2Body delegates SafeStats check to existing isValidSafeStats — no duplication of privacy validation logic"
@@ -78,10 +78,10 @@ Each task was committed atomically:
 3. **Task 3: POST /sync/v2 route and index.ts mount** - `4e4439a` (feat)
 
 ## Files Created/Modified
-- `shiplog-worker/src/types.ts` — Added SafeDailyStats, SafeTimeSeries, SyncV2Body interfaces + isValidSyncV2Body type guard
-- `shiplog-worker/src/kv.ts` — Added getTimeSeries/putTimeSeries, updated deleteAllUserData, updated module JSDoc key scheme
-- `shiplog-worker/src/routes/syncV2.ts` — New: POST /sync/v2 route with auth, validation, dual KV storage, card re-render
-- `shiplog-worker/src/index.ts` — Import syncV2Routes, mount at /sync/v2 before /sync, updated JSDoc
+- `shipcard-worker/src/types.ts` — Added SafeDailyStats, SafeTimeSeries, SyncV2Body interfaces + isValidSyncV2Body type guard
+- `shipcard-worker/src/kv.ts` — Added getTimeSeries/putTimeSeries, updated deleteAllUserData, updated module JSDoc key scheme
+- `shipcard-worker/src/routes/syncV2.ts` — New: POST /sync/v2 route with auth, validation, dual KV storage, card re-render
+- `shipcard-worker/src/index.ts` — Import syncV2Routes, mount at /sync/v2 before /sync, updated JSDoc
 
 ## Decisions Made
 - **isValidSyncV2Body delegates to isValidSafeStats** — no duplication of privacy boundary enforcement logic; the v2 guard composes the v1 guard

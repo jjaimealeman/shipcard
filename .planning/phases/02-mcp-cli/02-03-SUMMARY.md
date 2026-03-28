@@ -27,9 +27,9 @@ tech-stack:
 
 key-files:
   created:
-    - shiplog/docs/mcp-config.md
+    - shipcard/docs/mcp-config.md
   modified:
-    - shiplog/package.json
+    - shipcard/package.json
 
 key-decisions:
   - "chmod 755 in build script (not post-publish hook) — executable bits set at build time, not install time"
@@ -77,8 +77,8 @@ Each task was committed atomically:
 
 ## Files Created/Modified
 
-- `shiplog/package.json` - Added bin, main, exports, files fields; updated build script with chmod 755
-- `shiplog/docs/mcp-config.md` - Copy-paste MCP config for Claude Code, Cursor, and global install with tool listing
+- `shipcard/package.json` - Added bin, main, exports, files fields; updated build script with chmod 755
+- `shipcard/docs/mcp-config.md` - Copy-paste MCP config for Claude Code, Cursor, and global install with tool listing
 
 ## Decisions Made
 
