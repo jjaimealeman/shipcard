@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-03-27)
 
 **Core value:** Developers using Claude Code can see what they shipped and what it cost, and share verifiable proof via an embeddable card.
-**Current focus:** v1.1 Dashboard Enhancement — Phase 14: Peak Day Card
+**Current focus:** v1.1 Dashboard Enhancement — Phase 14: Hero Section
 
 ## Current Position
 
-Phase: 13 — Data Pipeline + Cleanup (COMPLETE)
-Plan: 02 of 2 complete
-Status: Phase complete
-Last activity: 2026-03-27 — Completed 13-02-PLAN.md (SafeTimeSeries byProject + dashboard project chart)
+Phase: 14 — Hero Section (In progress)
+Plan: 01 of 2 complete
+Status: In progress
+Last activity: 2026-03-28 — Completed 14-01-PLAN.md (Today's Activity section)
 
-Progress: [██░░░░░░░░░░░░░░░░░░░░░░░░░░] 2/6 plans (v1.1)
+Progress: [███░░░░░░░░░░░░░░░░░░░░░░░░░] 3/6 plans (v1.1)
 
 ## Performance Metrics
 
@@ -47,6 +47,8 @@ Progress: [██░░░░░░░░░░░░░░░░░░░░░
 - Worker isValidSyncV2Body unchanged -- byProject is optional and passes through envelope validator silently
 - projectSortMetric state property added to Alpine dashboard store for Phase 15 to wire sort toggles
 - CLEAN-01 (Slowest Day) and CLEAN-02 (Most Messages) confirmed never existed -- no removals needed
+- Local date for "today": always use toLocaleDateString('en-CA'), never toISOString().slice(0,10) (UTC breaks for evening users)
+- Direction indicators scan all timeseries.days (not filteredDays) — today is range-independent
 
 ### Pending Todos
 
@@ -60,6 +62,6 @@ Progress: [██░░░░░░░░░░░░░░░░░░░░░
 
 ## Session Continuity
 
-Last session: 2026-03-27T22:47:00Z
-Stopped at: Completed 13-02-PLAN.md (Phase 13 fully complete)
-Resume with: `/gsd:plan-phase 14` (Peak Day card)
+Last session: 2026-03-28T00:43:17Z
+Stopped at: Completed 14-01-PLAN.md (Today's Activity section — 4 metric cards with direction indicators)
+Resume with: `/gsd:execute-phase 14` plan 02 (Peak Day cards)
