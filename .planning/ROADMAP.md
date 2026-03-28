@@ -32,7 +32,7 @@ Full details: [milestones/v1-ROADMAP.md](milestones/v1-ROADMAP.md)
 
 ---
 
-## v1.1 Dashboard Enhancement (Phases 13-15) — IN PROGRESS
+## v1.1 Dashboard Enhancement (Phases 13-15) — SHIPPED 2026-03-27
 
 **Milestone Goal:** Make the dashboard the reason people adopt ShipCard — richer per-project breakdowns, today's activity hero, and meaningful sort dimensions.
 
@@ -86,7 +86,7 @@ Plans:
 **Plans:** 1 plan
 
 Plans:
-- [ ] 15-01-PLAN.md — Wire sort toggle and chart re-binding for 4 metrics
+- [x] 15-01-PLAN.md — Wire sort toggle and chart re-binding for 4 metrics
 
 ---
 
@@ -108,4 +108,4 @@ Plans:
 | 12. Polish + Community | v1.0 | 4/4 | Complete | 2026-03-27 |
 | 13. Data Pipeline + Cleanup | v1.1 | 2/2 | Complete | 2026-03-27 |
 | 14. Hero Section | v1.1 | 2/2 | Complete | 2026-03-27 |
-| 15. Project Activity | v1.1 | 0/1 | Not started | - |
+| 15. Project Activity | v1.1 | 1/1 | Complete | 2026-03-27 |

@@ -16,10 +16,10 @@
 
 ### Project Activity
 
-- [ ] **PROJ-01**: Project Activity panel has sort toggle: messages | tokens | sessions | cost
-- [ ] **PROJ-02**: Bar chart displays the selected metric per project (not just "days active")
-- [ ] **PROJ-03**: Project list re-sorts when toggle changes without page reload
-- [ ] **PROJ-04**: Default sort is by messages (most familiar metric)
+- [x] **PROJ-01**: Project Activity panel has sort toggle: messages | tokens | sessions | cost
+- [x] **PROJ-02**: Bar chart displays the selected metric per project (not just "days active")
+- [x] **PROJ-03**: Project list re-sorts when toggle changes without page reload
+- [x] **PROJ-04**: Default sort is by messages (most familiar metric)
 
 ### Data Pipeline
 
@@ -63,10 +63,10 @@
 | HERO-04 | Phase 14 | Complete |
 | HERO-05 | Phase 14 | Complete |
 | HERO-06 | Phase 14 | Complete |
-| PROJ-01 | Phase 15 | Pending |
-| PROJ-02 | Phase 15 | Pending |
-| PROJ-03 | Phase 15 | Pending |
-| PROJ-04 | Phase 15 | Pending |
+| PROJ-01 | Phase 15 | Complete |
+| PROJ-02 | Phase 15 | Complete |
+| PROJ-03 | Phase 15 | Complete |
+| PROJ-04 | Phase 15 | Complete |
 | DATA-01 | Phase 13 | Complete |
 | DATA-02 | Phase 13 | Complete |
 | DATA-03 | Phase 13 | Complete |
