@@ -2,19 +2,19 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-27)
+See: .planning/PROJECT.md (updated 2026-03-28)
 
-**Core value:** Developers using Claude Code can see what they shipped and what it cost, and share verifiable proof via an embeddable card.
-**Current focus:** v1.1 Dashboard Enhancement — Phase 15: Project Activity
+**Core value:** Developers using Claude Code can see what they shipped and what it cost, and share verifiable proof via an embeddable card and analytics dashboard.
+**Current focus:** Planning next milestone
 
 ## Current Position
 
-Phase: 15 — Project Activity (Phase complete)
-Plan: 01 of 1 complete
-Status: v1.1 complete
-Last activity: 2026-03-28 — Completed 15-01-PLAN.md (Project Activity sort toggle)
+Phase: 15 of 15 (all milestones complete)
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-03-28 — v1.1 milestone complete
 
-Progress: [█████████████████████████████] 5/5 plans (v1.1)
+Progress: [████████████████████████████████████] v1.0 + v1.1 shipped
 
 ## Performance Metrics
 
@@ -24,52 +24,30 @@ Progress: [███████████████████████
 - 237 files, ~13,131 LOC
 - 3 days (2026-03-25 → 2026-03-27)
 
-**v1.1 Totals (running):**
-- 3 phases planned (13-15)
-- 17 requirements mapped
+**v1.1 Totals:**
+- 3 phases, 5 plans, 11 tasks
+- 28 commits
+- 57 files changed (4,672 insertions, 93 deletions)
+- ~14,396 LOC total project
+- 1 day (2026-03-27)
 
 ## Accumulated Context
 
 ### Decisions
 
-- v1.1 is dashboard enhancement on free tier; v2.0 reserved for monetized tier
-- Export buttons deferred to v3
-- Slowest Day metric dropped (dead — never changes once set)
-- Direction indicators use neutral tones, not red/green alarm colors
-- Today's Activity uses calendar day (00:00–23:59), not rolling 24h
-- DATA pipeline phases first — dashboard can't show per-project stats without enriched sync payload
-- CLEAN-01 and CLEAN-02 bundled into Phase 13 (data layer touches same code)
-- Phase 15 (Project Activity) depends on Phase 13 but can run after Phase 14 in parallel if needed
-- DailyStats.byProject is optional — existing consumers (SafeTimeSeries, card render) unchanged
-- Per-project userMessages hardcoded 0 (UserEntry JSONL has no project association field)
-- userMessagesByDate uses optional param pattern in aggregateDaily for backward compatibility
-- Worker SafeDailyStats mirrors CLI SafeDailyStats exactly (byProject added to both, no cross-package import)
-- Worker isValidSyncV2Body unchanged -- byProject is optional and passes through envelope validator silently
-- projectSortMetric state property added to Alpine dashboard store for Phase 15 to wire sort toggles
-- CLEAN-01 (Slowest Day) and CLEAN-02 (Most Messages) confirmed never existed -- no removals needed
-- Local date for "today": always use toLocaleDateString('en-CA'), never toISOString().slice(0,10) (UTC breaks for evening users)
-- Direction indicators scan all timeseries.days (not filteredDays) — today is range-independent
-- Peak Day cards show 4 per-metric peaks (messages, sessions, tokens, cost) instead of single combined card
-- Peak getters scan all timeseries.days (not filteredDays) — range filter does not affect peaks
-- _peakProject extracts top project from byProject; shows dash when byProject missing
-- Peak cost uses exact $X.XX format (no tilde prefix — historical record, not estimate)
-- Project Activity sort toggle (Messages/Tokens/Sessions/Cost) wired to projectSortMetric Alpine store; reactive via Alpine.effect
-- Free tier project cap is 5 (not 10)
-- Projects with zero value for selected metric are hidden from Project Activity chart
-- sortMetric reactive dep must be read before if-guards in Alpine.effect to always register tracking
+See PROJECT.md Key Decisions table for full history.
 
 ### Pending Todos
 
-- None — v1.1 complete. Ready for release tagging.
+None — ready for next milestone.
 
 ### Blockers/Concerns
 
 - [Action]: Replace placeholder OAuth client ID in login.ts with real GitHub OAuth App
 - [Action]: Set real KV namespace IDs in wrangler.jsonc before production deploy
-- [RESOLVED 13-01]: userMessages per day was hardcoded 0 — now populated from real UserEntry timestamps
 
 ## Session Continuity
 
-Last session: 2026-03-28T01:45:15Z
-Stopped at: Completed 15-01-PLAN.md (Project Activity sort toggle — v1.1 final plan)
-Resume with: `/release` to tag v1.1.0
+Last session: 2026-03-28
+Stopped at: v1.1 milestone archived
+Resume with: `/gsd:new-milestone` for v2.0

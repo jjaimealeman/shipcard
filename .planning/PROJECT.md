@@ -10,9 +10,9 @@ Developers using Claude Code can see what they shipped and what it cost, and sha
 
 ## Current State
 
-**Version:** v1.0 shipped 2026-03-27 | v1.1 in progress
+**Version:** v1.1 shipped 2026-03-28
 **Package:** `shipcard` on npm (MIT licensed)
-**Codebase:** ~13,131 LOC TypeScript/HTML/JSON across 237 files
+**Codebase:** ~14,396 LOC TypeScript/HTML/JSON
 **Stack:** Node.js/TypeScript local tool + Cloudflare Worker + KV
 
 **What shipped in v1.0:**
@@ -25,17 +25,12 @@ Developers using Claude Code can see what they shipped and what it cost, and sha
 - Community: homepage teaser, /community leaderboard, cards-served counter
 - Landing page at shipcard.dev with live card configurator
 
-## Current Milestone: v1.1 Dashboard Enhancement
-
-**Goal:** Make the dashboard the reason people adopt ShipCard — richer per-project breakdowns, today's activity hero, and meaningful sort dimensions.
-
-**Target features:**
-- Today's Activity hero section with 4 metrics (messages, sessions, tools, tokens) each showing % change vs yesterday
-- Peak Day card with date, messages, sessions, project name, and cost
-- Project Activity with sort toggles: messages | tokens | sessions | cost
-- Enriched sync payload with per-project stats (tokens, sessions, cost per project per day)
-- Remove Slowest Day (dead metric)
-- Neutral-toned direction indicators (not red/green alarm colors)
+**What shipped in v1.1:**
+- Today's Activity hero (4 metrics with % change vs yesterday, calendar day boundaries)
+- Peak Days cards (4 per-metric all-time records with date and project name)
+- Project Activity sort toggle (messages, tokens, sessions, cost)
+- Per-project stats in sync payload (tokens, sessions, cost per project per day)
+- Dashboard section reorder (static sections first, range-reactive below)
 
 ## Requirements
 
@@ -53,15 +48,15 @@ Developers using Claude Code can see what they shipped and what it cost, and sha
 - ✓ Privacy-first: no raw JSONL upload, only aggregated user-approved stats — v1.0
 - ✓ Zero external deps beyond MCP SDK — v1.0
 - ✓ Published to npm as `shipcard` — v1.0
+- ✓ Today's Activity hero — 4 metrics with individual % vs yesterday — v1.1
+- ✓ Peak Day cards — 4 per-metric all-time records with date and project — v1.1
+- ✓ Project Activity toggles — sort by messages, tokens, sessions, or cost — v1.1
+- ✓ Per-project stats in sync payload — tokens, sessions, cost per project per day — v1.1
+- ✓ Neutral direction indicators for % change (orange/blue, not red/green) — v1.1
 
 ### Active
 
-- [ ] Today's Activity hero — 4 metrics with individual % vs yesterday
-- [ ] Peak Day card — date, project, tokens, cost for highest-activity day
-- [ ] Project Activity toggles — sort by messages, tokens, sessions, or cost
-- [ ] Per-project stats in sync payload — tokens, sessions, cost per project per day
-- [ ] Remove Slowest Day metric
-- [ ] Neutral direction indicators for % change (not red/green)
+(None — planning next milestone)
 
 ### Deferred (post-adoption)
 
@@ -113,7 +108,9 @@ Developers using Claude Code can see what they shipped and what it cost, and sha
 | Two-layer privacy validation | CLI strips + Worker rejects banned fields | ✓ Good — defense in depth |
 | Phase 1 then Phase 2 sequential | Local tool must work before card has data | ✓ Good — natural dependency |
 
-| v1.1 dashboard on feature branch | v2.0 reserved for monetized tier | — Pending |
+| v1.1 dashboard on feature branch | v2.0 reserved for monetized tier | ✓ Good — shipped and merged |
+| Chart update in-place (not destroy/recreate) | Canvas context breaks on destroy/recreate cycle | ✓ Good — all 4 sort metrics work |
+| Dashboard section reorder | Static sections first, range-reactive below | ✓ Good — better UX hierarchy |
 
 ---
-*Last updated: 2026-03-27 after v1.1 milestone start*
+*Last updated: 2026-03-28 after v1.1 milestone*
