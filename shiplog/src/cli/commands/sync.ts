@@ -126,7 +126,7 @@ export async function runSync(flags: SyncFlags): Promise<void> {
 
   // Run the analytics engine (full result for daily aggregation)
   process.stderr.write("Analyzing local stats...\n");
-  const { result, messages } = await runEngineFull({
+  const { result, messages, userMessagesByDate } = await runEngineFull({
     since: flags.since,
     until: flags.until,
   });
@@ -144,7 +144,7 @@ export async function runSync(flags: SyncFlags): Promise<void> {
 
   // Daily aggregation for v2 payload
   const pricing = await getPricing();
-  const dailyStats = aggregateDaily(messages, pricing);
+  const dailyStats = aggregateDaily(messages, pricing, userMessagesByDate);
   const safeTimeSeries = toSafeTimeSeries(dailyStats, username, flags.showProjects);
 
   // Print sync preview

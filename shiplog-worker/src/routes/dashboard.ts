@@ -321,6 +321,9 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
   .btn-group {
     display: none;
   }
+  /* Panel header sort toggle always visible (overrides global hide) */
+  .panel-header .btn-group { display: flex; font-size: 11px; }
+  .panel-header .btn-group button { padding: 4px 8px; }
 
   /* Panel body — explicit height prevents Chart.js 0-height collapse */
   .panel-body {
@@ -499,6 +502,156 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
     margin-right: 4px;
     vertical-align: middle;
   }
+
+  /* -------------------------------------------------------------------------
+   * Today's Activity section
+   * ---------------------------------------------------------------------- */
+  .today-section {
+    margin-bottom: 32px;
+  }
+  .today-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  @media (min-width: 1024px) {
+    .today-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .today-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 20px 0 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .today-value {
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--fg);
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  .today-arrow-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 12px;
+  }
+  .dir-arrow {
+    font-size: 12px;
+    line-height: 1;
+  }
+  .dir-arrow.dir-up {
+    color: var(--orange);
+  }
+  .dir-arrow.dir-down {
+    color: var(--blue);
+  }
+  .today-label {
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--mid);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .today-yesterday {
+    margin-top: auto;
+    padding: 6px 20px;
+    margin-left: -20px;
+    margin-right: -20px;
+    background: rgba(255, 255, 255, 0.03);
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--mid);
+    font-family: 'Poppins', system-ui, sans-serif;
+  }
+  .today-yesterday strong {
+    color: var(--light);
+  }
+  /* Skeleton placeholders inside today cards */
+  .today-card .skel-today-value {
+    height: 34px;
+    width: 60%;
+    margin-bottom: 8px;
+  }
+  .today-card .skel-today-label {
+    height: 12px;
+    width: 40%;
+    margin-bottom: 16px;
+  }
+  .today-card .skel-today-bar {
+    height: 28px;
+    margin-left: -20px;
+    margin-right: -20px;
+    border-radius: 0;
+  }
+
+  /* -------------------------------------------------------------------------
+   * Peak Days section
+   * ---------------------------------------------------------------------- */
+  .peak-section {
+    margin-bottom: 32px;
+  }
+  .peak-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  @media (min-width: 640px) {
+    .peak-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .peak-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+  }
+  .peak-value {
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--fg);
+    line-height: 1.2;
+  }
+  .peak-meta {
+    font-size: 11px;
+    color: var(--mid);
+    margin-top: 2px;
+    min-height: 15px;
+  }
+  .peak-label {
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--mid);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 4px;
+  }
+  /* Skeleton placeholders inside peak cards */
+  .peak-card .skel-peak-value {
+    height: 24px;
+    width: 55%;
+    margin-bottom: 6px;
+  }
+  .peak-card .skel-peak-meta {
+    height: 12px;
+    width: 75%;
+    margin-bottom: 6px;
+  }
+  .peak-card .skel-peak-label {
+    height: 10px;
+    width: 40%;
+    margin-top: 4px;
+  }
 </style>
 </head>
 <body x-data x-init="$store.dashboard.load('__USERNAME__')">
@@ -634,6 +787,162 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
     </div><!-- /hero-grid -->
 
     <!-- -------------------------------------------------------------------
+         TODAY'S ACTIVITY
+         ---------------------------------------------------------------- -->
+    <div class="section-title">Today's Activity</div>
+    <div class="today-section">
+      <div class="today-grid">
+
+        <!-- Messages -->
+        <div class="today-card">
+          <div class="skel-today-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="skel-today-label skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div x-show="!$store.dashboard.loading" style="display:none">
+            <div class="today-value" x-text="$store.dashboard.todayMessages"></div>
+            <div class="today-arrow-label">
+              <span class="dir-arrow"
+                    x-show="$store.dashboard.dirMessages !== 0"
+                    :class="$store.dashboard.dirMessages > 0 ? 'dir-up' : 'dir-down'"
+                    x-text="$store.dashboard.dirMessages > 0 ? '\u25B2' : '\u25BC'"></span>
+              <span class="today-label">Messages</span>
+            </div>
+          </div>
+          <div class="today-yesterday">
+            <span x-show="$store.dashboard.loading" class="skeleton" style="display:none;height:14px;width:80%;border-radius:3px"></span>
+            <span x-show="!$store.dashboard.loading" style="display:none">
+              Yesterday: <strong x-text="$store.dashboard.yesterdayMessages"></strong>
+            </span>
+          </div>
+        </div>
+
+        <!-- Sessions -->
+        <div class="today-card">
+          <div class="skel-today-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="skel-today-label skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div x-show="!$store.dashboard.loading" style="display:none">
+            <div class="today-value" x-text="$store.dashboard.todaySessions"></div>
+            <div class="today-arrow-label">
+              <span class="dir-arrow"
+                    x-show="$store.dashboard.dirSessions !== 0"
+                    :class="$store.dashboard.dirSessions > 0 ? 'dir-up' : 'dir-down'"
+                    x-text="$store.dashboard.dirSessions > 0 ? '\u25B2' : '\u25BC'"></span>
+              <span class="today-label">Sessions</span>
+            </div>
+          </div>
+          <div class="today-yesterday">
+            <span x-show="$store.dashboard.loading" class="skeleton" style="display:none;height:14px;width:80%;border-radius:3px"></span>
+            <span x-show="!$store.dashboard.loading" style="display:none">
+              Yesterday: <strong x-text="$store.dashboard.yesterdaySessions"></strong>
+            </span>
+          </div>
+        </div>
+
+        <!-- Tools -->
+        <div class="today-card">
+          <div class="skel-today-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="skel-today-label skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div x-show="!$store.dashboard.loading" style="display:none">
+            <div class="today-value" x-text="$store.dashboard.todayTools"></div>
+            <div class="today-arrow-label">
+              <span class="dir-arrow"
+                    x-show="$store.dashboard.dirTools !== 0"
+                    :class="$store.dashboard.dirTools > 0 ? 'dir-up' : 'dir-down'"
+                    x-text="$store.dashboard.dirTools > 0 ? '\u25B2' : '\u25BC'"></span>
+              <span class="today-label">Tools</span>
+            </div>
+          </div>
+          <div class="today-yesterday">
+            <span x-show="$store.dashboard.loading" class="skeleton" style="display:none;height:14px;width:80%;border-radius:3px"></span>
+            <span x-show="!$store.dashboard.loading" style="display:none">
+              Yesterday: <strong x-text="$store.dashboard.yesterdayTools"></strong>
+            </span>
+          </div>
+        </div>
+
+        <!-- Tokens -->
+        <div class="today-card">
+          <div class="skel-today-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="skel-today-label skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div x-show="!$store.dashboard.loading" style="display:none">
+            <div class="today-value" x-text="$store.dashboard.todayTokens"></div>
+            <div class="today-arrow-label">
+              <span class="dir-arrow"
+                    x-show="$store.dashboard.dirTokens !== 0"
+                    :class="$store.dashboard.dirTokens > 0 ? 'dir-up' : 'dir-down'"
+                    x-text="$store.dashboard.dirTokens > 0 ? '\u25B2' : '\u25BC'"></span>
+              <span class="today-label">Tokens</span>
+            </div>
+          </div>
+          <div class="today-yesterday">
+            <span x-show="$store.dashboard.loading" class="skeleton" style="display:none;height:14px;width:80%;border-radius:3px"></span>
+            <span x-show="!$store.dashboard.loading" style="display:none">
+              Yesterday: <strong x-text="$store.dashboard.yesterdayTokens"></strong>
+            </span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- -------------------------------------------------------------------
+         PEAK DAYS — all-time per-metric record cards
+         ---------------------------------------------------------------- -->
+    <div class="section-title">Peak Days</div>
+    <div class="peak-section">
+      <div class="peak-grid">
+
+        <!-- Peak Messages -->
+        <div class="peak-card">
+          <div class="skel-peak-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="skel-peak-meta skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="skel-peak-label skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div x-show="!$store.dashboard.loading" style="display:none">
+            <div class="peak-value" x-text="$store.dashboard.peakMessages ? $store.dashboard.peakMessages.value : '\u2014'"></div>
+            <div class="peak-meta" x-text="$store.dashboard.peakMessages ? ($store.dashboard.peakMessages.project ? $store.dashboard.peakMessages.date + ' \u2013 ' + $store.dashboard.peakMessages.project : $store.dashboard.peakMessages.date) : ''"></div>
+            <div class="peak-label">Messages</div>
+          </div>
+        </div>
+
+        <!-- Peak Sessions -->
+        <div class="peak-card">
+          <div class="skel-peak-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="skel-peak-meta skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="skel-peak-label skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div x-show="!$store.dashboard.loading" style="display:none">
+            <div class="peak-value" x-text="$store.dashboard.peakSessions ? $store.dashboard.peakSessions.value : '\u2014'"></div>
+            <div class="peak-meta" x-text="$store.dashboard.peakSessions ? ($store.dashboard.peakSessions.project ? $store.dashboard.peakSessions.date + ' \u2013 ' + $store.dashboard.peakSessions.project : $store.dashboard.peakSessions.date) : ''"></div>
+            <div class="peak-label">Sessions</div>
+          </div>
+        </div>
+
+        <!-- Peak Tokens -->
+        <div class="peak-card">
+          <div class="skel-peak-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="skel-peak-meta skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="skel-peak-label skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div x-show="!$store.dashboard.loading" style="display:none">
+            <div class="peak-value" x-text="$store.dashboard.peakTokens ? $store.dashboard.peakTokens.value : '\u2014'"></div>
+            <div class="peak-meta" x-text="$store.dashboard.peakTokens ? ($store.dashboard.peakTokens.project ? $store.dashboard.peakTokens.date + ' \u2013 ' + $store.dashboard.peakTokens.project : $store.dashboard.peakTokens.date) : ''"></div>
+            <div class="peak-label">Tokens</div>
+          </div>
+        </div>
+
+        <!-- Peak Cost -->
+        <div class="peak-card">
+          <div class="skel-peak-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="skel-peak-meta skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="skel-peak-label skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div x-show="!$store.dashboard.loading" style="display:none">
+            <div class="peak-value" x-text="$store.dashboard.peakCost ? $store.dashboard.peakCost.value : '\u2014'"></div>
+            <div class="peak-meta" x-text="$store.dashboard.peakCost ? ($store.dashboard.peakCost.project ? $store.dashboard.peakCost.date + ' \u2013 ' + $store.dashboard.peakCost.project : $store.dashboard.peakCost.date) : ''"></div>
+            <div class="peak-label">Cost</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- -------------------------------------------------------------------
          OVERVIEW PANELS — Activity Heatmap (wide) + Daily Activity chart
          ---------------------------------------------------------------- -->
     <div class="section-title">Activity</div>
@@ -759,8 +1068,21 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
       <!-- panel-projects: project activity horizontal bars -->
       <div class="panel panel-wide" id="panel-projects">
         <div class="panel-header">
-          <span class="panel-title">Project Activity</span>
-          <span class="panel-badge">Bar Chart</span>
+          <span class="panel-title">Project Activity
+            <span x-show="$store.dashboard.hasProjects" style="display:none;font-weight:400;font-size:12px;color:var(--mid)">
+              (showing <span x-text="Math.min(5, $store.dashboard._projectTotal)"></span> of <span x-text="$store.dashboard._projectTotal"></span>)
+            </span>
+          </span>
+          <div class="btn-group" x-show="$store.dashboard.hasProjects" style="display:none">
+            <button :class="{ active: $store.dashboard.projectSortMetric === 'messages' }"
+              @click="$store.dashboard.projectSortMetric = 'messages'">Messages</button>
+            <button :class="{ active: $store.dashboard.projectSortMetric === 'tokens' }"
+              @click="$store.dashboard.projectSortMetric = 'tokens'">Tokens</button>
+            <button :class="{ active: $store.dashboard.projectSortMetric === 'sessions' }"
+              @click="$store.dashboard.projectSortMetric = 'sessions'">Sessions</button>
+            <button :class="{ active: $store.dashboard.projectSortMetric === 'cost' }"
+              @click="$store.dashboard.projectSortMetric = 'cost'">Cost</button>
+          </div>
         </div>
         <div class="panel-body">
           <div class="panel-skel skeleton" x-show="$store.dashboard.loading" style="display:none;min-height:120px"></div>
@@ -840,10 +1162,28 @@ document.addEventListener('alpine:init', () => {
 
     // ---------------------------------------------------------------------------
     // Computed: hasProjects — whether any day in filteredDays has project data
+    // (either byProject metrics or legacy projects name array)
     // ---------------------------------------------------------------------------
     get hasProjects() {
-      return this.filteredDays.some(d => d.projects && d.projects.length > 0);
+      return this.filteredDays.some(d =>
+        (d.byProject && Object.keys(d.byProject).length > 0) ||
+        (d.projects && d.projects.length > 0)
+      );
     },
+
+    // Total unique projects across all-time data (for "Showing N of X" heading)
+    get _projectTotal() {
+      const all = this.timeseries ? this.timeseries.days : [];
+      const names = new Set();
+      all.forEach(d => {
+        if (d.byProject) Object.keys(d.byProject).forEach(n => names.add(n));
+        if (d.projects) d.projects.forEach(n => names.add(n));
+      });
+      return names.size;
+    },
+
+    // User-selectable sort dimension for Project Activity bar chart
+    projectSortMetric: 'messages',
 
     // ---------------------------------------------------------------------------
     // Hero stat computed values (filtered to selected range)
@@ -942,6 +1282,181 @@ document.addEventListener('alpine:init', () => {
       try {
         return new Date(this.syncedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
       } catch { return this.syncedAt; }
+    },
+
+    // ---------------------------------------------------------------------------
+    // Today's Activity — computed getters for today/yesterday metrics
+    // ---------------------------------------------------------------------------
+
+    // Returns YYYY-MM-DD in the browser's LOCAL timezone (not UTC).
+    // en-CA locale always produces ISO date format — independent of OS locale.
+    get _todayDate() {
+      return new Date().toLocaleDateString('en-CA');
+    },
+
+    get _yesterdayDate() {
+      const d = new Date();
+      d.setDate(d.getDate() - 1);
+      return d.toLocaleDateString('en-CA');
+    },
+
+    // Scans ALL days (not filteredDays) — today is independent of range filter.
+    get _todayStats() {
+      if (!this.timeseries || !this.timeseries.days) return null;
+      return this.timeseries.days.find(d => d.date === this._todayDate) || null;
+    },
+
+    get _yesterdayStats() {
+      if (!this.timeseries || !this.timeseries.days) return null;
+      return this.timeseries.days.find(d => d.date === this._yesterdayDate) || null;
+    },
+
+    // Sum all tool call values for a given day object.
+    _totalTools(day) {
+      if (!day || !day.toolCalls) return 0;
+      return Object.values(day.toolCalls).reduce((s, v) => s + v, 0);
+    },
+
+    // Sum all token types for a given day object.
+    _totalTokens(day) {
+      if (!day) return 0;
+      return day.tokens.input + day.tokens.output + day.tokens.cacheCreate + day.tokens.cacheRead;
+    },
+
+    // Returns 1 (today > yesterday), -1 (today < yesterday), 0 (equal).
+    _dir(todayVal, yesterdayVal) {
+      if (todayVal > yesterdayVal) return 1;
+      if (todayVal < yesterdayVal) return -1;
+      return 0;
+    },
+
+    // Today's raw values
+    get todayMessages() {
+      return this._todayStats ? this._todayStats.messages : 0;
+    },
+    get todaySessions() {
+      return this._todayStats ? this._todayStats.sessions : 0;
+    },
+    get todayTools() {
+      return this._totalTools(this._todayStats);
+    },
+    get todayTokens() {
+      return this._fmtNum(this._totalTokens(this._todayStats));
+    },
+    get _todayTokensRaw() {
+      return this._totalTokens(this._todayStats);
+    },
+
+    // Yesterday's raw values
+    get yesterdayMessages() {
+      return this._yesterdayStats ? this._yesterdayStats.messages : 0;
+    },
+    get yesterdaySessions() {
+      return this._yesterdayStats ? this._yesterdayStats.sessions : 0;
+    },
+    get yesterdayTools() {
+      return this._totalTools(this._yesterdayStats);
+    },
+    get yesterdayTokens() {
+      return this._fmtNum(this._totalTokens(this._yesterdayStats));
+    },
+    get _yesterdayTokensRaw() {
+      return this._totalTokens(this._yesterdayStats);
+    },
+
+    // Direction indicators (1=up, -1=down, 0=equal)
+    get dirMessages() {
+      return this._dir(this.todayMessages, this.yesterdayMessages);
+    },
+    get dirSessions() {
+      return this._dir(this.todaySessions, this.yesterdaySessions);
+    },
+    get dirTools() {
+      return this._dir(this.todayTools, this.yesterdayTools);
+    },
+    get dirTokens() {
+      return this._dir(this._todayTokensRaw, this._yesterdayTokensRaw);
+    },
+
+    // ---------------------------------------------------------------------------
+    // Peak Day — helpers and computed getters for all-time per-metric peaks
+    // Scans ALL historical days (timeseries.days), NOT filteredDays.
+    // ---------------------------------------------------------------------------
+
+    // Generic reducer: finds the day with the highest value from the given extractor fn.
+    // Returns the full day object, or null if no data available.
+    _peakDay(fn) {
+      if (!this.timeseries || !this.timeseries.days || !this.timeseries.days.length) return null;
+      return this.timeseries.days.reduce((best, d) => fn(d) > fn(best) ? d : best);
+    },
+
+    // Extracts the top project name from a day's byProject data for the given metric.
+    // Handles tokens (sum of all sub-fields) and cost (costCents) specially.
+    // Returns null if byProject is missing or empty.
+    _peakProject(day, metricKey) {
+      if (!day || !day.byProject) return null;
+      let best = null, bestVal = -1;
+      for (const [name, stats] of Object.entries(day.byProject)) {
+        let val;
+        if (metricKey === 'tokens') {
+          val = stats.tokens.input + stats.tokens.output + stats.tokens.cacheCreate + stats.tokens.cacheRead;
+        } else if (metricKey === 'cost') {
+          val = stats.costCents;
+        } else {
+          val = stats[metricKey];
+        }
+        if (val > bestVal) { bestVal = val; best = name; }
+      }
+      return best;
+    },
+
+    // Formats "2026-03-15" as "Mar 15" using local timezone (noon to avoid shift).
+    _fmtShortDate(dateStr) {
+      if (!dateStr) return '';
+      const d = new Date(dateStr + 'T12:00:00');
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    },
+
+    // Peak getters — each returns { value, date, project } or null if no data.
+    get peakMessages() {
+      const day = this._peakDay(d => d.messages);
+      if (!day) return null;
+      return {
+        value: this._fmtNum(day.messages),
+        date: this._fmtShortDate(day.date),
+        project: this._peakProject(day, 'messages'),
+      };
+    },
+
+    get peakSessions() {
+      const day = this._peakDay(d => d.sessions);
+      if (!day) return null;
+      return {
+        value: this._fmtNum(day.sessions),
+        date: this._fmtShortDate(day.date),
+        project: this._peakProject(day, 'sessions'),
+      };
+    },
+
+    get peakTokens() {
+      const day = this._peakDay(d => this._totalTokens(d));
+      if (!day) return null;
+      return {
+        value: this._fmtNum(this._totalTokens(day)),
+        date: this._fmtShortDate(day.date),
+        project: this._peakProject(day, 'tokens'),
+      };
+    },
+
+    get peakCost() {
+      const day = this._peakDay(d => d.costCents);
+      if (!day) return null;
+      const dollars = day.costCents / 100;
+      return {
+        value: '$' + dollars.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+        date: this._fmtShortDate(day.date),
+        project: this._peakProject(day, 'cost'),
+      };
     },
 
     // ---------------------------------------------------------------------------
@@ -1665,26 +2180,50 @@ function buildHeatmap(allDays) {
 // ---------------------------------------------------------------------------
 // Project activity horizontal bar — only shown when hasProjects
 // ---------------------------------------------------------------------------
-function buildProjectsChart(days) {
+function buildProjectsChart(days, sortMetric) {
   const canvas = document.getElementById('panel-projects-chart');
   if (!canvas) return null;
   if (chartProjects) chartProjects.destroy();
 
-  // Count project occurrences across all filtered days
-  const projectCounts = {};
-  days.forEach(d => {
-    (d.projects || []).forEach(p => {
-      projectCounts[p] = (projectCounts[p] || 0) + 1;
-    });
-  });
+  // Aggregate per-project metrics across all filtered days
+  const projectMetrics = {};
+  const hasByProject = days.some(d => d.byProject && Object.keys(d.byProject).length > 0);
 
-  // Sort descending, take top 10
-  const sorted = Object.entries(projectCounts)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 10);
+  if (hasByProject) {
+    // Real metrics path: use byProject data (messages, sessions, tokens, cost)
+    days.forEach(d => {
+      if (!d.byProject) return;
+      Object.entries(d.byProject).forEach(([name, stats]) => {
+        if (!projectMetrics[name]) {
+          projectMetrics[name] = { messages: 0, sessions: 0, tokens: 0, costCents: 0 };
+        }
+        projectMetrics[name].messages  += stats.messages;
+        projectMetrics[name].sessions  += stats.sessions;
+        projectMetrics[name].tokens    += stats.tokens.input + stats.tokens.output + stats.tokens.cacheCreate + stats.tokens.cacheRead;
+        projectMetrics[name].costCents += stats.costCents;
+      });
+    });
+  } else {
+    // Fallback: count days active (legacy data without byProject)
+    days.forEach(d => {
+      (d.projects || []).forEach(p => {
+        if (!projectMetrics[p]) projectMetrics[p] = { messages: 0 };
+        projectMetrics[p].messages += 1; // days active as proxy
+      });
+    });
+  }
+
+  // Map toggle value to internal field name
+  const METRIC_MAP = { messages: 'messages', tokens: 'tokens', sessions: 'sessions', cost: 'costCents' };
+  const field = METRIC_MAP[sortMetric] || 'messages';
+
+  const sorted = Object.entries(projectMetrics)
+    .filter(([, m]) => (m[field] || 0) > 0)
+    .sort((a, b) => (b[1][field] || 0) - (a[1][field] || 0))
+    .slice(0, 5);
 
   const labels = sorted.map(e => e[0]);
-  const data   = sorted.map(e => e[1]);
+  const data   = sorted.map(e => e[1][field] || 0);
 
   // Set explicit container height based on bar count to prevent Chart.js resize loop
   const barHeight = 36;
@@ -1693,15 +2232,17 @@ function buildProjectsChart(days) {
   if (container) container.style.height = containerHeight + 'px';
   canvas.style.height = containerHeight + 'px';
 
+  const LABEL_MAP = { messages: 'Messages', tokens: 'Tokens', sessions: 'Sessions', cost: 'Cost' };
+
   chartProjects = new Chart(canvas, {
     type: 'bar',
     data: {
       labels,
       datasets: [{
-        label: 'Days active',
+        label: hasByProject ? (LABEL_MAP[sortMetric] || 'Messages') : 'Days active',
         data,
-        backgroundColor: COLORS.green + 'cc',
-        borderColor: COLORS.green,
+        backgroundColor: COLORS.orange + 'cc',
+        borderColor: COLORS.orange,
         borderWidth: 1,
         borderRadius: 4,
       }],
@@ -1713,8 +2254,29 @@ function buildProjectsChart(days) {
       animation: ANIM_OPTS,
       plugins: {
         legend: { display: false },
-        tooltip: TOOLTIP_BASE,
-        datalabels: { display: false },
+        tooltip: {
+          ...TOOLTIP_BASE,
+          callbacks: {
+            label: function(ctx) {
+              const v = ctx.parsed.x;
+              if (sortMetric === 'cost') return ' $' + (v / 100).toFixed(2);
+              return ' ' + (v >= 1000 ? (v / 1000).toFixed(1) + 'K' : v);
+            }
+          }
+        },
+        datalabels: {
+          display: true,
+          anchor: 'end',
+          align: 'start',
+          color: COLORS.bg,
+          font: { weight: 'bold', size: 11 },
+          formatter: function(v) {
+            if (sortMetric === 'cost') return '$' + (v / 100).toFixed(2);
+            if (v >= 1000000) return (v / 1000000).toFixed(1) + 'M';
+            if (v >= 1000) return (v / 1000).toFixed(1) + 'K';
+            return v;
+          }
+        },
       },
       scales: {
         x: { grid: { color: COLORS.border }, beginAtZero: true },
@@ -1741,9 +2303,12 @@ function updateAllCharts(days, allDays) {
   buildTokensChart(days);
   // Heatmap always shows all-time data
   buildHeatmap(allDays || days);
-  // Project bars only if data present
-  const hasProjects = days.some(d => d.projects && d.projects.length > 0);
-  if (hasProjects) buildProjectsChart(days);
+  // Project bars only if data present (byProject metrics or legacy projects array)
+  const hasProjects = days.some(d =>
+    (d.byProject && Object.keys(d.byProject).length > 0) ||
+    (d.projects && d.projects.length > 0)
+  );
+  if (hasProjects) buildProjectsChart(days, Alpine.store('dashboard').projectSortMetric);
 }
 
 /** Update chart data without rebuilding (smooth animated morph). */
@@ -1789,6 +2354,7 @@ document.addEventListener('alpine:initialized', () => {
   // Watch range changes → update charts with smooth morph
   Alpine.effect(() => {
     const days = store.filteredDays; // reactive dependency
+    const sortMetric = store.projectSortMetric; // reactive dep — triggers chart rebuild on toggle
     if (!store.loading && days.length > 0) {
       // Grab all-time days for heatmap (not filtered)
       const allDays = store.timeseries ? store.timeseries.days : days;
@@ -1839,9 +2405,12 @@ document.addEventListener('alpine:initialized', () => {
             days.map(d => d.tokens.cacheRead),
           ]
         );
-        // Project bars — rebuild on range change (conditional visibility)
-        const hasProjects = days.some(d => d.projects && d.projects.length > 0);
-        if (hasProjects) buildProjectsChart(days);
+        // Project bars — rebuild on range change or sort toggle change
+        const hasProjects = days.some(d =>
+          (d.byProject && Object.keys(d.byProject).length > 0) ||
+          (d.projects && d.projects.length > 0)
+        );
+        if (hasProjects) buildProjectsChart(days, sortMetric);
         // Heatmap is all-time — no update needed on range change
       } else {
         // First render — build all charts
