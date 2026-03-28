@@ -499,6 +499,95 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
     margin-right: 4px;
     vertical-align: middle;
   }
+
+  /* -------------------------------------------------------------------------
+   * Today's Activity section
+   * ---------------------------------------------------------------------- */
+  .today-section {
+    margin-bottom: 32px;
+  }
+  .today-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  @media (min-width: 1024px) {
+    .today-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .today-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 20px 0 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .today-value {
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--fg);
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  .today-arrow-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 12px;
+  }
+  .dir-arrow {
+    font-size: 12px;
+    line-height: 1;
+  }
+  .dir-arrow.dir-up {
+    color: var(--orange);
+  }
+  .dir-arrow.dir-down {
+    color: var(--blue);
+  }
+  .today-label {
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--mid);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .today-yesterday {
+    margin-top: auto;
+    padding: 6px 20px;
+    margin-left: -20px;
+    margin-right: -20px;
+    background: rgba(255, 255, 255, 0.03);
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--mid);
+    font-family: 'Poppins', system-ui, sans-serif;
+  }
+  .today-yesterday strong {
+    color: var(--light);
+  }
+  /* Skeleton placeholders inside today cards */
+  .today-card .skel-today-value {
+    height: 34px;
+    width: 60%;
+    margin-bottom: 8px;
+  }
+  .today-card .skel-today-label {
+    height: 12px;
+    width: 40%;
+    margin-bottom: 16px;
+  }
+  .today-card .skel-today-bar {
+    height: 28px;
+    margin-left: -20px;
+    margin-right: -20px;
+    border-radius: 0;
+  }
 </style>
 </head>
 <body x-data x-init="$store.dashboard.load('__USERNAME__')">
@@ -632,7 +721,104 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
       </div>
 
     </div><!-- /hero-grid -->
-    <!-- Phase 14 will add a "Peak Day" card here (highest messages or cost in a single day) -->
+
+    <!-- -------------------------------------------------------------------
+         TODAY'S ACTIVITY
+         ---------------------------------------------------------------- -->
+    <div class="section-title">Today's Activity</div>
+    <div class="today-section">
+      <div class="today-grid">
+
+        <!-- Messages -->
+        <div class="today-card">
+          <div class="skel-today-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="skel-today-label skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div x-show="!$store.dashboard.loading" style="display:none">
+            <div class="today-value" x-text="$store.dashboard.todayMessages"></div>
+            <div class="today-arrow-label">
+              <span class="dir-arrow"
+                    x-show="$store.dashboard.dirMessages !== 0"
+                    :class="$store.dashboard.dirMessages > 0 ? 'dir-up' : 'dir-down'"
+                    x-text="$store.dashboard.dirMessages > 0 ? '\u25B2' : '\u25BC'"></span>
+              <span class="today-label">Messages</span>
+            </div>
+          </div>
+          <div class="today-yesterday">
+            <span x-show="$store.dashboard.loading" class="skeleton" style="display:none;height:14px;width:80%;border-radius:3px"></span>
+            <span x-show="!$store.dashboard.loading" style="display:none">
+              Yesterday: <strong x-text="$store.dashboard.yesterdayMessages"></strong>
+            </span>
+          </div>
+        </div>
+
+        <!-- Sessions -->
+        <div class="today-card">
+          <div class="skel-today-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="skel-today-label skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div x-show="!$store.dashboard.loading" style="display:none">
+            <div class="today-value" x-text="$store.dashboard.todaySessions"></div>
+            <div class="today-arrow-label">
+              <span class="dir-arrow"
+                    x-show="$store.dashboard.dirSessions !== 0"
+                    :class="$store.dashboard.dirSessions > 0 ? 'dir-up' : 'dir-down'"
+                    x-text="$store.dashboard.dirSessions > 0 ? '\u25B2' : '\u25BC'"></span>
+              <span class="today-label">Sessions</span>
+            </div>
+          </div>
+          <div class="today-yesterday">
+            <span x-show="$store.dashboard.loading" class="skeleton" style="display:none;height:14px;width:80%;border-radius:3px"></span>
+            <span x-show="!$store.dashboard.loading" style="display:none">
+              Yesterday: <strong x-text="$store.dashboard.yesterdaySessions"></strong>
+            </span>
+          </div>
+        </div>
+
+        <!-- Tools -->
+        <div class="today-card">
+          <div class="skel-today-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="skel-today-label skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div x-show="!$store.dashboard.loading" style="display:none">
+            <div class="today-value" x-text="$store.dashboard.todayTools"></div>
+            <div class="today-arrow-label">
+              <span class="dir-arrow"
+                    x-show="$store.dashboard.dirTools !== 0"
+                    :class="$store.dashboard.dirTools > 0 ? 'dir-up' : 'dir-down'"
+                    x-text="$store.dashboard.dirTools > 0 ? '\u25B2' : '\u25BC'"></span>
+              <span class="today-label">Tools</span>
+            </div>
+          </div>
+          <div class="today-yesterday">
+            <span x-show="$store.dashboard.loading" class="skeleton" style="display:none;height:14px;width:80%;border-radius:3px"></span>
+            <span x-show="!$store.dashboard.loading" style="display:none">
+              Yesterday: <strong x-text="$store.dashboard.yesterdayTools"></strong>
+            </span>
+          </div>
+        </div>
+
+        <!-- Tokens -->
+        <div class="today-card">
+          <div class="skel-today-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="skel-today-label skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div x-show="!$store.dashboard.loading" style="display:none">
+            <div class="today-value" x-text="$store.dashboard.todayTokens"></div>
+            <div class="today-arrow-label">
+              <span class="dir-arrow"
+                    x-show="$store.dashboard.dirTokens !== 0"
+                    :class="$store.dashboard.dirTokens > 0 ? 'dir-up' : 'dir-down'"
+                    x-text="$store.dashboard.dirTokens > 0 ? '\u25B2' : '\u25BC'"></span>
+              <span class="today-label">Tokens</span>
+            </div>
+          </div>
+          <div class="today-yesterday">
+            <span x-show="$store.dashboard.loading" class="skeleton" style="display:none;height:14px;width:80%;border-radius:3px"></span>
+            <span x-show="!$store.dashboard.loading" style="display:none">
+              Yesterday: <strong x-text="$store.dashboard.yesterdayTokens"></strong>
+            </span>
+          </div>
+        </div>
+
+      </div>
+    </div>
 
     <!-- -------------------------------------------------------------------
          OVERVIEW PANELS — Activity Heatmap (wide) + Daily Activity chart
