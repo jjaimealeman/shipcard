@@ -1233,6 +1233,87 @@ document.addEventListener('alpine:init', () => {
     },
 
     // ---------------------------------------------------------------------------
+    // Peak Day — helpers and computed getters for all-time per-metric peaks
+    // Scans ALL historical days (timeseries.days), NOT filteredDays.
+    // ---------------------------------------------------------------------------
+
+    // Generic reducer: finds the day with the highest value from the given extractor fn.
+    // Returns the full day object, or null if no data available.
+    _peakDay(fn) {
+      if (!this.timeseries || !this.timeseries.days || !this.timeseries.days.length) return null;
+      return this.timeseries.days.reduce((best, d) => fn(d) > fn(best) ? d : best);
+    },
+
+    // Extracts the top project name from a day's byProject data for the given metric.
+    // Handles tokens (sum of all sub-fields) and cost (costCents) specially.
+    // Returns null if byProject is missing or empty.
+    _peakProject(day, metricKey) {
+      if (!day || !day.byProject) return null;
+      let best = null, bestVal = -1;
+      for (const [name, stats] of Object.entries(day.byProject)) {
+        let val;
+        if (metricKey === 'tokens') {
+          val = stats.tokens.input + stats.tokens.output + stats.tokens.cacheCreate + stats.tokens.cacheRead;
+        } else if (metricKey === 'cost') {
+          val = stats.costCents;
+        } else {
+          val = stats[metricKey];
+        }
+        if (val > bestVal) { bestVal = val; best = name; }
+      }
+      return best;
+    },
+
+    // Formats "2026-03-15" as "Mar 15" using local timezone (noon to avoid shift).
+    _fmtShortDate(dateStr) {
+      if (!dateStr) return '';
+      const d = new Date(dateStr + 'T12:00:00');
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    },
+
+    // Peak getters — each returns { value, date, project } or null if no data.
+    get peakMessages() {
+      const day = this._peakDay(d => d.messages);
+      if (!day) return null;
+      return {
+        value: this._fmtNum(day.messages),
+        date: this._fmtShortDate(day.date),
+        project: this._peakProject(day, 'messages'),
+      };
+    },
+
+    get peakSessions() {
+      const day = this._peakDay(d => d.sessions);
+      if (!day) return null;
+      return {
+        value: this._fmtNum(day.sessions),
+        date: this._fmtShortDate(day.date),
+        project: this._peakProject(day, 'sessions'),
+      };
+    },
+
+    get peakTokens() {
+      const day = this._peakDay(d => this._totalTokens(d));
+      if (!day) return null;
+      return {
+        value: this._fmtNum(this._totalTokens(day)),
+        date: this._fmtShortDate(day.date),
+        project: this._peakProject(day, 'tokens'),
+      };
+    },
+
+    get peakCost() {
+      const day = this._peakDay(d => d.costCents);
+      if (!day) return null;
+      const dollars = day.costCents / 100;
+      return {
+        value: '$' + dollars.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+        date: this._fmtShortDate(day.date),
+        project: this._peakProject(day, 'cost'),
+      };
+    },
+
+    // ---------------------------------------------------------------------------
     // Sparkline generators — return SVG polyline point strings
     // ---------------------------------------------------------------------------
     _sparkPoints(values, w, h) {
