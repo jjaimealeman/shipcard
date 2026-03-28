@@ -588,6 +588,67 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
     margin-right: -20px;
     border-radius: 0;
   }
+
+  /* -------------------------------------------------------------------------
+   * Peak Days section
+   * ---------------------------------------------------------------------- */
+  .peak-section {
+    margin-bottom: 32px;
+  }
+  .peak-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  @media (min-width: 640px) {
+    .peak-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .peak-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+  }
+  .peak-value {
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--fg);
+    line-height: 1.2;
+  }
+  .peak-meta {
+    font-size: 11px;
+    color: var(--mid);
+    margin-top: 2px;
+    min-height: 15px;
+  }
+  .peak-label {
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--mid);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 4px;
+  }
+  /* Skeleton placeholders inside peak cards */
+  .peak-card .skel-peak-value {
+    height: 24px;
+    width: 55%;
+    margin-bottom: 6px;
+  }
+  .peak-card .skel-peak-meta {
+    height: 12px;
+    width: 75%;
+    margin-bottom: 6px;
+  }
+  .peak-card .skel-peak-label {
+    height: 10px;
+    width: 40%;
+    margin-top: 4px;
+  }
 </style>
 </head>
 <body x-data x-init="$store.dashboard.load('__USERNAME__')">
@@ -814,6 +875,64 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
             <span x-show="!$store.dashboard.loading" style="display:none">
               Yesterday: <strong x-text="$store.dashboard.yesterdayTokens"></strong>
             </span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- -------------------------------------------------------------------
+         PEAK DAYS — all-time per-metric record cards
+         ---------------------------------------------------------------- -->
+    <div class="section-title">Peak Days</div>
+    <div class="peak-section">
+      <div class="peak-grid">
+
+        <!-- Peak Messages -->
+        <div class="peak-card">
+          <div class="skel-peak-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="skel-peak-meta skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="skel-peak-label skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div x-show="!$store.dashboard.loading" style="display:none">
+            <div class="peak-value" x-text="$store.dashboard.peakMessages ? $store.dashboard.peakMessages.value : '\u2014'"></div>
+            <div class="peak-meta" x-text="$store.dashboard.peakMessages ? ($store.dashboard.peakMessages.project ? $store.dashboard.peakMessages.date + ' \u2013 ' + $store.dashboard.peakMessages.project : $store.dashboard.peakMessages.date) : ''"></div>
+            <div class="peak-label">Messages</div>
+          </div>
+        </div>
+
+        <!-- Peak Sessions -->
+        <div class="peak-card">
+          <div class="skel-peak-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="skel-peak-meta skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="skel-peak-label skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div x-show="!$store.dashboard.loading" style="display:none">
+            <div class="peak-value" x-text="$store.dashboard.peakSessions ? $store.dashboard.peakSessions.value : '\u2014'"></div>
+            <div class="peak-meta" x-text="$store.dashboard.peakSessions ? ($store.dashboard.peakSessions.project ? $store.dashboard.peakSessions.date + ' \u2013 ' + $store.dashboard.peakSessions.project : $store.dashboard.peakSessions.date) : ''"></div>
+            <div class="peak-label">Sessions</div>
+          </div>
+        </div>
+
+        <!-- Peak Tokens -->
+        <div class="peak-card">
+          <div class="skel-peak-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="skel-peak-meta skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="skel-peak-label skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div x-show="!$store.dashboard.loading" style="display:none">
+            <div class="peak-value" x-text="$store.dashboard.peakTokens ? $store.dashboard.peakTokens.value : '\u2014'"></div>
+            <div class="peak-meta" x-text="$store.dashboard.peakTokens ? ($store.dashboard.peakTokens.project ? $store.dashboard.peakTokens.date + ' \u2013 ' + $store.dashboard.peakTokens.project : $store.dashboard.peakTokens.date) : ''"></div>
+            <div class="peak-label">Tokens</div>
+          </div>
+        </div>
+
+        <!-- Peak Cost -->
+        <div class="peak-card">
+          <div class="skel-peak-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="skel-peak-meta skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="skel-peak-label skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div x-show="!$store.dashboard.loading" style="display:none">
+            <div class="peak-value" x-text="$store.dashboard.peakCost ? $store.dashboard.peakCost.value : '\u2014'"></div>
+            <div class="peak-meta" x-text="$store.dashboard.peakCost ? ($store.dashboard.peakCost.project ? $store.dashboard.peakCost.date + ' \u2013 ' + $store.dashboard.peakCost.project : $store.dashboard.peakCost.date) : ''"></div>
+            <div class="peak-label">Cost</div>
           </div>
         </div>
 
