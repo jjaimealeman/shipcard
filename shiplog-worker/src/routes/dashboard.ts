@@ -2180,7 +2180,7 @@ function buildHeatmap(allDays) {
 // ---------------------------------------------------------------------------
 // Project activity horizontal bar — only shown when hasProjects
 // ---------------------------------------------------------------------------
-function buildProjectsChart(days) {
+function buildProjectsChart(days, sortMetric) {
   const canvas = document.getElementById('panel-projects-chart');
   if (!canvas) return null;
   if (chartProjects) chartProjects.destroy();
@@ -2213,14 +2213,17 @@ function buildProjectsChart(days) {
     });
   }
 
-  // Sort by messages (Phase 15 will make this dynamic via projectSortMetric)
-  const metric = 'messages';
+  // Map toggle value to internal field name
+  const METRIC_MAP = { messages: 'messages', tokens: 'tokens', sessions: 'sessions', cost: 'costCents' };
+  const field = METRIC_MAP[sortMetric] || 'messages';
+
   const sorted = Object.entries(projectMetrics)
-    .sort((a, b) => b[1][metric] - a[1][metric])
-    .slice(0, 10);
+    .filter(([, m]) => (m[field] || 0) > 0)
+    .sort((a, b) => (b[1][field] || 0) - (a[1][field] || 0))
+    .slice(0, 5);
 
   const labels = sorted.map(e => e[0]);
-  const data   = sorted.map(e => e[1][metric]);
+  const data   = sorted.map(e => e[1][field] || 0);
 
   // Set explicit container height based on bar count to prevent Chart.js resize loop
   const barHeight = 36;
@@ -2229,15 +2232,17 @@ function buildProjectsChart(days) {
   if (container) container.style.height = containerHeight + 'px';
   canvas.style.height = containerHeight + 'px';
 
+  const LABEL_MAP = { messages: 'Messages', tokens: 'Tokens', sessions: 'Sessions', cost: 'Cost' };
+
   chartProjects = new Chart(canvas, {
     type: 'bar',
     data: {
       labels,
       datasets: [{
-        label: hasByProject ? 'Messages' : 'Days active',
+        label: hasByProject ? (LABEL_MAP[sortMetric] || 'Messages') : 'Days active',
         data,
-        backgroundColor: COLORS.green + 'cc',
-        borderColor: COLORS.green,
+        backgroundColor: COLORS.orange + 'cc',
+        borderColor: COLORS.orange,
         borderWidth: 1,
         borderRadius: 4,
       }],
@@ -2249,8 +2254,29 @@ function buildProjectsChart(days) {
       animation: ANIM_OPTS,
       plugins: {
         legend: { display: false },
-        tooltip: TOOLTIP_BASE,
-        datalabels: { display: false },
+        tooltip: {
+          ...TOOLTIP_BASE,
+          callbacks: {
+            label: function(ctx) {
+              const v = ctx.parsed.x;
+              if (sortMetric === 'cost') return ' $' + (v / 100).toFixed(2);
+              return ' ' + (v >= 1000 ? (v / 1000).toFixed(1) + 'K' : v);
+            }
+          }
+        },
+        datalabels: {
+          display: true,
+          anchor: 'end',
+          align: 'start',
+          color: COLORS.bg,
+          font: { weight: 'bold', size: 11 },
+          formatter: function(v) {
+            if (sortMetric === 'cost') return '$' + (v / 100).toFixed(2);
+            if (v >= 1000000) return (v / 1000000).toFixed(1) + 'M';
+            if (v >= 1000) return (v / 1000).toFixed(1) + 'K';
+            return v;
+          }
+        },
       },
       scales: {
         x: { grid: { color: COLORS.border }, beginAtZero: true },
@@ -2282,7 +2308,7 @@ function updateAllCharts(days, allDays) {
     (d.byProject && Object.keys(d.byProject).length > 0) ||
     (d.projects && d.projects.length > 0)
   );
-  if (hasProjects) buildProjectsChart(days);
+  if (hasProjects) buildProjectsChart(days, Alpine.store('dashboard').projectSortMetric);
 }
 
 /** Update chart data without rebuilding (smooth animated morph). */
@@ -2328,6 +2354,7 @@ document.addEventListener('alpine:initialized', () => {
   // Watch range changes → update charts with smooth morph
   Alpine.effect(() => {
     const days = store.filteredDays; // reactive dependency
+    const sortMetric = store.projectSortMetric; // reactive dep — triggers chart rebuild on toggle
     if (!store.loading && days.length > 0) {
       // Grab all-time days for heatmap (not filtered)
       const allDays = store.timeseries ? store.timeseries.days : days;
@@ -2378,12 +2405,12 @@ document.addEventListener('alpine:initialized', () => {
             days.map(d => d.tokens.cacheRead),
           ]
         );
-        // Project bars — rebuild on range change (conditional visibility)
+        // Project bars — rebuild on range change or sort toggle change
         const hasProjects = days.some(d =>
           (d.byProject && Object.keys(d.byProject).length > 0) ||
           (d.projects && d.projects.length > 0)
         );
-        if (hasProjects) buildProjectsChart(days);
+        if (hasProjects) buildProjectsChart(days, sortMetric);
         // Heatmap is all-time — no update needed on range change
       } else {
         // First render — build all charts
