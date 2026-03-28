@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 16 — Agent-Agnostic Architecture (next up)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-03-28 — Milestone v2.0 started
+Status: Roadmap complete, ready to plan Phase 16
+Last activity: 2026-03-28 — v2.0 roadmap created (phases 16-21)
 
-Progress: ░░░░░░░░░░ 0%
+Progress: ░░░░░░░░░░ 0% (0/6 phases)
 
 ## Performance Metrics
 
@@ -31,6 +31,10 @@ Progress: ░░░░░░░░░░ 0%
 - ~14,396 LOC total project
 - 1 day (2026-03-27)
 
+**v2.0 Totals (in progress):**
+- 6 phases planned, 0 complete
+- 27 requirements across 6 categories
+
 ## Accumulated Context
 
 ### Decisions
@@ -39,16 +43,17 @@ See PROJECT.md Key Decisions table for full history.
 
 ### Pending Todos
 
-None — defining requirements.
+- Plan Phase 16: Agent-Agnostic Architecture (ARCH-01, ARCH-02, ARCH-03)
+- Set up Stripe account before Phase 18 begins
 
 ### Blockers/Concerns
 
 - [Action]: Replace placeholder OAuth client ID in login.ts with real GitHub OAuth App
 - [Action]: Set real KV namespace IDs in wrangler.jsonc before production deploy
-- [Decision]: Stripe account setup needed before payment integration
+- [Decision]: Stripe account setup needed before Phase 18 (Stripe Subscriptions)
 
 ## Session Continuity
 
 Last session: 2026-03-28
-Stopped at: v2.0 milestone PROJECT.md + STATE.md updated
-Resume with: Research → Requirements → Roadmap (in progress)
+Stopped at: v2.0 roadmap created — phases 16-21 defined
+Resume with: `/gsd:plan-phase 16`

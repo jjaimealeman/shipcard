@@ -1,85 +1,114 @@
-# Requirements: ShipCard v1.1 Dashboard Enhancement
+# Requirements: ShipCard v2.0 Themes + Monetization
 
-**Defined:** 2026-03-27
-**Core Value:** Make the dashboard the reason people adopt ShipCard — richer analytics that users screenshot and share.
+**Defined:** 2026-03-28
+**Core Value:** Developers using Claude Code can see what they shipped and what it cost, and share verifiable proof via an embeddable card and analytics dashboard.
 
-## v1.1 Requirements
+## v2.0 Requirements
 
-### Hero Section
+### Themes
 
-- [x] **HERO-01**: Dashboard displays Today's Activity with 4 metrics: messages, sessions, tools, tokens
-- [x] **HERO-02**: Each metric shows individual % change compared to yesterday (calendar day)
-- [x] **HERO-03**: Direction indicators use neutral warm/cool tones (not red/green alarm colors)
-- [x] **HERO-04**: Today's Activity uses calendar day boundaries (00:00–23:59 user timezone)
-- [x] **HERO-05**: Dashboard displays Peak Day card showing date, messages, sessions, project name, and cost
-- [x] **HERO-06**: Peak Day updates when a new day exceeds the previous peak
+- [ ] **THEME-01**: User can select from 8-10 curated themes (Catppuccin, Dracula, Tokyo Night, Nord, Gruvbox, Solarized, One Dark, Monokai)
+- [ ] **THEME-02**: Theme selection applies to SVG card via URL parameter (`?theme=catppuccin`)
+- [ ] **THEME-03**: Theme preview visible in dashboard card configurator
+- [ ] **THEME-04**: PRO user can specify custom colors via URL params (bg, title, text, icon, border)
+- [ ] **THEME-05**: BYOT colors are validated for WCAG 3:1 minimum contrast ratio
+- [ ] **THEME-06**: Theme system works across all 3 card layouts (classic, compact, hero)
 
-### Project Activity
+### Monetization
 
-- [x] **PROJ-01**: Project Activity panel has sort toggle: messages | tokens | sessions | cost
-- [x] **PROJ-02**: Bar chart displays the selected metric per project (not just "days active")
-- [x] **PROJ-03**: Project list re-sorts when toggle changes without page reload
-- [x] **PROJ-04**: Default sort is by messages (most familiar metric)
+- [ ] **PAY-01**: User can subscribe to PRO tier ($2/mo or $12/yr) via Stripe Checkout
+- [ ] **PAY-02**: Subscription state stored in D1 with strong consistency
+- [ ] **PAY-03**: `isPro()` gate available to all Worker routes for feature gating
+- [ ] **PAY-04**: Stripe webhook handler processes subscription lifecycle events (created, updated, canceled, payment_failed)
+- [ ] **PAY-05**: User can manage subscription (cancel, switch plan) via Stripe Customer Portal
+- [ ] **PAY-06**: Free users see upgrade prompts at PRO feature touchpoints
 
-### Data Pipeline
+### Card Enhancements
 
-- [ ] **DATA-01**: Daily aggregator computes per-project stats: tokens, sessions, messages, cost per day
-- [ ] **DATA-02**: SafeTimeSeries includes per-project breakdown when user syncs with --show-projects
-- [ ] **DATA-03**: Worker API accepts and stores per-project stats alongside existing project names
-- [ ] **DATA-04**: Privacy layer validates per-project stats (aggregated numbers only, no paths or raw data)
-- [ ] **DATA-05**: Existing synced data degrades gracefully (old format without per-project stats still works)
+- [ ] **CARD-01**: PRO cards display a small PRO badge on the SVG
+- [ ] **CARD-02**: PRO cards refresh cache instantly on sync (free: 1 hour TTL)
+- [ ] **CARD-03**: PRO user can create custom card URL slugs (`/u/:username/:slug`)
+- [ ] **CARD-04**: Each slug maps to a saved card configuration (theme, layout, style)
+- [ ] **CARD-05**: Free users get 1 card (default), PRO users get unlimited slugs
+- [ ] **CARD-06**: Slug system enforces reserved word list and minimum length
 
-### Cleanup
+### AI Insights
 
-- [ ] **CLEAN-01**: Slowest Day metric removed from dashboard
-- [ ] **CLEAN-02**: "Most Messages" label accurately reflects what it measures (was misleading in v1.0)
+- [ ] **INSIGHT-01**: PRO users see weekly coding insights on dashboard (peak hours, cost trends, streaks)
+- [ ] **INSIGHT-02**: Insights are pre-computed (Workers AI or Haiku cron), not live LLM calls
+- [ ] **INSIGHT-03**: Insights update automatically when user syncs
 
-## Deferred (post-adoption)
+### CLI
 
-- Additional card themes (tokyonight, dracula, synthwave)
-- Custom color parameters via URL query string
-- Support Codex CLI / Gemini CLI formats
-- Burn rate predictor
-- Natural language date parsing
-- Team dashboards
+- [ ] **CLI-01**: CLI uses `@clack/prompts` for interactive flows (login, sync, card config)
+- [ ] **CLI-02**: Clack output is gated behind `process.stdout.isTTY` — MCP/pipe mode falls back to plain text
+- [ ] **CLI-03**: Existing command interface unchanged (no breaking changes to `shipcard summary/costs/card`)
+
+### Architecture
+
+- [ ] **ARCH-01**: Parser refactored with `SourceAdapter` interface for future agent support
+- [ ] **ARCH-02**: Existing Claude Code parser wrapped as `ClaudeCodeAdapter`
+- [ ] **ARCH-03**: Engine consumes `ParsedMessage[]` regardless of source adapter
+
+## Deferred (future milestones)
+
+- BYOT saved presets (named theme configs stored per user)
+- Support Codex CLI JSONL format
+- Support Gemini CLI log format
+- Team dashboards with cost allocation (`/t/:team-slug/dashboard`, $5/mo)
+- Burn rate predictor (estimated cost remaining in billing window)
+- Natural language date parsing (--since yesterday)
 - Per-chart export buttons (PNG/JSON/SVG)
+- Weekly email digest of AI insights
 
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
-| Export buttons on charts | Complexity vs value — embeddable SVG cards already serve sharing use case. Deferred to v3. |
-| Multi-agent support (Codex, Gemini) | Not dashboard work — separate milestone when user base exists |
-| Paid tier / monetization | v2.0 milestone — need users first |
-| Rolling 24h window for "today" | Calendar day is cleaner, resets predictably, matches user mental model |
+| Multi-agent JSONL parsing | Wait for community demand — agent-agnostic model is prep only |
+| Persistent background daemon | Trust killer for privacy-focused tool |
+| Telemetry without opt-in | Destroys trust instantly |
+| Mobile/desktop native app | Web/terminal only |
+| Monthly $1 pricing | Stripe fees destroy 33% margin — $2/mo minimum |
+| BYOT saved presets | Adds storage complexity — defer, URL params are stateless |
 
 ## Traceability
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| HERO-01 | Phase 14 | Complete |
-| HERO-02 | Phase 14 | Complete |
-| HERO-03 | Phase 14 | Complete |
-| HERO-04 | Phase 14 | Complete |
-| HERO-05 | Phase 14 | Complete |
-| HERO-06 | Phase 14 | Complete |
-| PROJ-01 | Phase 15 | Complete |
-| PROJ-02 | Phase 15 | Complete |
-| PROJ-03 | Phase 15 | Complete |
-| PROJ-04 | Phase 15 | Complete |
-| DATA-01 | Phase 13 | Complete |
-| DATA-02 | Phase 13 | Complete |
-| DATA-03 | Phase 13 | Complete |
-| DATA-04 | Phase 13 | Complete |
-| DATA-05 | Phase 13 | Complete |
-| CLEAN-01 | Phase 13 | Complete |
-| CLEAN-02 | Phase 13 | Complete |
+| ARCH-01 | Phase 16 | Pending |
+| ARCH-02 | Phase 16 | Pending |
+| ARCH-03 | Phase 16 | Pending |
+| THEME-01 | Phase 17 | Pending |
+| THEME-02 | Phase 17 | Pending |
+| THEME-03 | Phase 17 | Pending |
+| THEME-04 | Phase 17 | Pending |
+| THEME-05 | Phase 17 | Pending |
+| THEME-06 | Phase 17 | Pending |
+| PAY-01 | Phase 18 | Pending |
+| PAY-02 | Phase 18 | Pending |
+| PAY-03 | Phase 18 | Pending |
+| PAY-04 | Phase 18 | Pending |
+| PAY-05 | Phase 18 | Pending |
+| PAY-06 | Phase 18 | Pending |
+| CARD-01 | Phase 19 | Pending |
+| CARD-02 | Phase 19 | Pending |
+| CARD-03 | Phase 19 | Pending |
+| CARD-04 | Phase 19 | Pending |
+| CARD-05 | Phase 19 | Pending |
+| CARD-06 | Phase 19 | Pending |
+| INSIGHT-01 | Phase 20 | Pending |
+| INSIGHT-02 | Phase 20 | Pending |
+| INSIGHT-03 | Phase 20 | Pending |
+| CLI-01 | Phase 21 | Pending |
+| CLI-02 | Phase 21 | Pending |
+| CLI-03 | Phase 21 | Pending |
 
 **Coverage:**
-- v1.1 requirements: 17 total
-- Mapped to phases: 17
-- Unmapped: 0
+- v2.0 requirements: 27 total
+- Mapped to phases: 27
+- Unmapped: 0 ✓
 
 ---
-*Requirements defined: 2026-03-27*
-*Last updated: 2026-03-27 after roadmap creation — all 17 requirements mapped*
+*Requirements defined: 2026-03-28*
+*Last updated: 2026-03-28 — traceability filled after roadmap creation*

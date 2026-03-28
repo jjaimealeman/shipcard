@@ -3,13 +3,15 @@
 ## Milestones
 
 - **v1.0 MVP** — Phases 1-12 (shipped 2026-03-27) — [Archive](milestones/v1-ROADMAP.md)
-- **v1.1 Dashboard Enhancement** — Phases 13-15 (in progress)
+- **v1.1 Dashboard Enhancement** — Phases 13-15 (shipped 2026-03-27)
+- **v2.0 Themes + Monetization** — Phases 16-21 (in progress)
 
 ## Phase Numbering
 
 - Integer phases (1, 2, 3): Planned milestone work
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 - v1.1 phases continue from Phase 13
+- v2.0 phases continue from Phase 16
 
 ## v1.0 MVP (Phases 1-12) — SHIPPED 2026-03-27
 
@@ -90,6 +92,92 @@ Plans:
 
 ---
 
+## v2.0 Themes + Monetization (Phases 16-21) — IN PROGRESS
+
+**Milestone Goal:** Turn ShipCard into a sustainable business — curated themes make cards worth sharing, Stripe subscriptions create recurring revenue, PRO features justify the upgrade, and AI insights make the dashboard indispensable for power users.
+
+### Phase 16: Agent-Agnostic Architecture
+
+**Goal:** The parser engine works with any agent's JSONL format through a clean adapter interface, with zero behavior change for Claude Code users.
+**Depends on:** Phase 15
+**Requirements:** ARCH-01, ARCH-02, ARCH-03
+**Success Criteria** (what must be TRUE):
+  1. All existing `shipcard` commands produce identical output before and after the refactor
+  2. A `SourceAdapter` interface exists and the existing Claude Code parser is registered as `ClaudeCodeAdapter`
+  3. The engine processes `ParsedMessage[]` from any adapter — no parser-specific logic leaks into engine code
+  4. Adding a hypothetical second adapter requires zero changes to engine or CLI code
+
+**Plans:** —
+
+### Phase 17: Theme System
+
+**Goal:** Users can make their card their own by choosing from curated themes, and PRO users can supply custom colors — all visible in the dashboard configurator before embedding.
+**Depends on:** Phase 16
+**Requirements:** THEME-01, THEME-02, THEME-03, THEME-04, THEME-05, THEME-06
+**Success Criteria** (what must be TRUE):
+  1. Visiting `/card/:username?theme=catppuccin` (or dracula, tokyo-night, nord, gruvbox, solarized, one-dark, monokai) renders the card in that theme's palette
+  2. Dashboard card configurator shows a live theme preview that updates when a different theme is selected from the dropdown
+  3. PRO user can append `?bg=1e1e2e&title=cdd6f4&text=cdd6f4&icon=89b4fa&border=313244` and the card renders with those exact colors
+  4. BYOT params with insufficient contrast (below WCAG 3:1 ratio) are rejected with a descriptive error message, not silently ignored
+  5. Theme and BYOT color changes apply consistently across classic, compact, and hero card layouts
+
+**Plans:** —
+
+### Phase 18: Stripe Subscriptions
+
+**Goal:** Users can subscribe to PRO, manage their subscription, and the Worker enforces PRO gating consistently across all routes.
+**Depends on:** Phase 16
+**Requirements:** PAY-01, PAY-02, PAY-03, PAY-04, PAY-05, PAY-06
+**Success Criteria** (what must be TRUE):
+  1. Clicking "Upgrade to PRO" opens a Stripe Checkout session and completing it activates PRO on the user's account within seconds
+  2. `isPro(userId)` returns the correct answer immediately after a webhook fires — no eventual-consistency lag from KV
+  3. Canceling a subscription via the Customer Portal downgrades the account at the end of the current billing period, not immediately
+  4. A failed payment webhook marks the subscription past-due and the dashboard shows a payment-failed banner
+  5. Free users see an upgrade prompt when they attempt to use a PRO-only feature (BYOT, custom slugs, AI insights)
+
+**Plans:** —
+
+### Phase 19: PRO Card Features
+
+**Goal:** PRO subscribers get a visibly superior card experience — instant cache refresh, a PRO badge, and custom slugs with saved configurations.
+**Depends on:** Phase 18
+**Requirements:** CARD-01, CARD-02, CARD-03, CARD-04, CARD-05, CARD-06
+**Success Criteria** (what must be TRUE):
+  1. PRO cards display a small PRO badge on the SVG that free cards do not have
+  2. Running `shipcard sync` as a PRO user causes the card to reflect new data within seconds; free users wait up to 1 hour for the CDN cache to expire
+  3. PRO user can create a custom slug at `/u/:username/:slug` and the card at that URL uses the saved configuration (theme, layout)
+  4. Free users are blocked from creating custom slugs and see an upgrade prompt
+  5. Creating a slug with a reserved word (e.g., "admin", "api") or fewer than 3 characters fails with a clear error message
+
+**Plans:** —
+
+### Phase 20: AI Insights
+
+**Goal:** PRO users see pre-computed weekly coding insights on their dashboard that update automatically on each sync.
+**Depends on:** Phase 18
+**Requirements:** INSIGHT-01, INSIGHT-02, INSIGHT-03
+**Success Criteria** (what must be TRUE):
+  1. PRO dashboard shows a weekly insights panel with peak coding hours, cost trends, and activity streaks
+  2. Insights are computed by a scheduled cron job (not a live LLM call during page load) — the dashboard loads instantly
+  3. After running `shipcard sync`, the insights panel reflects data from the latest sync within the next cron interval
+  4. Free users see the insights panel placeholder with an upgrade prompt, not an error or blank space
+
+**Plans:** —
+
+### Phase 21: Clack CLI
+
+**Goal:** Interactive CLI flows use polished prompts in terminal mode while remaining fully compatible with MCP and pipe usage.
+**Depends on:** Phase 16
+**Requirements:** CLI-01, CLI-02, CLI-03
+**Success Criteria** (what must be TRUE):
+  1. Running `shipcard login` in a terminal shows a Clack-styled interactive prompt; running it via MCP or a pipe falls back to plain text output
+  2. Running `shipcard sync` in a terminal shows a Clack spinner and success/error messages with the Clack visual style
+  3. All existing command flags and output formats (`shipcard summary`, `shipcard costs`, `shipcard card`) are unchanged — no breaking changes
+
+**Plans:** —
+
+---
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -109,3 +197,9 @@ Plans:
 | 13. Data Pipeline + Cleanup | v1.1 | 2/2 | Complete | 2026-03-27 |
 | 14. Hero Section | v1.1 | 2/2 | Complete | 2026-03-27 |
 | 15. Project Activity | v1.1 | 1/1 | Complete | 2026-03-27 |
+| 16. Agent-Agnostic Architecture | v2.0 | 0/— | Pending | — |
+| 17. Theme System | v2.0 | 0/— | Pending | — |
+| 18. Stripe Subscriptions | v2.0 | 0/— | Pending | — |
+| 19. PRO Card Features | v2.0 | 0/— | Pending | — |
+| 20. AI Insights | v2.0 | 0/— | Pending | — |
+| 21. Clack CLI | v2.0 | 0/— | Pending | — |
