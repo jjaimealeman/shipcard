@@ -190,7 +190,7 @@ export function isValidSafeStats(payload: unknown): payload is SafeStats {
  *
  * Mirrors the CLI's PerProjectDailyStats type exactly.
  * Only present when the user synced with --show-projects.
- * Do NOT import from shiplog — the Worker maintains its own copy.
+ * Do NOT import from shipcard — the Worker maintains its own copy.
  */
 export interface PerProjectDailyStats {
   sessions: number;
