@@ -69,8 +69,8 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 14-01-PLAN.md — Today's Activity section with 4 metrics and direction indicators vs yesterday
-- [ ] 14-02-PLAN.md — Peak Day per-metric cards with date, value, and project name
+- [x] 14-01-PLAN.md — Today's Activity section with 4 metrics and direction indicators vs yesterday
+- [x] 14-02-PLAN.md — Peak Day per-metric cards with date, value, and project name
 
 ### Phase 15: Project Activity
 
@@ -107,5 +107,5 @@ Plans:
 | 11. Dashboard MVP | v1.0 | 3/3 | Complete | 2026-03-27 |
 | 12. Polish + Community | v1.0 | 4/4 | Complete | 2026-03-27 |
 | 13. Data Pipeline + Cleanup | v1.1 | 2/2 | Complete | 2026-03-27 |
-| 14. Hero Section | v1.1 | 0/2 | Not started | - |
+| 14. Hero Section | v1.1 | 2/2 | Complete | 2026-03-27 |
 | 15. Project Activity | v1.1 | 0/1 | Not started | - |

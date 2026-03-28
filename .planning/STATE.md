@@ -5,7 +5,7 @@
 See: .planning/PROJECT.md (updated 2026-03-27)
 
 **Core value:** Developers using Claude Code can see what they shipped and what it cost, and share verifiable proof via an embeddable card.
-**Current focus:** v1.1 Dashboard Enhancement — Phase 14: Hero Section
+**Current focus:** v1.1 Dashboard Enhancement — Phase 15: Project Activity
 
 ## Current Position
 
@@ -14,7 +14,7 @@ Plan: 02 of 2 complete
 Status: Phase complete
 Last activity: 2026-03-28 — Completed 14-02-PLAN.md (Peak Days section)
 
-Progress: [████░░░░░░░░░░░░░░░░░░░░░░░░] 4/6 plans (v1.1)
+Progress: [████████░░░░░░░░░░░░░░░░░░░░] 4/5 plans (v1.1)
 
 ## Performance Metrics
 
@@ -49,10 +49,14 @@ Progress: [████░░░░░░░░░░░░░░░░░░░
 - CLEAN-01 (Slowest Day) and CLEAN-02 (Most Messages) confirmed never existed -- no removals needed
 - Local date for "today": always use toLocaleDateString('en-CA'), never toISOString().slice(0,10) (UTC breaks for evening users)
 - Direction indicators scan all timeseries.days (not filteredDays) — today is range-independent
+- Peak Day cards show 4 per-metric peaks (messages, sessions, tokens, cost) instead of single combined card
+- Peak getters scan all timeseries.days (not filteredDays) — range filter does not affect peaks
+- _peakProject extracts top project from byProject; shows dash when byProject missing
+- Peak cost uses exact $X.XX format (no tilde prefix — historical record, not estimate)
 
 ### Pending Todos
 
-- None for Phase 13 (complete)
+- None for Phase 14 (complete)
 
 ### Blockers/Concerns
 

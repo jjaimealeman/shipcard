@@ -7,12 +7,12 @@
 
 ### Hero Section
 
-- [ ] **HERO-01**: Dashboard displays Today's Activity with 4 metrics: messages, sessions, tools, tokens
-- [ ] **HERO-02**: Each metric shows individual % change compared to yesterday (calendar day)
-- [ ] **HERO-03**: Direction indicators use neutral warm/cool tones (not red/green alarm colors)
-- [ ] **HERO-04**: Today's Activity uses calendar day boundaries (00:00–23:59 user timezone)
-- [ ] **HERO-05**: Dashboard displays Peak Day card showing date, messages, sessions, project name, and cost
-- [ ] **HERO-06**: Peak Day updates when a new day exceeds the previous peak
+- [x] **HERO-01**: Dashboard displays Today's Activity with 4 metrics: messages, sessions, tools, tokens
+- [x] **HERO-02**: Each metric shows individual % change compared to yesterday (calendar day)
+- [x] **HERO-03**: Direction indicators use neutral warm/cool tones (not red/green alarm colors)
+- [x] **HERO-04**: Today's Activity uses calendar day boundaries (00:00–23:59 user timezone)
+- [x] **HERO-05**: Dashboard displays Peak Day card showing date, messages, sessions, project name, and cost
+- [x] **HERO-06**: Peak Day updates when a new day exceeds the previous peak
 
 ### Project Activity
 
@@ -57,12 +57,12 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| HERO-01 | Phase 14 | Pending |
-| HERO-02 | Phase 14 | Pending |
-| HERO-03 | Phase 14 | Pending |
-| HERO-04 | Phase 14 | Pending |
-| HERO-05 | Phase 14 | Pending |
-| HERO-06 | Phase 14 | Pending |
+| HERO-01 | Phase 14 | Complete |
+| HERO-02 | Phase 14 | Complete |
+| HERO-03 | Phase 14 | Complete |
+| HERO-04 | Phase 14 | Complete |
+| HERO-05 | Phase 14 | Complete |
+| HERO-06 | Phase 14 | Complete |
 | PROJ-01 | Phase 15 | Pending |
 | PROJ-02 | Phase 15 | Pending |
 | PROJ-03 | Phase 15 | Pending |
