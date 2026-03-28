@@ -66,11 +66,11 @@ Plans:
   4. Dashboard shows a Peak Day card with the date, project name, message count, session count, and cost for the highest-activity day on record
   5. Peak Day card updates automatically when a new day surpasses the previous peak after the next sync
 
-**Plans:** TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 14-01: Today's Activity hero section with % change indicators
-- [ ] 14-02: Peak Day card component
+- [ ] 14-01-PLAN.md — Today's Activity section with 4 metrics and direction indicators vs yesterday
+- [ ] 14-02-PLAN.md — Peak Day per-metric cards with date, value, and project name
 
 ### Phase 15: Project Activity
 
