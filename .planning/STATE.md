@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 
 ## Current Position
 
-Phase: 16 — Agent-Agnostic Architecture (in progress)
-Plan: 01 of 2 complete
-Status: In progress
-Last activity: 2026-03-28 — Completed 16-01-PLAN.md (directory rename)
+Phase: 16 — Agent-Agnostic Architecture (complete)
+Plan: 02 of 2 complete
+Status: Phase complete
+Last activity: 2026-03-28 — Completed 16-02-PLAN.md (adapter architecture)
 
-Progress: ░░░░░░░░░░ 0% (0/6 phases complete, Phase 16 in progress)
+Progress: ░░░░░░░░░░ 0% (0/6 phases complete, Phase 16 complete — Phase 17 next)
 
 ## Performance Metrics
 
@@ -48,10 +48,14 @@ See PROJECT.md Key Decisions table for full history.
 | 16-01 | Used git mv for directory rename | Preserves 100% git history across all 81 renamed files |
 | 16-01 | Left historical shiplog CLI command name in old phase plans | Accurate historical context, only path refs updated |
 | 16-01 | shipcard-worker verified via tsc --noEmit (no build script) | Wrangler handles compilation; noEmit is correct for CF Workers |
+| 16-02 | Function-object style for ClaudeCodeAdapter | Matches codebase conventions; no class keyword anywhere in codebase |
+| 16-02 | ParseResult re-exported from adapters/interface.ts | Engine never reaches into parser internals; clean import boundary |
+| 16-02 | Default adapter is "claude-code" | Zero breaking changes; EngineOptions.adapter is optional |
+| 16-02 | v2.0.0 bumped in both packages simultaneously | Per CLAUDE.md versioning rules; both packages share same version |
 
 ### Pending Todos
 
-- Execute Phase 16 Plan 02: Adapter architecture
+- Execute Phase 17 (next phase)
 - Set up Stripe account before Phase 18 begins
 
 ### Blockers/Concerns
@@ -62,6 +66,6 @@ See PROJECT.md Key Decisions table for full history.
 
 ## Session Continuity
 
-Last session: 2026-03-28T23:49:11Z
-Stopped at: Completed 16-01-PLAN.md — shiplog → shipcard rename complete
-Resume with: `/gsd:execute-phase 16` (plan 02 next)
+Last session: 2026-03-28T23:53:42Z
+Stopped at: Completed 16-02-PLAN.md — adapter architecture + v2.0.0 bump
+Resume with: `/gsd:plan-phase 17` (Phase 17 next)
