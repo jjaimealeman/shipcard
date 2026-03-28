@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 
 ## Current Position
 
-Phase: 16 — Agent-Agnostic Architecture (next up)
-Plan: —
-Status: Roadmap complete, ready to plan Phase 16
-Last activity: 2026-03-28 — v2.0 roadmap created (phases 16-21)
+Phase: 16 — Agent-Agnostic Architecture (in progress)
+Plan: 01 of 2 complete
+Status: In progress
+Last activity: 2026-03-28 — Completed 16-01-PLAN.md (directory rename)
 
-Progress: ░░░░░░░░░░ 0% (0/6 phases)
+Progress: ░░░░░░░░░░ 0% (0/6 phases complete, Phase 16 in progress)
 
 ## Performance Metrics
 
@@ -41,9 +41,17 @@ Progress: ░░░░░░░░░░ 0% (0/6 phases)
 
 See PROJECT.md Key Decisions table for full history.
 
+### Decisions
+
+| Phase | Decision | Rationale |
+|-------|----------|-----------|
+| 16-01 | Used git mv for directory rename | Preserves 100% git history across all 81 renamed files |
+| 16-01 | Left historical shiplog CLI command name in old phase plans | Accurate historical context, only path refs updated |
+| 16-01 | shipcard-worker verified via tsc --noEmit (no build script) | Wrangler handles compilation; noEmit is correct for CF Workers |
+
 ### Pending Todos
 
-- Plan Phase 16: Agent-Agnostic Architecture (ARCH-01, ARCH-02, ARCH-03)
+- Execute Phase 16 Plan 02: Adapter architecture
 - Set up Stripe account before Phase 18 begins
 
 ### Blockers/Concerns
@@ -54,6 +62,6 @@ See PROJECT.md Key Decisions table for full history.
 
 ## Session Continuity
 
-Last session: 2026-03-28
-Stopped at: v2.0 roadmap created — phases 16-21 defined
-Resume with: `/gsd:plan-phase 16`
+Last session: 2026-03-28T23:49:11Z
+Stopped at: Completed 16-01-PLAN.md — shiplog → shipcard rename complete
+Resume with: `/gsd:execute-phase 16` (plan 02 next)
