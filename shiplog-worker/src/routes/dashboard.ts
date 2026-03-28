@@ -707,86 +707,6 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
   <div x-show="!$store.dashboard.loading && !$store.dashboard.notFound && !$store.dashboard.error" style="display:block">
 
     <!-- -------------------------------------------------------------------
-         HERO STATS
-         ---------------------------------------------------------------- -->
-    <div class="section-title">Overview</div>
-    <div class="hero-grid">
-
-      <!-- Collecting Since -->
-      <div class="stat-card" :class="{ loading: $store.dashboard.loading }">
-        <div class="stat-label">Collecting Since</div>
-        <div class="skel-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="skel-sub skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="skel-sparkline skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="stat-value" x-show="!$store.dashboard.loading" x-text="$store.dashboard.heroTenure" style="display:none"></div>
-        <div class="stat-sub" x-show="!$store.dashboard.loading" style="display:none">
-          <strong x-text="$store.dashboard.heroFirstDate"></strong>
-        </div>
-        <div class="sparkline-wrap" x-show="!$store.dashboard.loading" style="display:none">
-          <svg viewBox="0 0 200 36" preserveAspectRatio="none">
-            <polygon :points="$store.dashboard.sparkSessionsArea(200,36)" class="sparkline-area" fill="var(--orange)" />
-            <polyline :points="$store.dashboard.sparkSessions(200,36)" stroke="var(--orange)" />
-          </svg>
-        </div>
-      </div>
-
-      <!-- Total Tokens -->
-      <div class="stat-card" :class="{ loading: $store.dashboard.loading }">
-        <div class="stat-label">Total Tokens</div>
-        <div class="skel-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="skel-sub skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="skel-sparkline skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="stat-value" x-show="!$store.dashboard.loading" x-text="$store.dashboard.heroTokens" style="display:none"></div>
-        <div class="stat-sub" x-show="!$store.dashboard.loading" style="display:none">
-          <strong x-text="$store.dashboard.heroCacheHitPct"></strong> cache hit rate
-        </div>
-        <div class="sparkline-wrap" x-show="!$store.dashboard.loading" style="display:none">
-          <svg viewBox="0 0 200 36" preserveAspectRatio="none">
-            <polygon :points="$store.dashboard.sparkTokensArea(200,36)" class="sparkline-area" fill="var(--blue)" />
-            <polyline :points="$store.dashboard.sparkTokens(200,36)" stroke="var(--blue)" />
-          </svg>
-        </div>
-      </div>
-
-      <!-- Total Cost -->
-      <div class="stat-card" :class="{ loading: $store.dashboard.loading }">
-        <div class="stat-label">Total Cost</div>
-        <div class="skel-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="skel-sub skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="skel-sparkline skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="stat-value" x-show="!$store.dashboard.loading" x-text="$store.dashboard.heroCost" style="display:none"></div>
-        <div class="stat-sub" x-show="!$store.dashboard.loading" style="display:none">
-          for <strong x-text="$store.dashboard.heroSessions"></strong> sessions
-        </div>
-        <div class="sparkline-wrap" x-show="!$store.dashboard.loading" style="display:none">
-          <svg viewBox="0 0 200 36" preserveAspectRatio="none">
-            <polygon :points="$store.dashboard.sparkCostArea(200,36)" class="sparkline-area" fill="var(--orange)" />
-            <polyline :points="$store.dashboard.sparkCost(200,36)" stroke="var(--orange)" />
-          </svg>
-        </div>
-      </div>
-
-      <!-- Cost / Session (ROI) -->
-      <div class="stat-card" :class="{ loading: $store.dashboard.loading }">
-        <div class="stat-label">Cost / Session</div>
-        <div class="skel-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="skel-sub skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="skel-sparkline skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="stat-value" x-show="!$store.dashboard.loading" x-text="$store.dashboard.heroCostPerSession" style="display:none"></div>
-        <div class="stat-sub" x-show="!$store.dashboard.loading" style="display:none">
-          avg per session &mdash; <strong x-text="$store.dashboard.heroRange"></strong>
-        </div>
-        <div class="sparkline-wrap" x-show="!$store.dashboard.loading" style="display:none">
-          <svg viewBox="0 0 200 36" preserveAspectRatio="none">
-            <polygon :points="$store.dashboard.sparkCpsArea(200,36)" class="sparkline-area" fill="var(--green)" />
-            <polyline :points="$store.dashboard.sparkCps(200,36)" stroke="var(--green)" />
-          </svg>
-        </div>
-      </div>
-
-    </div><!-- /hero-grid -->
-
-    <!-- -------------------------------------------------------------------
          TODAY'S ACTIVITY
          ---------------------------------------------------------------- -->
     <div class="section-title">Today's Activity</div>
@@ -941,6 +861,86 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
 
       </div>
     </div>
+
+    <!-- -------------------------------------------------------------------
+         HERO STATS — Overview (range-reactive)
+         ---------------------------------------------------------------- -->
+    <div class="section-title">Overview</div>
+    <div class="hero-grid">
+
+      <!-- Collecting Since -->
+      <div class="stat-card" :class="{ loading: $store.dashboard.loading }">
+        <div class="stat-label">Collecting Since</div>
+        <div class="skel-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="skel-sub skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="skel-sparkline skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="stat-value" x-show="!$store.dashboard.loading" x-text="$store.dashboard.heroTenure" style="display:none"></div>
+        <div class="stat-sub" x-show="!$store.dashboard.loading" style="display:none">
+          <strong x-text="$store.dashboard.heroFirstDate"></strong>
+        </div>
+        <div class="sparkline-wrap" x-show="!$store.dashboard.loading" style="display:none">
+          <svg viewBox="0 0 200 36" preserveAspectRatio="none">
+            <polygon :points="$store.dashboard.sparkSessionsArea(200,36)" class="sparkline-area" fill="var(--orange)" />
+            <polyline :points="$store.dashboard.sparkSessions(200,36)" stroke="var(--orange)" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Total Tokens -->
+      <div class="stat-card" :class="{ loading: $store.dashboard.loading }">
+        <div class="stat-label">Total Tokens</div>
+        <div class="skel-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="skel-sub skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="skel-sparkline skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="stat-value" x-show="!$store.dashboard.loading" x-text="$store.dashboard.heroTokens" style="display:none"></div>
+        <div class="stat-sub" x-show="!$store.dashboard.loading" style="display:none">
+          <strong x-text="$store.dashboard.heroCacheHitPct"></strong> cache hit rate
+        </div>
+        <div class="sparkline-wrap" x-show="!$store.dashboard.loading" style="display:none">
+          <svg viewBox="0 0 200 36" preserveAspectRatio="none">
+            <polygon :points="$store.dashboard.sparkTokensArea(200,36)" class="sparkline-area" fill="var(--blue)" />
+            <polyline :points="$store.dashboard.sparkTokens(200,36)" stroke="var(--blue)" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Total Cost -->
+      <div class="stat-card" :class="{ loading: $store.dashboard.loading }">
+        <div class="stat-label">Total Cost</div>
+        <div class="skel-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="skel-sub skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="skel-sparkline skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="stat-value" x-show="!$store.dashboard.loading" x-text="$store.dashboard.heroCost" style="display:none"></div>
+        <div class="stat-sub" x-show="!$store.dashboard.loading" style="display:none">
+          for <strong x-text="$store.dashboard.heroSessions"></strong> sessions
+        </div>
+        <div class="sparkline-wrap" x-show="!$store.dashboard.loading" style="display:none">
+          <svg viewBox="0 0 200 36" preserveAspectRatio="none">
+            <polygon :points="$store.dashboard.sparkCostArea(200,36)" class="sparkline-area" fill="var(--orange)" />
+            <polyline :points="$store.dashboard.sparkCost(200,36)" stroke="var(--orange)" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Cost / Session (ROI) -->
+      <div class="stat-card" :class="{ loading: $store.dashboard.loading }">
+        <div class="stat-label">Cost / Session</div>
+        <div class="skel-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="skel-sub skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="skel-sparkline skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="stat-value" x-show="!$store.dashboard.loading" x-text="$store.dashboard.heroCostPerSession" style="display:none"></div>
+        <div class="stat-sub" x-show="!$store.dashboard.loading" style="display:none">
+          avg per session &mdash; <strong x-text="$store.dashboard.heroRange"></strong>
+        </div>
+        <div class="sparkline-wrap" x-show="!$store.dashboard.loading" style="display:none">
+          <svg viewBox="0 0 200 36" preserveAspectRatio="none">
+            <polygon :points="$store.dashboard.sparkCpsArea(200,36)" class="sparkline-area" fill="var(--green)" />
+            <polyline :points="$store.dashboard.sparkCps(200,36)" stroke="var(--green)" />
+          </svg>
+        </div>
+      </div>
+
+    </div><!-- /hero-grid -->
 
     <!-- -------------------------------------------------------------------
          OVERVIEW PANELS — Activity Heatmap (wide) + Daily Activity chart
@@ -1673,6 +1673,7 @@ let chartModels   = null;
 let chartMessages = null;
 let chartTokens   = null;
 let chartProjects = null;
+let currentProjectSortMetric = 'messages';
 let heatmapBuilt = false;
 
 // ---------------------------------------------------------------------------
@@ -2183,7 +2184,9 @@ function buildHeatmap(allDays) {
 function buildProjectsChart(days, sortMetric) {
   const canvas = document.getElementById('panel-projects-chart');
   if (!canvas) return null;
-  if (chartProjects) chartProjects.destroy();
+
+  // Store current metric for tooltip/datalabel callbacks
+  currentProjectSortMetric = sortMetric;
 
   // Aggregate per-project metrics across all filtered days
   const projectMetrics = {};
@@ -2234,6 +2237,16 @@ function buildProjectsChart(days, sortMetric) {
 
   const LABEL_MAP = { messages: 'Messages', tokens: 'Tokens', sessions: 'Sessions', cost: 'Cost' };
 
+  // Update existing chart in-place (avoids destroy/recreate canvas issues)
+  if (chartProjects) {
+    chartProjects.data.labels = labels;
+    chartProjects.data.datasets[0].data = data;
+    chartProjects.data.datasets[0].label = hasByProject ? (LABEL_MAP[sortMetric] || 'Messages') : 'Days active';
+    chartProjects.update('active');
+    return chartProjects;
+  }
+
+  // First render: create the chart
   chartProjects = new Chart(canvas, {
     type: 'bar',
     data: {
@@ -2259,7 +2272,7 @@ function buildProjectsChart(days, sortMetric) {
           callbacks: {
             label: function(ctx) {
               const v = ctx.parsed.x;
-              if (sortMetric === 'cost') return ' $' + (v / 100).toFixed(2);
+              if (currentProjectSortMetric === 'cost') return ' $' + (v / 100).toFixed(2);
               return ' ' + (v >= 1000 ? (v / 1000).toFixed(1) + 'K' : v);
             }
           }
@@ -2271,7 +2284,7 @@ function buildProjectsChart(days, sortMetric) {
           color: COLORS.bg,
           font: { weight: 'bold', size: 11 },
           formatter: function(v) {
-            if (sortMetric === 'cost') return '$' + (v / 100).toFixed(2);
+            if (currentProjectSortMetric === 'cost') return '$' + (v / 100).toFixed(2);
             if (v >= 1000000) return (v / 1000000).toFixed(1) + 'M';
             if (v >= 1000) return (v / 1000).toFixed(1) + 'K';
             return v;
