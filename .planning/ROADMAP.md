@@ -83,10 +83,10 @@ Plans:
   3. Clicking a different sort option re-orders the list and updates the chart without a page reload
   4. Default sort on first load is by messages
 
-**Plans:** TBD
+**Plans:** 1 plan
 
 Plans:
-- [ ] 15-01: Project Activity sort toggles and chart re-binding
+- [ ] 15-01-PLAN.md — Wire sort toggle and chart re-binding for 4 metrics
 
 ---
 
