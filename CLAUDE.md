@@ -31,6 +31,12 @@ PRD.md              # Product Requirements Document
 - Feature branches when work gets more complex
 - Never push — user handles via lazygit
 
+## Versioning
+
+- All packages (shiplog/, shiplog-worker/) share the same version number
+- Bump both package.json files together on every release
+- Version reflects the project milestone (v1.0 = 1.0.0, v2.0 = 2.0.0)
+
 ## Banned
 
 - Vercel for card endpoint — use Cloudflare Workers

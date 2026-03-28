@@ -93,6 +93,8 @@ export interface ParsedMessage {
   tokens: TokenCounts;
   /** Names of all tool_use blocks in this assistant message */
   toolCalls: string[];
+  /** Count of thinking blocks in this assistant message */
+  thinkingBlocks: number;
   cwd: string;
   isSidechain: boolean;
 }

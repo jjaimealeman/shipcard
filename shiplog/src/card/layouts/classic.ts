@@ -108,8 +108,8 @@ export function renderClassic(data: CardData, theme: ThemeColors): string {
   // Footer
   const footerY = height - 10;
   lines.push(
-    `  <text x="${CARD_WIDTH / 2}" y="${footerY}" font-size="10" ` +
-      `text-anchor="middle" opacity="0.6" fill="${escapeXml(theme.footer)}">${escapeXml(data.footer)}</text>`
+    `  <text x="${CARD_WIDTH - PADDING}" y="${footerY}" font-size="10" ` +
+      `text-anchor="end" opacity="0.6" fill="${escapeXml(theme.footer)}">${escapeXml(data.footer)}</text>`
   );
 
   lines.push(`</svg>`);

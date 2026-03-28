@@ -5,12 +5,18 @@
  *
  * Modes:
  *   shipcard sync           — preview payload + open browser configurator
- *   shipcard sync --confirm — non-interactive POST to /sync + print embed snippets
+ *   shipcard sync --confirm — non-interactive POST to /sync/v2 (with v1 fallback) + print embed snippets
  *   shipcard sync --delete  — DELETE /sync to wipe all user data from cloud
+ *
+ * v2 sync sends { safeStats, timeSeries } to /sync/v2. If the Worker returns
+ * 404 (Worker not yet upgraded), falls back gracefully to POST /sync with
+ * SafeStats only. Non-404 errors do NOT trigger fallback — they exit with error.
  */
 
-import { runEngine } from "../../index.js";
-import { toSafeStats } from "../safestats.js";
+import { runEngineFull } from "../../index.js";
+import { toSafeStats, toSafeTimeSeries } from "../safestats.js";
+import { aggregateDaily } from "../../engine/dailyAggregator.js";
+import { getPricing } from "../../engine/cost.js";
 import { loadAuthConfig, getWorkerUrl } from "../config.js";
 import { spawn } from "node:child_process";
 
@@ -23,6 +29,7 @@ export interface SyncFlags {
   until: string | undefined;
   confirm: boolean;
   delete: boolean;
+  showProjects: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -117,9 +124,9 @@ export async function runSync(flags: SyncFlags): Promise<void> {
     return;
   }
 
-  // Run the analytics engine
+  // Run the analytics engine (full result for daily aggregation)
   process.stderr.write("Analyzing local stats...\n");
-  const result = await runEngine({
+  const { result, messages, userMessagesByDate } = await runEngineFull({
     since: flags.since,
     until: flags.until,
   });
@@ -134,6 +141,11 @@ export async function runSync(flags: SyncFlags): Promise<void> {
 
   // Convert to safe payload (privacy boundary)
   const safeStats = toSafeStats(result, username);
+
+  // Daily aggregation for v2 payload
+  const pricing = await getPricing();
+  const dailyStats = aggregateDaily(messages, pricing, userMessagesByDate);
+  const safeTimeSeries = toSafeTimeSeries(dailyStats, username, flags.showProjects);
 
   // Print sync preview
   const totalTokens =
@@ -153,40 +165,83 @@ export async function runSync(flags: SyncFlags): Promise<void> {
   process.stdout.write(`  Tokens:     ${formatNumber(totalTokens)}\n`);
   process.stdout.write(`  Cost:       ${safeStats.totalCost}\n`);
   process.stdout.write(`  Models:     ${safeStats.modelsUsed.join(", ") || "(none)"}\n`);
-  process.stdout.write(`  Projects:   ${safeStats.projectCount} (names hidden)\n`);
+  process.stdout.write(`  Days:       ${safeTimeSeries.days.length}\n`);
+  if (flags.showProjects) {
+    const allProjects = new Set(dailyStats.flatMap((d) => d.projects));
+    process.stdout.write(`  Projects:   ${Array.from(allProjects).join(", ") || "(none)"}\n`);
+  } else {
+    process.stdout.write(`  Projects:   ${safeStats.projectCount} (names hidden)\n`);
+  }
   process.stdout.write(`  Top tools:  ${topTools || "(none)"}\n`);
   process.stdout.write("\n");
 
-  // --confirm: non-interactive POST to /sync
+  // --confirm: non-interactive POST — try v2 first, fall back to v1 on 404
   if (flags.confirm) {
     process.stderr.write("Syncing to cloud...\n");
+    let syncedV2 = false;
+
+    // Attempt v2 endpoint
     try {
-      const res = await fetch(`${workerUrl}/sync`, {
+      const v2res = await fetch(`${workerUrl}/sync/v2`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
-          "User-Agent": "shipcard-cli/1.0",
+          "User-Agent": "shipcard-cli/2.0",
         },
-        body: JSON.stringify(safeStats),
+        body: JSON.stringify({ safeStats, timeSeries: safeTimeSeries }),
       });
-      if (!res.ok) {
+      if (v2res.status === 404) {
+        // Worker doesn't have v2 yet — fall back to v1
+        process.stderr.write("Worker v2 not available, using v1...\n");
+      } else if (!v2res.ok) {
+        // Real error — do NOT fall back, exit with error
         let detail = "";
         try {
-          const body = (await res.json()) as { error?: string };
+          const body = (await v2res.json()) as { error?: string };
           if (body.error) detail = `: ${body.error}`;
         } catch {
           // ignore
         }
-        process.stderr.write(
-          `Sync failed: HTTP ${res.status}${detail}\n`
-        );
+        process.stderr.write(`Sync failed: HTTP ${v2res.status}${detail}\n`);
         process.exit(1);
+      } else {
+        syncedV2 = true;
       }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : String(err);
       process.stderr.write(`Sync request failed: ${message}\n`);
       process.exit(1);
+    }
+
+    // Fallback to v1 if v2 returned 404
+    if (!syncedV2) {
+      try {
+        const v1res = await fetch(`${workerUrl}/sync`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            "User-Agent": "shipcard-cli/1.0",
+          },
+          body: JSON.stringify(safeStats),
+        });
+        if (!v1res.ok) {
+          let detail = "";
+          try {
+            const body = (await v1res.json()) as { error?: string };
+            if (body.error) detail = `: ${body.error}`;
+          } catch {
+            // ignore
+          }
+          process.stderr.write(`Sync failed: HTTP ${v1res.status}${detail}\n`);
+          process.exit(1);
+        }
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : String(err);
+        process.stderr.write(`Sync request failed: ${message}\n`);
+        process.exit(1);
+      }
     }
 
     // Print success with embed snippets

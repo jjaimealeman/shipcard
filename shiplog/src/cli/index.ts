@@ -53,8 +53,9 @@ Card flags:
   -o, --output      Custom output path (default: repo root/shipcard-card.svg)
 
 Sync flags:
-  --confirm     Sync with current/default settings (non-interactive)
-  --delete      Remove all your data from the cloud
+  --confirm         Sync with current/default settings (non-interactive)
+  --delete          Remove all your data from the cloud
+  --show-projects   Include project names in cloud sync (last path segment only)
 
 Examples:
   shipcard summary

@@ -16,6 +16,7 @@
 
 import { Hono } from "hono";
 import type { AppType } from "../types.js";
+import { listUsers, getCardsServedCount } from "../kv.js";
 
 export const landingRoutes = new Hono<AppType>();
 
@@ -29,7 +30,7 @@ const LANDING_HTML = `<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ShipCard — See what you shipped with Claude Code</title>
+<title>ShipCard | See what you shipped with Claude Code</title>
 <meta name="description" content="Sessions, tokens, cost, one embeddable card. ShipCard gives agentic developers a stats card for their Claude Code usage.">
 <style>
   @font-face {
@@ -227,19 +228,35 @@ const LANDING_HTML = `<!DOCTYPE html>
     color: var(--bg);
   }
 
-  /* Hide-stat checkboxes */
-  .hide-check {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
+  /* Stat toggles */
+  .toggle {
+    position: relative;
+    width: 36px;
+    height: 20px;
+    flex-shrink: 0;
   }
-  .hide-check input[type="checkbox"] {
-    accent-color: var(--orange);
-    width: 16px;
-    height: 16px;
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .toggle-track {
+    position: absolute;
+    inset: 0;
+    background: var(--border);
+    border-radius: 10px;
     cursor: pointer;
+    transition: background 0.15s;
   }
+  .toggle input:checked + .toggle-track { background: var(--orange); }
+  .toggle-track::after {
+    content: "";
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background: var(--fg);
+    border-radius: 50%;
+    top: 3px;
+    left: 3px;
+    transition: transform 0.15s;
+  }
+  .toggle input:checked + .toggle-track::after { transform: translateX(16px); }
 
   .reset-btn {
     width: 100%;
@@ -400,6 +417,106 @@ const LANDING_HTML = `<!DOCTYPE html>
     color: var(--light);
   }
 
+  /* ---------- CARDS-SERVED ---------- */
+  .cards-served {
+    font-size: 13px;
+    color: var(--mid);
+    margin-top: 12px;
+  }
+
+  /* ---------- COMMUNITY TEASER ---------- */
+  .community-section {
+    padding: 0 0 80px;
+  }
+  .community-section h2 {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .community-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+  .community-header a {
+    font-size: 13px;
+    color: var(--orange);
+    text-decoration: none;
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-weight: 600;
+  }
+  .community-header a:hover { text-decoration: underline; }
+  .community-table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow-x: auto;
+  }
+  .community-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  .community-table thead th {
+    padding: 10px 14px;
+    text-align: left;
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--mid);
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+  }
+  .community-table thead th:hover { color: var(--fg); }
+  .community-table thead th.sort-asc::after { content: ' ↑'; }
+  .community-table thead th.sort-desc::after { content: ' ↓'; }
+  .community-table tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+  }
+  .community-table tbody tr:last-child { border-bottom: none; }
+  .community-table tbody tr:hover { background: rgba(255,255,255,0.03); }
+  .community-table td {
+    padding: 10px 14px;
+    color: var(--fg);
+  }
+  .community-table td.rank {
+    color: var(--mid);
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 12px;
+    width: 36px;
+  }
+  .community-table td.username a {
+    color: var(--blue);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .community-table td.username a:hover { text-decoration: underline; }
+  .community-table td.num {
+    font-family: monospace;
+    color: var(--mid);
+  }
+  .community-table td.cost { color: var(--green); font-family: monospace; }
+  .community-empty {
+    padding: 32px 14px;
+    text-align: center;
+    color: var(--mid);
+    font-size: 14px;
+  }
+  .community-empty code {
+    background: var(--bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    color: var(--light);
+  }
+
   /* ---------- FOOTER ---------- */
   footer {
     border-top: 1px solid var(--border);
@@ -425,6 +542,23 @@ const LANDING_HTML = `<!DOCTYPE html>
   }
   .footer-links a:hover { color: var(--orange); }
 
+  .version-badge {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    border-right: none;
+    border-top-left-radius: 8px;
+    padding: 4px 10px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--mid);
+    letter-spacing: 0.02em;
+    z-index: 10;
+  }
+
   /* ---------- RESPONSIVE ---------- */
   @media (max-width: 768px) {
     .config-grid {
@@ -446,9 +580,10 @@ const LANDING_HTML = `<!DOCTYPE html>
   <nav>
     <a href="/" class="nav-brand">ShipCard</a>
     <div class="nav-links">
-      <a href="https://github.com/jjaimealeman/shipcard" target="_blank" rel="noopener">GitHub</a>
-      <a href="https://www.npmjs.com/package/shipcard" target="_blank" rel="noopener">npm</a>
+      <a href="/community">Community</a>
       <a href="/configure">Configurator</a>
+      <a href="https://www.npmjs.com/package/shipcard" target="_blank" rel="noopener">npm</a>
+      <a href="https://github.com/jjaimealeman/shipcard" target="_blank" rel="noopener">GitHub</a>
     </div>
   </nav>
 </div>
@@ -458,6 +593,7 @@ const LANDING_HTML = `<!DOCTYPE html>
   <div class="container">
     <h1>See what you shipped<br>with <span class="accent">Claude Code</span></h1>
     <p class="sub">Sessions, tokens, cost — one embeddable card.<br>Know what your AI pair-programmer actually did.</p>
+    <!--CARDS_SERVED_PLACEHOLDER-->
   </div>
 </section>
 
@@ -499,11 +635,11 @@ const LANDING_HTML = `<!DOCTYPE html>
         </div>
 
         <div class="config-group">
-          <div class="config-group-title">Hide Stats</div>
-          <div class="config-row"><label class="hide-check"><input type="checkbox" id="chk-sessions"><span class="config-label">Sessions</span></label></div>
-          <div class="config-row"><label class="hide-check"><input type="checkbox" id="chk-toolCalls"><span class="config-label">Tool Calls</span></label></div>
-          <div class="config-row"><label class="hide-check"><input type="checkbox" id="chk-projects"><span class="config-label">Projects</span></label></div>
-          <div class="config-row"><label class="hide-check"><input type="checkbox" id="chk-cost"><span class="config-label">Cost</span></label></div>
+          <div class="config-group-title">Stats</div>
+          <div class="config-row"><span class="config-label">Sessions</span><label class="toggle"><input type="checkbox" id="tog-sessions" checked><span class="toggle-track"></span></label></div>
+          <div class="config-row"><span class="config-label">Tool Calls</span><label class="toggle"><input type="checkbox" id="tog-toolCalls" checked><span class="toggle-track"></span></label></div>
+          <div class="config-row"><span class="config-label">Projects</span><label class="toggle"><input type="checkbox" id="tog-projects" checked><span class="toggle-track"></span></label></div>
+          <div class="config-row"><span class="config-label">Cost</span><label class="toggle"><input type="checkbox" id="tog-cost" checked><span class="toggle-track"></span></label></div>
         </div>
 
         <button class="reset-btn" id="btn-reset">Reset to defaults</button>
@@ -559,6 +695,8 @@ const LANDING_HTML = `<!DOCTYPE html>
     <p class="mcp-note">Also available as an MCP server — add <code>shipcard</code> to your Claude Code config.</p>
   </div>
 </section>
+
+<!--COMMUNITY_TEASER_PLACEHOLDER-->
 
 <!-- FOOTER -->
 <footer>
@@ -718,10 +856,10 @@ const LANDING_HTML = `<!DOCTYPE html>
         }
       }
     }
-    // Checkboxes
+    // Toggles (checked = show, so invert hide state)
     var hideKeys = ['sessions', 'toolCalls', 'projects', 'cost'];
     for (var h = 0; h < hideKeys.length; h++) {
-      document.getElementById('chk-' + hideKeys[h]).checked = state.hide[hideKeys[h]];
+      document.getElementById('tog-' + hideKeys[h]).checked = !state.hide[hideKeys[h]];
     }
   }
 
@@ -743,12 +881,12 @@ const LANDING_HTML = `<!DOCTYPE html>
     })(groupIds[gi], groupKeys[gi]);
   }
 
-  // --- Event: hide checkboxes ---
+  // --- Event: stat toggles (checked = show, unchecked = hide) ---
   var hideKeys = ['sessions', 'toolCalls', 'projects', 'cost'];
   for (var hi = 0; hi < hideKeys.length; hi++) {
     (function(hk) {
-      document.getElementById('chk-' + hk).addEventListener('change', function() {
-        state.hide[hk] = this.checked;
+      document.getElementById('tog-' + hk).addEventListener('change', function() {
+        state.hide[hk] = !this.checked;
         refreshCard();
       });
     })(hideKeys[hi]);
@@ -792,15 +930,101 @@ const LANDING_HTML = `<!DOCTYPE html>
   refreshCard();
 })();
 </script>
+<div class="version-badge">v${__APP_VERSION__}</div>
 </body>
 </html>`;
+
+// ---------------------------------------------------------------------------
+// Helpers for community teaser HTML generation
+// ---------------------------------------------------------------------------
+
+function escHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function buildCommunityTeaser(
+  users: Array<{ username: string; meta: { syncedAt: string; totalSessions: number; totalCost: string; projectCount: number; totalTokens: number } | null }>
+): string {
+  const sorted = [...users].sort((a, b) => {
+    const aTime = a.meta?.syncedAt ?? "";
+    const bTime = b.meta?.syncedAt ?? "";
+    return bTime.localeCompare(aTime);
+  });
+  const top10 = sorted.slice(0, 10);
+
+  const rowsHtml = top10.length === 0
+    ? `<tr><td colspan="6" class="community-empty">Be the first — run <code>shipcard sync</code> to join</td></tr>`
+    : top10.map((u, i) => {
+        const m = u.meta;
+        const cost = m ? escHtml(m.totalCost) : "—";
+        const projects = m ? String(m.projectCount) : "—";
+        const sessions = m ? String(m.totalSessions) : "—";
+        const tokens = m ? m.totalTokens.toLocaleString() : "—";
+        return `<tr>
+          <td class="rank">${i + 1}</td>
+          <td class="username"><a href="/u/${encodeURIComponent(u.username)}/dashboard">${escHtml(u.username)}</a></td>
+          <td class="cost">${cost}</td>
+          <td class="num">${projects}</td>
+          <td class="num">${sessions}</td>
+          <td class="num">${tokens}</td>
+        </tr>`;
+      }).join("\n");
+
+  return `
+<section class="community-section">
+  <div class="container">
+    <div class="community-header">
+      <h2>Recent members</h2>
+      <a href="/community">View all &rarr;</a>
+    </div>
+    <div class="community-table-wrap">
+      <table class="community-table" id="community-teaser">
+        <thead>
+          <tr>
+            <th data-col="rank">#</th>
+            <th data-col="username">Username</th>
+            <th data-col="cost">Est. Cost</th>
+            <th data-col="projects">Projects</th>
+            <th data-col="sessions">Sessions</th>
+            <th data-col="tokens">Tokens</th>
+          </tr>
+        </thead>
+        <tbody id="community-teaser-body">
+          ${rowsHtml}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>`;
+}
 
 /**
  * GET /
  *
  * Serves the self-contained HTML landing page.
+ * Fetches community data server-side for the teaser table and cards-served counter.
  * No authentication required.
  */
-landingRoutes.get("/", (c) => {
-  return c.html(LANDING_HTML);
+landingRoutes.get("/", async (c) => {
+  const kv = c.env.USER_DATA_KV;
+  const [users, cardsServed] = await Promise.all([
+    listUsers(kv, 1000),
+    getCardsServedCount(kv),
+  ]);
+
+  const cardsServedHtml = cardsServed >= 100
+    ? `<p class="cards-served">Serving ${cardsServed.toLocaleString()} cards</p>`
+    : "";
+
+  const communityTeaserHtml = buildCommunityTeaser(users);
+
+  const html = LANDING_HTML
+    .replace("<!--CARDS_SERVED_PLACEHOLDER-->", cardsServedHtml)
+    .replace("<!--COMMUNITY_TEASER_PLACEHOLDER-->", communityTeaserHtml);
+
+  return c.html(html);
 });

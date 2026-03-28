@@ -15,6 +15,7 @@
  */
 
 import type { AnalyticsResult } from "../engine/types.js";
+import type { DailyStats, PerProjectDailyStats } from "../engine/dailyAggregator.js";
 
 // ---------------------------------------------------------------------------
 // SafeStats type (mirrors shipcard-worker/src/types.ts — do NOT import from Worker)
@@ -51,6 +52,50 @@ export interface SafeStats {
 }
 
 // ---------------------------------------------------------------------------
+// SafeTimeSeries types
+// ---------------------------------------------------------------------------
+
+/**
+ * A single day's stats in the SafeTimeSeries payload.
+ *
+ * Mirrors DailyStats but with `projects` conditionally included —
+ * only present when --show-projects flag is set.
+ */
+export interface SafeDailyStats {
+  date: string;
+  sessions: number;
+  messages: number;
+  userMessages: number;
+  thinkingBlocks: number;
+  tokens: {
+    input: number;
+    output: number;
+    cacheCreate: number;
+    cacheRead: number;
+  };
+  costCents: number;
+  models: Record<string, number>;
+  toolCalls: Record<string, number>;
+  /** Only present when --show-projects flag is set. */
+  projects?: string[];
+  /** Per-project breakdown. Only present when --show-projects flag is set. */
+  byProject?: Record<string, PerProjectDailyStats>;
+}
+
+/**
+ * Privacy-safe time-series payload for cloud sync (v2 endpoint).
+ *
+ * Wraps DailyStats[] with metadata. Project names are stripped unless
+ * --show-projects is explicitly enabled by the user.
+ */
+export interface SafeTimeSeries {
+  username: string;
+  version: 2;
+  days: SafeDailyStats[];
+  generatedAt: string;
+}
+
+// ---------------------------------------------------------------------------
 // Conversion
 // ---------------------------------------------------------------------------
 
@@ -84,5 +129,48 @@ export function toSafeStats(result: AnalyticsResult, username: string): SafeStat
     projectCount: summary.projectsTouched.length,
     toolCallSummary: summary.toolCallSummary,
     pricingVersion: summary.pricingVersion,
+  };
+}
+
+/**
+ * Convert DailyStats[] to a SafeTimeSeries payload for cloud upload (v2).
+ *
+ * Privacy guarantees:
+ *   - project names are stripped by default (projects field omitted)
+ *   - only included when showProjects=true (user explicitly opted in)
+ *
+ * @param days          Daily aggregated stats from aggregateDaily().
+ * @param username      GitHub username of the authenticated user.
+ * @param showProjects  Whether to include project names (from --show-projects flag).
+ */
+export function toSafeTimeSeries(
+  days: DailyStats[],
+  username: string,
+  showProjects: boolean
+): SafeTimeSeries {
+  return {
+    username,
+    version: 2,
+    days: days.map((day) => {
+      const safe: SafeDailyStats = {
+        date: day.date,
+        sessions: day.sessions,
+        messages: day.messages,
+        userMessages: day.userMessages,
+        thinkingBlocks: day.thinkingBlocks,
+        tokens: { ...day.tokens },
+        costCents: day.costCents,
+        models: { ...day.models },
+        toolCalls: { ...day.toolCalls },
+      };
+      if (showProjects) {
+        safe.projects = day.projects;
+        if (day.byProject) {
+          safe.byProject = day.byProject;
+        }
+      }
+      return safe;
+    }),
+    generatedAt: new Date().toISOString(),
   };
 }

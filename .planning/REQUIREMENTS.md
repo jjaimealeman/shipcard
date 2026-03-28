@@ -1,158 +1,85 @@
-# Requirements: ShipLog
+# Requirements: ShipCard v1.1 Dashboard Enhancement
 
-**Defined:** 2026-03-25
-**Core Value:** Developers using Claude Code can see what they shipped and what it cost, and share verifiable proof via an embeddable card.
+**Defined:** 2026-03-27
+**Core Value:** Make the dashboard the reason people adopt ShipCard — richer analytics that users screenshot and share.
 
-## v1 Requirements
+## v1.1 Requirements
 
-### Parser
+### Hero Section
 
-- [x] **PARSE-01**: Tool reads all JSONL files from `~/.claude/projects/**/*.jsonl` via streaming parser
-- [x] **PARSE-02**: Parser extracts token counts (input, output, cache_creation, cache_read) from assistant messages
-- [x] **PARSE-03**: Parser identifies model used per message (e.g., claude-opus-4-6, claude-sonnet-4-6)
-- [x] **PARSE-04**: Parser groups messages by sessionId into discrete sessions
-- [x] **PARSE-05**: Parser handles unknown/changed JSONL fields gracefully without crashing
-- [x] **PARSE-06**: Parser extracts tool_use blocks from assistant message content for tool call counting
-- [x] **PARSE-07**: Parser derives project context from cwd field in messages
+- [x] **HERO-01**: Dashboard displays Today's Activity with 4 metrics: messages, sessions, tools, tokens
+- [x] **HERO-02**: Each metric shows individual % change compared to yesterday (calendar day)
+- [x] **HERO-03**: Direction indicators use neutral warm/cool tones (not red/green alarm colors)
+- [x] **HERO-04**: Today's Activity uses calendar day boundaries (00:00–23:59 user timezone)
+- [x] **HERO-05**: Dashboard displays Peak Day card showing date, messages, sessions, project name, and cost
+- [x] **HERO-06**: Peak Day updates when a new day exceeds the previous peak
 
-### Analytics
+### Project Activity
 
-- [x] **ANLYT-01**: Engine computes estimated cost per session/project/model using versioned pricing table
-- [x] **ANLYT-02**: Engine supports date range filtering (--since / --until)
-- [x] **ANLYT-03**: Engine counts tool calls per session and project
-- [x] **ANLYT-04**: Engine produces JSON-serializable output for --json flag
-- [x] **ANLYT-05**: Cost displayed as approximate ("~$127 estimated") with pricing version visible
-- [x] **ANLYT-06**: Engine computes summary stats: total sessions, total tokens, models used, projects touched
+- [x] **PROJ-01**: Project Activity panel has sort toggle: messages | tokens | sessions | cost
+- [x] **PROJ-02**: Bar chart displays the selected metric per project (not just "days active")
+- [x] **PROJ-03**: Project list re-sorts when toggle changes without page reload
+- [x] **PROJ-04**: Default sort is by messages (most familiar metric)
 
-### CLI
+### Data Pipeline
 
-- [x] **CLI-01**: `shiplog summary` displays overview stats as formatted terminal table
-- [x] **CLI-02**: `shiplog costs` displays cost breakdown by project, model, and time period
-- [x] **CLI-03**: `shiplog card` generates SVG card locally (--local) or syncs to cloud for shareable URL
-- [x] **CLI-04**: `--json` flag outputs machine-readable JSON for all commands
-- [x] **CLI-05**: `--since` and `--until` flags filter by date range for all commands
-- [x] **CLI-06**: Package installable via `npx shiplog` with zero configuration
+- [ ] **DATA-01**: Daily aggregator computes per-project stats: tokens, sessions, messages, cost per day
+- [ ] **DATA-02**: SafeTimeSeries includes per-project breakdown when user syncs with --show-projects
+- [ ] **DATA-03**: Worker API accepts and stores per-project stats alongside existing project names
+- [ ] **DATA-04**: Privacy layer validates per-project stats (aggregated numbers only, no paths or raw data)
+- [ ] **DATA-05**: Existing synced data degrades gracefully (old format without per-project stats still works)
 
-### MCP Server
+### Cleanup
 
-- [x] **MCP-01**: `shiplog:summary` tool returns sessions, tool calls, models, projects, and estimated cost
-- [x] **MCP-02**: `shiplog:costs` tool returns cost breakdown by project, model, and time period
-- [x] **MCP-03**: `shiplog:card` tool generates card data or triggers sync
-- [x] **MCP-04**: MCP server runs via stdio transport with zero stdout pollution (all logging to stderr)
-- [x] **MCP-05**: Copy-paste MCP config for Claude Code / Cursor setup documented in README
+- [ ] **CLEAN-01**: Slowest Day metric removed from dashboard
+- [ ] **CLEAN-02**: "Most Messages" label accurately reflects what it measures (was misleading in v1.0)
 
-### Card
+## Deferred (post-adoption)
 
-- [x] **CARD-01**: SVG stats card displays sessions, tool calls, models used, projects, and estimated cost
-- [x] **CARD-02**: Dark and light theme variants
-- [x] **CARD-03**: Card renders correctly on GitHub README (survives camo proxy + SVG sanitizer)
-- [x] **CARD-04**: Card uses basic SVG elements only (rect, text, g, svg, line) with inline styles
-- [x] **CARD-05**: All user-controlled text is XML-escaped to prevent injection
-
-### Cloud
-
-- [x] **CLOUD-01**: Cloudflare Worker serves SVG card at `GET /u/:username`
-- [x] **CLOUD-02**: Worker accepts aggregated stats via `POST /sync` with bearer token auth
-- [x] **CLOUD-03**: KV caches rendered SVG cards, invalidated on sync with synchronous re-render
-- [x] **CLOUD-04**: Only SafeStats (numeric aggregates + username) reach the cloud — no paths, content, or timestamps
-- [x] **CLOUD-05**: User can preview exact data payload before first sync
-
-### Publishing
-
-- [x] **PUB-01**: Package published to npm with dual bin entries (shipcard CLI + shipcard-mcp)
-- [x] **PUB-02**: Both bin entries work after `npm install -g`
-- [x] **PUB-03**: MIT license
-- [x] **PUB-04**: README with card embed example, MCP config snippet, and CLI usage
-
-## v2 Requirements
-
-### Enhanced Analytics
-
-- **ANLYT-V2-01**: Burn rate predictor (estimated cost remaining in billing window)
-- **ANLYT-V2-02**: Cost anomaly detection (unusual spend alerts)
-- **ANLYT-V2-03**: Natural language date parsing (--since yesterday, --since "last monday")
-- **ANLYT-V2-04**: Annual/period "wrapped" report
-
-### Multi-Agent
-
-- **MULTI-01**: Support Codex CLI JSONL format
-- **MULTI-02**: Support Gemini CLI log format
-- **MULTI-03**: Auto-detect agent type from file format
-
-### Card Enhancements
-
-- **CARD-V2-01**: Additional themes (tokyonight, dracula, synthwave, etc.)
-- **CARD-V2-02**: Custom color parameters via URL query string
-- **CARD-V2-03**: Multiple card layouts (compact, full, badge)
-
-### Community
-
-- **COMM-01**: Public profile pages on shiplog.dev
-- **COMM-02**: Leaderboards (opt-in)
-- **COMM-03**: Team dashboards with cost allocation
+- Additional card themes (tokyonight, dracula, synthwave)
+- Custom color parameters via URL query string
+- Support Codex CLI / Gemini CLI formats
+- Burn rate predictor
+- Natural language date parsing
+- Team dashboards
+- Per-chart export buttons (PNG/JSON/SVG)
 
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
-| Source code upload or file content tracking | Privacy-first — only JSONL metadata, never project files |
-| Persistent background daemon | Trust killer for privacy-focused tool |
-| Telemetry without explicit opt-in | Destroys trust instantly |
-| Real-time editor plugin (WakaTime-style) | Claude Code already writes JSONL — don't add another layer |
-| Gamification / competitive leaderboards | Mismatches solo dev target user at v1 |
-| Team dashboards | Multi-user model adds complexity without v1 validation |
-| Payment processing | Post-alpha, after cards prove demand |
-| Mobile app | Web/terminal only for alpha |
-| Session replay / tool-call timelines | Too complex for alpha scope |
+| Export buttons on charts | Complexity vs value — embeddable SVG cards already serve sharing use case. Deferred to v3. |
+| Multi-agent support (Codex, Gemini) | Not dashboard work — separate milestone when user base exists |
+| Paid tier / monetization | v2.0 milestone — need users first |
+| Rolling 24h window for "today" | Calendar day is cleaner, resets predictably, matches user mental model |
 
 ## Traceability
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PARSE-01 | Phase 1 | Complete |
-| PARSE-02 | Phase 1 | Complete |
-| PARSE-03 | Phase 1 | Complete |
-| PARSE-04 | Phase 1 | Complete |
-| PARSE-05 | Phase 1 | Complete |
-| PARSE-06 | Phase 1 | Complete |
-| PARSE-07 | Phase 1 | Complete |
-| ANLYT-01 | Phase 1 | Complete |
-| ANLYT-02 | Phase 1 | Complete |
-| ANLYT-03 | Phase 1 | Complete |
-| ANLYT-04 | Phase 1 | Complete |
-| ANLYT-05 | Phase 1 | Complete |
-| ANLYT-06 | Phase 1 | Complete |
-| CLI-01 | Phase 2 | Complete |
-| CLI-02 | Phase 2 | Complete |
-| CLI-03 | Phase 2 | Complete |
-| CLI-04 | Phase 2 | Complete |
-| CLI-05 | Phase 2 | Complete |
-| CLI-06 | Phase 2 | Complete |
-| MCP-01 | Phase 2 | Complete |
-| MCP-02 | Phase 2 | Complete |
-| MCP-03 | Phase 2 | Complete |
-| MCP-04 | Phase 2 | Complete |
-| MCP-05 | Phase 2 | Complete |
-| CARD-01 | Phase 3 | Complete |
-| CARD-02 | Phase 3 | Complete |
-| CARD-03 | Phase 3 | Complete |
-| CARD-04 | Phase 3 | Complete |
-| CARD-05 | Phase 3 | Complete |
-| CLOUD-01 | Phase 4 | Complete |
-| CLOUD-02 | Phase 4 | Complete |
-| CLOUD-03 | Phase 4 | Complete |
-| CLOUD-04 | Phase 4 | Complete |
-| CLOUD-05 | Phase 4 | Complete |
-| PUB-01 | Phase 5 | Complete |
-| PUB-02 | Phase 7 | Complete |
-| PUB-03 | Phase 5 | Complete |
-| PUB-04 | Phase 7 | Complete |
+| HERO-01 | Phase 14 | Complete |
+| HERO-02 | Phase 14 | Complete |
+| HERO-03 | Phase 14 | Complete |
+| HERO-04 | Phase 14 | Complete |
+| HERO-05 | Phase 14 | Complete |
+| HERO-06 | Phase 14 | Complete |
+| PROJ-01 | Phase 15 | Complete |
+| PROJ-02 | Phase 15 | Complete |
+| PROJ-03 | Phase 15 | Complete |
+| PROJ-04 | Phase 15 | Complete |
+| DATA-01 | Phase 13 | Complete |
+| DATA-02 | Phase 13 | Complete |
+| DATA-03 | Phase 13 | Complete |
+| DATA-04 | Phase 13 | Complete |
+| DATA-05 | Phase 13 | Complete |
+| CLEAN-01 | Phase 13 | Complete |
+| CLEAN-02 | Phase 13 | Complete |
 
 **Coverage:**
-- v1 requirements: 35 total
-- Mapped to phases: 35
-- Unmapped: 0 ✓
+- v1.1 requirements: 17 total
+- Mapped to phases: 17
+- Unmapped: 0
 
 ---
-*Requirements defined: 2026-03-25*
-*Last updated: 2026-03-25 after initial definition*
+*Requirements defined: 2026-03-27*
+*Last updated: 2026-03-27 after roadmap creation — all 17 requirements mapped*
