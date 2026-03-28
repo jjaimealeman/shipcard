@@ -110,8 +110,8 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 16-01-PLAN.md — Rename shipcard/ to shipcard/ and update all references
-- [ ] 16-02-PLAN.md — Create SourceAdapter interface, ClaudeCodeAdapter, wire into engine, version 2.0.0
+- [x] 16-01-PLAN.md — Rename shiplog/ to shipcard/ and update all references
+- [x] 16-02-PLAN.md — Create SourceAdapter interface, ClaudeCodeAdapter, wire into engine, version 2.0.0
 
 ### Phase 17: Theme System
 
@@ -201,7 +201,7 @@ Plans:
 | 13. Data Pipeline + Cleanup | v1.1 | 2/2 | Complete | 2026-03-27 |
 | 14. Hero Section | v1.1 | 2/2 | Complete | 2026-03-27 |
 | 15. Project Activity | v1.1 | 1/1 | Complete | 2026-03-27 |
-| 16. Agent-Agnostic Architecture | v2.0 | 0/— | Pending | — |
+| 16. Agent-Agnostic Architecture | v2.0 | 2/2 | Complete | 2026-03-28 |
 | 17. Theme System | v2.0 | 0/— | Pending | — |
 | 18. Stripe Subscriptions | v2.0 | 0/— | Pending | — |
 | 19. PRO Card Features | v2.0 | 0/— | Pending | — |

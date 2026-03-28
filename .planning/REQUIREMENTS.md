@@ -46,9 +46,9 @@
 
 ### Architecture
 
-- [ ] **ARCH-01**: Parser refactored with `SourceAdapter` interface for future agent support
-- [ ] **ARCH-02**: Existing Claude Code parser wrapped as `ClaudeCodeAdapter`
-- [ ] **ARCH-03**: Engine consumes `ParsedMessage[]` regardless of source adapter
+- [x] **ARCH-01**: Parser refactored with `SourceAdapter` interface for future agent support
+- [x] **ARCH-02**: Existing Claude Code parser wrapped as `ClaudeCodeAdapter`
+- [x] **ARCH-03**: Engine consumes `ParsedMessage[]` regardless of source adapter
 
 ## Deferred (future milestones)
 
@@ -76,9 +76,9 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| ARCH-01 | Phase 16 | Pending |
-| ARCH-02 | Phase 16 | Pending |
-| ARCH-03 | Phase 16 | Pending |
+| ARCH-01 | Phase 16 | Complete |
+| ARCH-02 | Phase 16 | Complete |
+| ARCH-03 | Phase 16 | Complete |
 | THEME-01 | Phase 17 | Pending |
 | THEME-02 | Phase 17 | Pending |
 | THEME-03 | Phase 17 | Pending |
