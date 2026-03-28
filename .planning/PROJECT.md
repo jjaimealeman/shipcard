@@ -10,9 +10,9 @@ Developers using Claude Code can see what they shipped and what it cost, and sha
 
 ## Current State
 
-**Version:** v1.0 shipped 2026-03-27 | v1.1 in progress
+**Version:** v1.1 shipped 2026-03-28
 **Package:** `shipcard` on npm (MIT licensed)
-**Codebase:** ~13,131 LOC TypeScript/HTML/JSON across 237 files
+**Codebase:** ~14,396 LOC TypeScript/HTML/JSON
 **Stack:** Node.js/TypeScript local tool + Cloudflare Worker + KV
 
 **What shipped in v1.0:**
@@ -25,17 +25,12 @@ Developers using Claude Code can see what they shipped and what it cost, and sha
 - Community: homepage teaser, /community leaderboard, cards-served counter
 - Landing page at shipcard.dev with live card configurator
 
-## Current Milestone: v1.1 Dashboard Enhancement
-
-**Goal:** Make the dashboard the reason people adopt ShipCard — richer per-project breakdowns, today's activity hero, and meaningful sort dimensions.
-
-**Target features:**
-- Today's Activity hero section with 4 metrics (messages, sessions, tools, tokens) each showing % change vs yesterday
-- Peak Day card with date, messages, sessions, project name, and cost
-- Project Activity with sort toggles: messages | tokens | sessions | cost
-- Enriched sync payload with per-project stats (tokens, sessions, cost per project per day)
-- Remove Slowest Day (dead metric)
-- Neutral-toned direction indicators (not red/green alarm colors)
+**What shipped in v1.1:**
+- Today's Activity hero (4 metrics with % change vs yesterday, calendar day boundaries)
+- Peak Days cards (4 per-metric all-time records with date and project name)
+- Project Activity sort toggle (messages, tokens, sessions, cost)
+- Per-project stats in sync payload (tokens, sessions, cost per project per day)
+- Dashboard section reorder (static sections first, range-reactive below)
 
 ## Requirements
 
@@ -53,26 +48,35 @@ Developers using Claude Code can see what they shipped and what it cost, and sha
 - ✓ Privacy-first: no raw JSONL upload, only aggregated user-approved stats — v1.0
 - ✓ Zero external deps beyond MCP SDK — v1.0
 - ✓ Published to npm as `shipcard` — v1.0
+- ✓ Today's Activity hero — 4 metrics with individual % vs yesterday — v1.1
+- ✓ Peak Day cards — 4 per-metric all-time records with date and project — v1.1
+- ✓ Project Activity toggles — sort by messages, tokens, sessions, or cost — v1.1
+- ✓ Per-project stats in sync payload — tokens, sessions, cost per project per day — v1.1
+- ✓ Neutral direction indicators for % change (orange/blue, not red/green) — v1.1
 
 ### Active
 
-- [ ] Today's Activity hero — 4 metrics with individual % vs yesterday
-- [ ] Peak Day card — date, project, tokens, cost for highest-activity day
-- [ ] Project Activity toggles — sort by messages, tokens, sessions, or cost
-- [ ] Per-project stats in sync payload — tokens, sessions, cost per project per day
-- [ ] Remove Slowest Day metric
-- [ ] Neutral direction indicators for % change (not red/green)
+**v2.0 — Themes + Monetization**
 
-### Deferred (post-adoption)
+- [ ] Curated card themes (8-10: Catppuccin, Dracula, Tokyo Night, Nord, Gruvbox, etc.)
+- [ ] BYOT (Bring Your Own Theme) — custom colors/fonts, paid perk
+- [ ] Stripe integration — $1/mo solo tier, linked to GitHub OAuth identity
+- [ ] Free vs paid gating — free gets curated themes, paid gets BYOT + extras
+- [ ] Custom card URL slugs — `/u/:username/:slug`, paid users get unlimited, free gets 1
+- [ ] AI coding insights — pre-computed weekly digest (peak hours, cost trends, top projects)
+- [ ] PRO badge on SVG card — social proof flex for paid users
+- [ ] Priority CDN — paid cards refresh instantly on sync, free refreshes in 1 hour
+- [ ] Clack CLI — `@clack/prompts` for beautiful interactive CLI experience
+- [ ] Agent-agnostic data model — prep architecture so future agents (Kiro, OpenCode, Pi) slot in clean
 
-- Additional card themes (tokyonight, dracula, synthwave, etc.)
-- Custom color parameters via URL query string
+### Deferred (future milestones)
+
 - Support Codex CLI JSONL format
 - Support Gemini CLI log format
+- Team dashboards with cost allocation (`/t/:team-slug/dashboard`, $5/mo)
 - Burn rate predictor (estimated cost remaining in billing window)
 - Natural language date parsing (--since yesterday)
-- Team dashboards with cost allocation
-- Per-chart export buttons (PNG/JSON/SVG) — v3
+- Per-chart export buttons (PNG/JSON/SVG)
 
 ### Out of Scope
 
@@ -81,7 +85,7 @@ Developers using Claude Code can see what they shipped and what it cost, and sha
 - Real-time editor plugin (WakaTime-style) — Claude Code already writes JSONL
 - Session replay or detailed tool-call timelines — too complex, low ROI
 - Mobile or native desktop app — web/terminal only
-- Payment processing — post-validation
+- Multi-agent JSONL parsing — wait for community demand before investing
 
 ## Context
 
@@ -112,8 +116,14 @@ Developers using Claude Code can see what they shipped and what it cost, and sha
 | Alpine.js + Chart.js for dashboard | No build step, CDN-loaded | ✓ Good — fast iteration |
 | Two-layer privacy validation | CLI strips + Worker rejects banned fields | ✓ Good — defense in depth |
 | Phase 1 then Phase 2 sequential | Local tool must work before card has data | ✓ Good — natural dependency |
-
-| v1.1 dashboard on feature branch | v2.0 reserved for monetized tier | — Pending |
+| v1.1 dashboard on feature branch | v2.0 reserved for monetized tier | ✓ Good — shipped and merged |
+| Chart update in-place (not destroy/recreate) | Canvas context breaks on destroy/recreate cycle | ✓ Good — all 4 sort metrics work |
+| Dashboard section reorder | Static sections first, range-reactive below | ✓ Good — better UX hierarchy |
+| GitHub OAuth + Stripe for payments | Keep single auth provider, link Stripe by GitHub user ID | — Pending |
+| $1/mo solo tier | Low barrier, high volume target | — Pending |
+| BYOT as paid differentiator | Free curated themes drive adoption, custom theming drives revenue | — Pending |
+| Clack for CLI UX | Premium interactive CLI feel, replaces raw commander output | — Pending |
+| Agent-agnostic data model | Prep for Kiro/OpenCode/Pi without building parsers yet | — Pending |
 
 ---
-*Last updated: 2026-03-27 after v1.1 milestone start*
+*Last updated: 2026-03-28 after v2.0 milestone started*
