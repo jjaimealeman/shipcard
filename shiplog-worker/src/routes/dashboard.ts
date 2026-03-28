@@ -321,6 +321,9 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
   .btn-group {
     display: none;
   }
+  /* Panel header sort toggle always visible (overrides global hide) */
+  .panel-header .btn-group { display: flex; font-size: 11px; }
+  .panel-header .btn-group button { padding: 4px 8px; }
 
   /* Panel body — explicit height prevents Chart.js 0-height collapse */
   .panel-body {
@@ -1065,8 +1068,21 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
       <!-- panel-projects: project activity horizontal bars -->
       <div class="panel panel-wide" id="panel-projects">
         <div class="panel-header">
-          <span class="panel-title">Project Activity</span>
-          <span class="panel-badge">Bar Chart</span>
+          <span class="panel-title">Project Activity
+            <span x-show="$store.dashboard.hasProjects" style="display:none;font-weight:400;font-size:12px;color:var(--mid)">
+              (showing <span x-text="Math.min(5, $store.dashboard._projectTotal)"></span> of <span x-text="$store.dashboard._projectTotal"></span>)
+            </span>
+          </span>
+          <div class="btn-group" x-show="$store.dashboard.hasProjects" style="display:none">
+            <button :class="{ active: $store.dashboard.projectSortMetric === 'messages' }"
+              @click="$store.dashboard.projectSortMetric = 'messages'">Messages</button>
+            <button :class="{ active: $store.dashboard.projectSortMetric === 'tokens' }"
+              @click="$store.dashboard.projectSortMetric = 'tokens'">Tokens</button>
+            <button :class="{ active: $store.dashboard.projectSortMetric === 'sessions' }"
+              @click="$store.dashboard.projectSortMetric = 'sessions'">Sessions</button>
+            <button :class="{ active: $store.dashboard.projectSortMetric === 'cost' }"
+              @click="$store.dashboard.projectSortMetric = 'cost'">Cost</button>
+          </div>
         </div>
         <div class="panel-body">
           <div class="panel-skel skeleton" x-show="$store.dashboard.loading" style="display:none;min-height:120px"></div>
@@ -1155,7 +1171,18 @@ document.addEventListener('alpine:init', () => {
       );
     },
 
-    // Phase 15 will expose this as a user-selectable toggle (messages, tokens, cost)
+    // Total unique projects across all-time data (for "Showing N of X" heading)
+    get _projectTotal() {
+      const all = this.timeseries ? this.timeseries.days : [];
+      const names = new Set();
+      all.forEach(d => {
+        if (d.byProject) Object.keys(d.byProject).forEach(n => names.add(n));
+        if (d.projects) d.projects.forEach(n => names.add(n));
+      });
+      return names.size;
+    },
+
+    // User-selectable sort dimension for Project Activity bar chart
     projectSortMetric: 'messages',
 
     // ---------------------------------------------------------------------------
