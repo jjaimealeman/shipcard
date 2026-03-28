@@ -953,6 +953,100 @@ document.addEventListener('alpine:init', () => {
     },
 
     // ---------------------------------------------------------------------------
+    // Today's Activity — computed getters for today/yesterday metrics
+    // ---------------------------------------------------------------------------
+
+    // Returns YYYY-MM-DD in the browser's LOCAL timezone (not UTC).
+    // en-CA locale always produces ISO date format — independent of OS locale.
+    get _todayDate() {
+      return new Date().toLocaleDateString('en-CA');
+    },
+
+    get _yesterdayDate() {
+      const d = new Date();
+      d.setDate(d.getDate() - 1);
+      return d.toLocaleDateString('en-CA');
+    },
+
+    // Scans ALL days (not filteredDays) — today is independent of range filter.
+    get _todayStats() {
+      if (!this.timeseries || !this.timeseries.days) return null;
+      return this.timeseries.days.find(d => d.date === this._todayDate) || null;
+    },
+
+    get _yesterdayStats() {
+      if (!this.timeseries || !this.timeseries.days) return null;
+      return this.timeseries.days.find(d => d.date === this._yesterdayDate) || null;
+    },
+
+    // Sum all tool call values for a given day object.
+    _totalTools(day) {
+      if (!day || !day.toolCalls) return 0;
+      return Object.values(day.toolCalls).reduce((s, v) => s + v, 0);
+    },
+
+    // Sum all token types for a given day object.
+    _totalTokens(day) {
+      if (!day) return 0;
+      return day.tokens.input + day.tokens.output + day.tokens.cacheCreate + day.tokens.cacheRead;
+    },
+
+    // Returns 1 (today > yesterday), -1 (today < yesterday), 0 (equal).
+    _dir(todayVal, yesterdayVal) {
+      if (todayVal > yesterdayVal) return 1;
+      if (todayVal < yesterdayVal) return -1;
+      return 0;
+    },
+
+    // Today's raw values
+    get todayMessages() {
+      return this._todayStats ? this._todayStats.messages : 0;
+    },
+    get todaySessions() {
+      return this._todayStats ? this._todayStats.sessions : 0;
+    },
+    get todayTools() {
+      return this._totalTools(this._todayStats);
+    },
+    get todayTokens() {
+      return this._fmtNum(this._totalTokens(this._todayStats));
+    },
+    get _todayTokensRaw() {
+      return this._totalTokens(this._todayStats);
+    },
+
+    // Yesterday's raw values
+    get yesterdayMessages() {
+      return this._yesterdayStats ? this._yesterdayStats.messages : 0;
+    },
+    get yesterdaySessions() {
+      return this._yesterdayStats ? this._yesterdayStats.sessions : 0;
+    },
+    get yesterdayTools() {
+      return this._totalTools(this._yesterdayStats);
+    },
+    get yesterdayTokens() {
+      return this._fmtNum(this._totalTokens(this._yesterdayStats));
+    },
+    get _yesterdayTokensRaw() {
+      return this._totalTokens(this._yesterdayStats);
+    },
+
+    // Direction indicators (1=up, -1=down, 0=equal)
+    get dirMessages() {
+      return this._dir(this.todayMessages, this.yesterdayMessages);
+    },
+    get dirSessions() {
+      return this._dir(this.todaySessions, this.yesterdaySessions);
+    },
+    get dirTools() {
+      return this._dir(this.todayTools, this.yesterdayTools);
+    },
+    get dirTokens() {
+      return this._dir(this._todayTokensRaw, this._yesterdayTokensRaw);
+    },
+
+    // ---------------------------------------------------------------------------
     // Sparkline generators — return SVG polyline point strings
     // ---------------------------------------------------------------------------
     _sparkPoints(values, w, h) {
