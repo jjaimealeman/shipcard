@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-03-27)
 
 ## Current Position
 
-Phase: 14 — Hero Section (Phase complete)
-Plan: 02 of 2 complete
-Status: Phase complete
-Last activity: 2026-03-28 — Completed 14-02-PLAN.md (Peak Days section)
+Phase: 15 — Project Activity (Phase complete)
+Plan: 01 of 1 complete
+Status: v1.1 complete
+Last activity: 2026-03-28 — Completed 15-01-PLAN.md (Project Activity sort toggle)
 
-Progress: [████████░░░░░░░░░░░░░░░░░░░░] 4/5 plans (v1.1)
+Progress: [█████████████████████████████] 5/5 plans (v1.1)
 
 ## Performance Metrics
 
@@ -53,10 +53,14 @@ Progress: [████████░░░░░░░░░░░░░░░
 - Peak getters scan all timeseries.days (not filteredDays) — range filter does not affect peaks
 - _peakProject extracts top project from byProject; shows dash when byProject missing
 - Peak cost uses exact $X.XX format (no tilde prefix — historical record, not estimate)
+- Project Activity sort toggle (Messages/Tokens/Sessions/Cost) wired to projectSortMetric Alpine store; reactive via Alpine.effect
+- Free tier project cap is 5 (not 10)
+- Projects with zero value for selected metric are hidden from Project Activity chart
+- sortMetric reactive dep must be read before if-guards in Alpine.effect to always register tracking
 
 ### Pending Todos
 
-- None for Phase 14 (complete)
+- None — v1.1 complete. Ready for release tagging.
 
 ### Blockers/Concerns
 
@@ -66,6 +70,6 @@ Progress: [████████░░░░░░░░░░░░░░░
 
 ## Session Continuity
 
-Last session: 2026-03-28T00:47:27Z
-Stopped at: Completed 14-02-PLAN.md (Peak Days section — 4 per-metric all-time record cards)
-Resume with: `/gsd:plan-phase 15` (Project Activity — depends on Phase 13 complete)
+Last session: 2026-03-28T01:45:15Z
+Stopped at: Completed 15-01-PLAN.md (Project Activity sort toggle — v1.1 final plan)
+Resume with: `/release` to tag v1.1.0
