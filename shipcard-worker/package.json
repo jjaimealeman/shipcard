@@ -1,6 +1,6 @@
 {
   "name": "shipcard-worker",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "description": "Cloudflare Worker — serves ShipCard SVG stats cards at the edge",
   "scripts": {

@@ -95,4 +95,6 @@ export interface EngineOptions {
   until?: string;
   /** Emit JSON output instead of formatted text (for CLI --json flag). */
   json?: boolean;
+  /** Adapter ID (e.g. "claude-code"). Defaults to "claude-code". */
+  adapter?: string;
 }

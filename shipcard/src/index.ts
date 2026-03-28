@@ -10,11 +10,11 @@
 
 import * as os from "node:os";
 
-import { parseAllFiles } from "./parser/deduplicator.js";
+import { getAdapter } from "./adapters/registry.js";
 import { filterByDateRange } from "./engine/filter.js";
 import { getPricing } from "./engine/cost.js";
 import { aggregate } from "./engine/aggregator.js";
-import type { ParseResult } from "./parser/deduplicator.js";
+import type { ParseResult } from "./adapters/interface.js";
 
 // ---------------------------------------------------------------------------
 // Re-exports for consumers (Phase 2: CLI and MCP tools)
@@ -74,8 +74,9 @@ export async function runEngineFull(
   const projectsDir =
     options?.projectsDir ?? `${os.homedir()}/.claude/projects`;
 
-  // Step 2: Parse all JSONL files.
-  const parseResult = await parseAllFiles(projectsDir);
+  // Step 2: Parse all JSONL files via the adapter.
+  const adapter = getAdapter(options?.adapter);
+  const parseResult = await adapter.parse(projectsDir);
 
   // Step 3: Apply date filtering before aggregation.
   const { since, until } = options ?? {};
