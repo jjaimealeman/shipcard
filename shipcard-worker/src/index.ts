@@ -6,6 +6,10 @@
  *   GET    /community                 — community leaderboard (HTML)
  *   GET    /u/:username/dashboard     — full analytics dashboard (public)
  *   GET    /u/:username               — SVG stats card (cached, public)
+ *   GET    /u/:username/:slug         — SVG card using slug config (PRO)
+ *   POST   /u/:username/slugs         — Create custom slug (PRO, auth)
+ *   GET    /u/:username/slugs         — List slugs (PRO, auth)
+ *   DELETE /u/:username/slugs/:slug   — Delete slug (PRO, auth)
  *   GET    /u/:username/api/stats      — SafeStats JSON (public)
  *   GET    /u/:username/api/timeseries — SafeTimeSeries JSON (public)
  *   POST   /auth/exchange             — GitHub token → Worker bearer token exchange
@@ -26,6 +30,7 @@ import { trimTrailingSlash } from "hono/trailing-slash";
 import type { AppType } from "./types.js";
 import { apiRoutes } from "./routes/api.js";
 import { cardRoutes } from "./routes/card.js";
+import { slugRoutes } from "./routes/slugs.js";
 import { authRoutes } from "./routes/auth.js";
 import { syncRoutes } from "./routes/sync.js";
 import { syncV2Routes } from "./routes/syncV2.js";
@@ -55,6 +60,10 @@ app.route("/u", dashboardRoutes);
 // JSON API — public, CORS-enabled; MUST be before cardRoutes so
 // /:username/api/* paths are matched before /:username catches all.
 app.route("/u", apiRoutes);
+
+// Slug CRUD — PRO only, auth required; must be before cardRoutes so
+// /:username/slugs is matched before /:username single-segment card catch-all.
+app.route("/u", slugRoutes);
 
 // Card serving — public, no auth required
 app.route("/u", cardRoutes);
