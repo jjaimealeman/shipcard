@@ -144,7 +144,14 @@ Plans:
   4. A failed payment webhook marks the subscription past-due and the dashboard shows a payment-failed banner
   5. Free users see an upgrade prompt when they attempt to use a PRO-only feature (BYOT, custom slugs, AI insights)
 
-**Plans:** —
+**Plans:** 5 plans
+
+Plans:
+- [ ] 18-01-PLAN.md — Stripe SDK + D1 binding + schema + subscription query helpers
+- [ ] 18-02-PLAN.md — Webhook handler for Stripe subscription lifecycle events
+- [ ] 18-03-PLAN.md — Billing routes (checkout, portal, welcome) + isPro D1 migration
+- [ ] 18-04-PLAN.md — Dashboard billing UI: PRO badge, payment banner, upgrade prompts
+- [ ] 18-05-PLAN.md — Human verification of billing integration
 
 ### Phase 19: PRO Card Features
 
