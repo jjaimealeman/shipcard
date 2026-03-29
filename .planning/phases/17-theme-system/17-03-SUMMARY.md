@@ -54,10 +54,10 @@ completed: 2026-03-29
 
 ## Performance
 
-- **Duration:** ~2 min
+- **Duration:** ~45 min
 - **Started:** 2026-03-29T01:40:50Z
-- **Completed:** 2026-03-29T01:42:47Z
-- **Tasks:** 1 of 2 (Task 2 is checkpoint:human-verify — awaiting verification)
+- **Completed:** 2026-03-29T02:30:00Z
+- **Tasks:** 2 of 2 (Task 2 checkpoint approved)
 - **Files modified:** 1
 
 ## Accomplishments
@@ -75,9 +75,11 @@ completed: 2026-03-29
 
 Each task was committed atomically:
 
-1. **Task 1: Add Theme Configurator section to dashboard** - `364f0f2` (feat)
+1. **Task 1: Add Theme Configurator section to dashboard** - `88c7ca3` (feat)
+2. **Orchestrator fix: preview URL uses window.location.origin** - `dbef863` (fix)
+3. **Task 2: Human verification checkpoint** - approved (no code commit)
 
-**Plan metadata:** pending (will be committed after checkpoint verification)
+**Plan metadata:** pending final docs commit
 
 ## Files Created/Modified
 
@@ -92,11 +94,25 @@ Each task was committed atomically:
 
 ## Deviations from Plan
 
-None - plan executed exactly as written.
+### Auto-fixed Issues
+
+**1. [Rule 1 - Bug] Preview URL hardcoded to shipcard.dev broke local dev**
+
+- **Found during:** Task 2 (human-verify checkpoint — orchestrator identified during verification)
+- **Issue:** Preview `<img>` src was built with `https://shipcard.dev/u/...` — in local development (localhost:8787) the preview fetches from production instead of the local Worker, making it impossible to verify theme changes locally.
+- **Fix:** Changed preview img `buildPreviewUrl()` to use `window.location.origin` dynamically. Embed code `buildEmbedCode()` still uses the hardcoded `shipcard.dev` production URL (correct for README embed use case).
+- **Files modified:** `shipcard-worker/src/routes/dashboard.ts`
+- **Verification:** Preview fetches from correct origin in both local and production environments
+- **Committed in:** `dbef863` (orchestrator fix commit)
+
+---
+
+**Total deviations:** 1 auto-fixed (1 bug)
+**Impact on plan:** Fix was essential for local development verification. Embed code behavior unchanged. No scope creep.
 
 ## Issues Encountered
 
-None.
+None beyond the preview URL deviation documented above.
 
 ## User Setup Required
 
@@ -104,11 +120,11 @@ None - no external service configuration required.
 
 ## Next Phase Readiness
 
-- Theme Configurator section is implemented and TypeScript-clean
-- Awaiting human verification (Task 2 checkpoint) before plan is marked complete
-- After approval, Phase 17 (Theme System) will be fully complete
-- Phase 18 (Stripe Subscriptions) can proceed — `isUserPro()` KV key write path is the only remaining hook
+- Phase 17 (Theme System) is fully complete — all 3 plans delivered
+- Theme infrastructure is end-to-end: palette definitions (17-01) + card route (17-02) + dashboard UI (17-03)
+- Phase 18 (Stripe Subscriptions) can proceed — `isUserPro()` KV gate is already wired; Stripe webhooks will flip the PRO flag in KV to unlock BYOT for paying users
+- **Blocker:** Stripe account setup required before Phase 18 begins (no code dependency, just account credentials)
 
 ---
 *Phase: 17-theme-system*
-*Completed: 2026-03-29 (pending checkpoint verification)*
+*Completed: 2026-03-29*

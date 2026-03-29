@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 
 ## Current Position
 
-Phase: 17 — Theme System (in progress)
-Plan: 03 of 3 — Task 1 complete, awaiting checkpoint verification (Task 2)
-Status: At checkpoint — human verify required
-Last activity: 2026-03-29 — 17-03 Task 1 complete: Theme Configurator UI added to dashboard
+Phase: 17 — Theme System (complete)
+Plan: 03 of 3 — Phase fully complete
+Status: Phase complete — ready for Phase 18
+Last activity: 2026-03-29 — 17-03 complete: Theme Configurator dashboard UI approved and finalized
 
-Progress: ████░░░░░░ 36% (3.5/9 plans complete across v2.0)
+Progress: █████░░░░░ 44% (4/9 plans complete across v2.0)
 
 ## Performance Metrics
 
@@ -61,11 +61,14 @@ See PROJECT.md Key Decisions table for full history.
 | 17-03 | Theme Configurator uses local x-data (not global Alpine store) | Self-contained component; no store pollution |
 | 17-03 | isPro injected server-side via __IS_PRO__ placeholder | No client-side fetch flash; single KV read at page serve time |
 | 17-03 | byotMode activates only when all 5 fields filled + valid + passing contrast | Prevents partial BYOT URLs from being served |
+| 17-03 | Preview img uses window.location.origin, embed code uses shipcard.dev | Preview must work in local dev; embed code is for users to paste in READMEs |
+| 17-03 | Theme palettes embedded inline in HTML (not fetched) | Avoids extra API call; 9 themes is small enough for inline data |
+| 17-03 | BYOT inputs debounced at 300ms | Prevents excessive card fetches while user types hex values |
 
 ### Pending Todos
 
-- Execute Phase 17 (next phase)
 - Set up Stripe account before Phase 18 begins
+- Execute Phase 18 (Stripe Subscriptions)
 
 ### Blockers/Concerns
 
@@ -75,6 +78,6 @@ See PROJECT.md Key Decisions table for full history.
 
 ## Session Continuity
 
-Last session: 2026-03-29T01:42:47Z
-Stopped at: 17-03 Task 1 complete — Theme Configurator UI in dashboard.ts; at checkpoint:human-verify (Task 2)
-Resume with: After user approves checkpoint, continue 17-03 to mark plan complete and create final metadata commit
+Last session: 2026-03-29T02:30:00Z
+Stopped at: 17-03 complete — Phase 17 (Theme System) fully complete
+Resume with: Execute Phase 18 (Stripe Subscriptions) — requires Stripe account setup first
