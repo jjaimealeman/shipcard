@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 
 ## Current Position
 
-Phase: 16 — Agent-Agnostic Architecture (complete)
-Plan: 02 of 2 complete
-Status: Phase complete
-Last activity: 2026-03-28 — Completed 16-02-PLAN.md (adapter architecture)
+Phase: 17 — Theme System (in progress)
+Plan: 01 of 3 complete
+Status: In progress
+Last activity: 2026-03-29 — Completed 17-01-PLAN.md (curated palettes + contrast validator + renderer plumbing)
 
-Progress: ██░░░░░░░░ 17% (1/6 phases)
+Progress: ███░░░░░░░ 22% (2/9 plans complete across v2.0)
 
 ## Performance Metrics
 
@@ -52,6 +52,9 @@ See PROJECT.md Key Decisions table for full history.
 | 16-02 | ParseResult re-exported from adapters/interface.ts | Engine never reaches into parser internals; clean import boundary |
 | 16-02 | Default adapter is "claude-code" | Zero breaking changes; EngineOptions.adapter is optional |
 | 16-02 | v2.0.0 bumped in both packages simultaneously | Per CLAUDE.md versioning rules; both packages share same version |
+| 17-01 | MIN_RATIO = 3.0 (WCAG 1.4.11 for UI components, not 4.5:1) | SVG card is a graphic/UI component, not body text; 4.5:1 rejects valid palettes |
+| 17-01 | resolveThemeV2() defaults to catppuccin for unknown/missing theme | New requests get best visual default; legacy ?theme=dark still routes to github-dark |
+| 17-01 | resolveCuratedTheme() returns null (not throws) for unknown names | Card route handles gracefully without try/catch |
 
 ### Pending Todos
 
@@ -66,6 +69,6 @@ See PROJECT.md Key Decisions table for full history.
 
 ## Session Continuity
 
-Last session: 2026-03-28T23:53:42Z
-Stopped at: Completed 16-02-PLAN.md — adapter architecture + v2.0.0 bump
-Resume with: `/gsd:plan-phase 17` (Phase 17 next)
+Last session: 2026-03-29T01:32:29Z
+Stopped at: Completed 17-01-PLAN.md — curated palettes + WCAG contrast validator + renderer plumbing
+Resume with: Execute 17-02-PLAN.md (card route upgrade)
