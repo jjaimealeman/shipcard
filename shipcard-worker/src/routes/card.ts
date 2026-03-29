@@ -188,7 +188,7 @@ cardRoutes.get("/:username", async (c) => {
     const border = normalizeHex(rawColors.border);
 
     // 2d. PRO gate — must be checked before contrast (leaks less info if not PRO)
-    const isPro = await isUserPro(c.env.USER_DATA_KV, username);
+    const isPro = await isUserPro(c.env.DB, username);
     if (!isPro) {
       const svg = renderErrorSvg("ShipCard PRO Required", [
         "Custom colors require ShipCard PRO",

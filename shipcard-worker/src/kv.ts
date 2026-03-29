@@ -10,11 +10,11 @@
  *   card:{username}:{layout}:t={theme}:hide={a,b}         — v2 curated theme cache with hidden stats
  *   user:{username}:data                                   — SafeStats JSON payload
  *   user:{username}:timeseries                             — SafeTimeSeries JSON payload
- *   user:{username}:pro                                    — PRO subscription status ("1" = PRO)
  *   token:{token}:username                                 — auth token → username lookup
  */
 
 import type { CommunityMeta, SafeStats, SafeTimeSeries } from "./types.js";
+import { isUserProFromD1 } from "./db/subscriptions.js";
 
 // ---------------------------------------------------------------------------
 // Card cache (CARDS_KV)
@@ -252,24 +252,23 @@ export async function incrementCardsServed(kv: KVNamespace): Promise<void> {
 }
 
 // ---------------------------------------------------------------------------
-// PRO subscription gate (USER_DATA_KV)
+// PRO subscription gate (D1)
 // ---------------------------------------------------------------------------
 
 /**
  * Check whether a user has an active PRO subscription.
  *
- * Reads the `user:{username}:pro` key from KV.
- * Returns true if the value is exactly "1".
+ * Reads from D1 via isUserProFromD1() for strong consistency.
+ * Treats 'active' and 'past_due' as PRO (grace period for payment failures).
  *
- * Phase 18 (Stripe Subscriptions) will write this key via webhook.
- * Phase 17 (Theme System) only reads it for BYOT gating.
+ * Phase 18 (Stripe Subscriptions) writes subscription state via webhook.
+ * Phase 17 (Theme System) reads it for BYOT gating.
  */
 export async function isUserPro(
-  kv: KVNamespace,
+  db: D1Database,
   username: string
 ): Promise<boolean> {
-  const val = await kv.get(`user:${username}:pro`);
-  return val === "1";
+  return isUserProFromD1(db, username);
 }
 
 // ---------------------------------------------------------------------------

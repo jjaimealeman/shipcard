@@ -2968,7 +2968,7 @@ dashboardRoutes.get("/:username/dashboard", async (c) => {
   const username = raw;
 
   // Check PRO status for BYOT gate in the Theme Configurator
-  const isPro = await isUserPro(c.env.USER_DATA_KV, username);
+  const isPro = await isUserPro(c.env.DB, username);
 
   const html = DASHBOARD_HTML
     .replace(/__USERNAME__/g, username)
