@@ -36,3 +36,21 @@ CREATE TABLE IF NOT EXISTS stripe_events (
   event_id     TEXT    PRIMARY KEY,
   processed_at INTEGER NOT NULL DEFAULT (unixepoch())
 );
+
+-- ---------------------------------------------------------------------------
+-- card_slugs — custom card URL slugs for PRO users
+-- ---------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS card_slugs (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  username    TEXT    NOT NULL,
+  slug        TEXT    NOT NULL,
+  -- Saved card configuration as JSON: { theme, layout, hide?, heroStat?, colors? }
+  config      TEXT    NOT NULL DEFAULT '{}',
+  created_at  INTEGER NOT NULL DEFAULT (unixepoch()),
+  updated_at  INTEGER NOT NULL DEFAULT (unixepoch()),
+  UNIQUE(username, slug)
+);
+
+CREATE INDEX IF NOT EXISTS idx_card_slugs_username
+  ON card_slugs(username);
