@@ -27,12 +27,30 @@
   "define": {
     "__APP_VERSION__": "\"0.1.0\""
   },
+  "d1_databases": [
+    {
+      // Subscription state — strong-consistency storage for PRO user records.
+      // Run: npx wrangler d1 create shipcard-db
+      // Then replace the database_id below with the output database_id.
+      "binding": "DB",
+      "database_name": "shipcard-db",
+      "database_id": "placeholder-replace-before-deploy",
+    },
+  ],
   // Secrets are set via wrangler CLI, NOT in this file:
   //   npx wrangler secret put GITHUB_CLIENT_SECRET
   //   npx wrangler secret put TOKEN_SECRET
+  //   npx wrangler secret put STRIPE_SECRET_KEY
+  //   npx wrangler secret put STRIPE_WEBHOOK_SECRET
+  //   npx wrangler secret put STRIPE_PRO_MONTHLY_PRICE_ID
+  //   npx wrangler secret put STRIPE_PRO_ANNUAL_PRICE_ID
   //
   // Local dev secrets go in .dev.vars (gitignored):
   //   GITHUB_CLIENT_ID="<your-github-oauth-app-client-id>"
   //   GITHUB_CLIENT_SECRET="<your-github-oauth-app-secret>"
   //   TOKEN_SECRET="<random-32-byte-hex>"
+  //   STRIPE_SECRET_KEY="sk_test_..."
+  //   STRIPE_WEBHOOK_SECRET="whsec_..."
+  //   STRIPE_PRO_MONTHLY_PRICE_ID="price_..."
+  //   STRIPE_PRO_ANNUAL_PRICE_ID="price_..."
 }

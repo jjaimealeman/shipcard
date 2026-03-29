@@ -23,6 +23,16 @@ export interface Env {
   GITHUB_CLIENT_SECRET: string;
   /** HMAC key for issuing Worker-scoped bearer tokens. */
   TOKEN_SECRET: string;
+  /** Cloudflare D1 database for subscription state (strong consistency). */
+  DB: D1Database;
+  /** Stripe secret API key (set via wrangler secret put). */
+  STRIPE_SECRET_KEY: string;
+  /** Stripe webhook signing secret (set via wrangler secret put). */
+  STRIPE_WEBHOOK_SECRET: string;
+  /** Stripe Price ID for PRO monthly plan (set via wrangler secret put). */
+  STRIPE_PRO_MONTHLY_PRICE_ID: string;
+  /** Stripe Price ID for PRO annual plan (set via wrangler secret put). */
+  STRIPE_PRO_ANNUAL_PRICE_ID: string;
 }
 
 // ---------------------------------------------------------------------------
