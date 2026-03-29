@@ -32,8 +32,8 @@ Progress: █████░░░░░ 44% (4/9 plans complete across v2.0)
 - 1 day (2026-03-27)
 
 **v2.0 Totals (in progress):**
-- 6 phases planned, 1 complete
-- 27 requirements across 6 categories
+- 6 phases planned, 2 complete (16, 17)
+- 27 requirements across 6 categories (9 complete)
 
 ## Accumulated Context
 

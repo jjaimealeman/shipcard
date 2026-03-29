@@ -7,12 +7,12 @@
 
 ### Themes
 
-- [ ] **THEME-01**: User can select from 8-10 curated themes (Catppuccin, Dracula, Tokyo Night, Nord, Gruvbox, Solarized, One Dark, Monokai)
-- [ ] **THEME-02**: Theme selection applies to SVG card via URL parameter (`?theme=catppuccin`)
-- [ ] **THEME-03**: Theme preview visible in dashboard card configurator
-- [ ] **THEME-04**: PRO user can specify custom colors via URL params (bg, title, text, icon, border)
-- [ ] **THEME-05**: BYOT colors are validated for WCAG 3:1 minimum contrast ratio
-- [ ] **THEME-06**: Theme system works across all 3 card layouts (classic, compact, hero)
+- [x] **THEME-01**: User can select from 8-10 curated themes (Catppuccin, Dracula, Tokyo Night, Nord, Gruvbox, Solarized, One Dark, Monokai)
+- [x] **THEME-02**: Theme selection applies to SVG card via URL parameter (`?theme=catppuccin`)
+- [x] **THEME-03**: Theme preview visible in dashboard card configurator
+- [x] **THEME-04**: PRO user can specify custom colors via URL params (bg, title, text, icon, border)
+- [x] **THEME-05**: BYOT colors are validated for WCAG 3:1 minimum contrast ratio
+- [x] **THEME-06**: Theme system works across all 3 card layouts (classic, compact, hero)
 
 ### Monetization
 
@@ -79,12 +79,12 @@
 | ARCH-01 | Phase 16 | Complete |
 | ARCH-02 | Phase 16 | Complete |
 | ARCH-03 | Phase 16 | Complete |
-| THEME-01 | Phase 17 | Pending |
-| THEME-02 | Phase 17 | Pending |
-| THEME-03 | Phase 17 | Pending |
-| THEME-04 | Phase 17 | Pending |
-| THEME-05 | Phase 17 | Pending |
-| THEME-06 | Phase 17 | Pending |
+| THEME-01 | Phase 17 | Complete |
+| THEME-02 | Phase 17 | Complete |
+| THEME-03 | Phase 17 | Complete |
+| THEME-04 | Phase 17 | Complete |
+| THEME-05 | Phase 17 | Complete |
+| THEME-06 | Phase 17 | Complete |
 | PAY-01 | Phase 18 | Pending |
 | PAY-02 | Phase 18 | Pending |
 | PAY-03 | Phase 18 | Pending |
