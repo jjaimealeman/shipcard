@@ -18,6 +18,7 @@
  *   GET    /billing/portal             — Start portal (redirects to GitHub OAuth)
  *   GET    /billing/portal/callback    — GitHub OAuth callback → Stripe Customer Portal
  *   GET    /billing/welcome            — Post-checkout confirmation page
+ *   POST   /webhook/stripe            — Stripe webhook event handler
  */
 
 import { Hono } from "hono";
@@ -33,6 +34,7 @@ import { landingRoutes } from "./routes/landing.js";
 import { communityRoutes } from "./routes/community.js";
 import { dashboardRoutes } from "./routes/dashboard.js";
 import { billingRoutes } from "./routes/billing.js";
+import { webhookRoutes } from "./routes/webhook.js";
 
 const app = new Hono<AppType>();
 
@@ -71,5 +73,8 @@ app.route("/configure", configureRoutes);
 
 // Billing — checkout + portal via GitHub OAuth redirect flow
 app.route("/billing", billingRoutes);
+
+// Webhook — Stripe subscription lifecycle events (no auth, verified by signature)
+app.route("/webhook", webhookRoutes);
 
 export default app;
