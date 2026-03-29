@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 ## Current Position
 
 Phase: 18 — Stripe Subscriptions (in progress)
-Plan: 03 of 5 — Billing routes + isUserPro D1 migration complete
+Plan: 04 of 5 — Dashboard billing UI complete (PRO badge, payment banner, upgrade card, billing section)
 Status: In progress
-Last activity: 2026-03-29 — 18-03 complete: billing routes (GET/OAuth flow), Stripe Checkout/Portal, isUserPro migrated to D1
+Last activity: 2026-03-29 — 18-04 complete: billing UI (PRO badge, payment-failed banner, upgrade prompts, billing section)
 
-Progress: ███████░░░ 67% (6/9 plans complete across v2.0)
+Progress: ████████░░ 78% (7/9 plans complete across v2.0)
 
 ## Performance Metrics
 
@@ -74,13 +74,16 @@ See PROJECT.md Key Decisions table for full history.
 | 18-02 | getSubscriptionPeriodEnd() reads from SubscriptionItem (Stripe v21) | stripe-node v21 moved current_period_end from Subscription root to SubscriptionItem |
 | 18-02 | getInvoiceSubscriptionId() navigates invoice.parent.subscription_details | stripe-node v21 moved invoice.subscription to nested parent.subscription_details path |
 | 18-02 | markEventProcessed before processing body | Concurrent delivery prevention; mark-before-process ensures only one execution proceeds |
+| 18-04 | isPro/billing state in Alpine.store('dashboard') | Shared state needed across filter-bar, banner, and billing section without prop drilling |
+| 18-04 | Payment banner outside .page div, directly below filter-bar | Maximum visibility; always above all page content even on scroll |
+| 18-04 | Billing section uses x-if templates (not x-show) | Avoids rendering both PRO and free DOM simultaneously |
 
 ### Pending Todos
 
 - Set up Stripe account (create products, configure portal, get API keys)
 - Create D1 database: `npx wrangler d1 create shipcard-db` then update wrangler.jsonc database_id
 - Apply D1 schema: `npx wrangler d1 execute shipcard-db --file=src/db/schema.sql`
-- Execute Phase 18 Plans 04, 05 (dashboard billing buttons, PRO gate)
+- Execute Phase 18 Plan 05 (PRO gate enforcement)
 
 ### Blockers/Concerns
 
@@ -90,6 +93,6 @@ See PROJECT.md Key Decisions table for full history.
 
 ## Session Continuity
 
-Last session: 2026-03-29T07:59:33Z
-Stopped at: 18-02 complete — Stripe webhook handler + index.ts mount
-Resume with: Execute Phase 18 Plans 04, 05 (dashboard billing UI, PRO gate)
+Last session: 2026-03-29T08:06:27Z
+Stopped at: 18-04 complete — dashboard billing UI (PRO badge, payment banner, upgrade card, billing section)
+Resume with: Execute Phase 18 Plan 05 (PRO gate enforcement)
