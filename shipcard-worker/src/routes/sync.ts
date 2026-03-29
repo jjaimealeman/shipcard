@@ -21,8 +21,13 @@ import {
   invalidateCardVariants,
   putCardCache,
   incrementCardsServed,
+  isUserPro,
+  getUserData,
 } from "../kv.js";
-import { renderCard, renderRedactedCard } from "../svg/index.js";
+import { renderCard, renderRedactedCard, resolveCuratedTheme } from "../svg/index.js";
+import type { LayoutName } from "../svg/index.js";
+import { getUserSlugs } from "../db/slugs.js";
+import type { SlugConfig } from "../db/slugs.js";
 
 export const syncRoutes = new Hono<AppType>();
 
@@ -93,6 +98,43 @@ syncRoutes.post("/", authMiddleware, async (c) => {
     style: "github",
   });
   await putCardCache(env.CARDS_KV, username, "dark", "classic", "github", defaultSvg);
+
+  // PRO users: re-render all slug variants so slug URLs reflect new data instantly.
+  // This ensures KV consistency — slug card URLs won't serve stale data after sync.
+  const isPro = await isUserPro(env.DB, username);
+  if (isPro) {
+    const slugs = await getUserSlugs(env.DB, username);
+    if (slugs.length > 0) {
+      const userData = await getUserData(env.USER_DATA_KV, username);
+      if (userData !== null) {
+        for (const slugRow of slugs) {
+          const config = JSON.parse(slugRow.config) as SlugConfig;
+          const layout = (config.layout ?? "classic") as LayoutName;
+          const hide = config.hide ?? [];
+          const heroStat = config.heroStat;
+
+          let colors: import("../svg/themes/index.js").ThemeColors;
+          if (config.colors) {
+            colors = {
+              bg: config.colors.bg,
+              border: config.colors.border,
+              title: config.colors.title,
+              text: config.colors.text,
+              value: config.colors.title,
+              icon: config.colors.icon,
+              footer: config.colors.text,
+            };
+          } else {
+            const resolved = resolveCuratedTheme(config.theme ?? "catppuccin");
+            colors = resolved ?? resolveCuratedTheme("catppuccin")!;
+          }
+
+          const slugSvg = renderCard(userData, { layout, colors, hide, heroStat, isPro: true });
+          await env.CARDS_KV.put(`card:${username}:slug:${slugRow.slug}`, slugSvg);
+        }
+      }
+    }
+  }
 
   // Increment the global cards-served counter for community stats.
   await incrementCardsServed(env.USER_DATA_KV);

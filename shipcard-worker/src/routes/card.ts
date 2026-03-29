@@ -23,6 +23,8 @@ import {
   getUserData,
   isUserPro,
 } from "../kv.js";
+import { getSlug } from "../db/slugs.js";
+import type { SlugConfig } from "../db/slugs.js";
 import {
   renderCard,
   renderPlaceholderCard,
@@ -121,6 +123,82 @@ function normalizeHex(hex: string): string {
 // ---------------------------------------------------------------------------
 
 export const cardRoutes = new Hono<{ Bindings: Env }>();
+
+// ---------------------------------------------------------------------------
+// GET /:username/:slug — serve card using saved slug configuration
+// ---------------------------------------------------------------------------
+
+/**
+ * Serves a card rendered from a user's saved slug configuration.
+ *
+ * If the slug doesn't exist, falls back to a placeholder card.
+ * Caches the rendered SVG under `card:{username}:slug:{slug}` in KV.
+ * PRO users can have BYOT colors in their slug config.
+ *
+ * CRITICAL: This route MUST remain before /:username to prevent the bare
+ * username handler from consuming two-segment paths.
+ */
+cardRoutes.get("/:username/:slug", async (c) => {
+  const username = c.req.param("username");
+  const slug = c.req.param("slug");
+
+  // Load slug config from D1
+  const slugRow = await getSlug(c.env.DB, username, slug);
+  if (slugRow === null) {
+    return svgResponse(c, renderPlaceholderCard(username));
+  }
+
+  // Check KV cache first
+  const cacheKey = `card:${username}:slug:${slug}`;
+  const cached = await c.env.CARDS_KV.get(cacheKey);
+  if (cached !== null) {
+    return svgResponse(c, cached);
+  }
+
+  // Load user data
+  const userData = await getUserData(c.env.USER_DATA_KV, username);
+  if (userData === null) {
+    return svgResponse(c, renderPlaceholderCard(username));
+  }
+
+  // Parse slug config
+  const config = JSON.parse(slugRow.config) as SlugConfig;
+  const layout = (config.layout ?? "classic") as LayoutName;
+  const hide = config.hide ?? [];
+  const heroStat = config.heroStat;
+
+  // Resolve colors — BYOT takes precedence over curated theme
+  let colors: import("../svg/themes/index.js").ThemeColors;
+  if (config.colors) {
+    // BYOT colors stored in slug config
+    const rawColors = config.colors;
+    colors = {
+      bg: rawColors.bg,
+      border: rawColors.border,
+      title: rawColors.title,
+      text: rawColors.text,
+      value: rawColors.title,   // value = title per derivation rule
+      icon: rawColors.icon,
+      footer: rawColors.text,   // footer = text per derivation rule
+    };
+  } else {
+    // Curated or legacy theme name stored in config
+    const resolvedColors = resolveCuratedTheme(config.theme ?? "catppuccin");
+    colors = resolvedColors ?? resolveCuratedTheme("catppuccin")!;
+  }
+
+  // Slug cards are always PRO (only PRO users can create slugs)
+  const svg = renderCard(userData, { layout, colors, hide, heroStat, isPro: true });
+
+  // Cache the rendered SVG
+  await c.env.CARDS_KV.put(cacheKey, svg);
+
+  return svgResponse(c, svg);
+});
+
+// ---------------------------------------------------------------------------
+// GET /:username — standard card route
+// ---------------------------------------------------------------------------
 
 cardRoutes.get("/:username", async (c) => {
   const username = c.req.param("username");
