@@ -1791,6 +1791,45 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
       </div>
     </div>
 
+    <!-- =====================================================================
+         BILLING
+         ================================================================== -->
+    <div x-data>
+      <!-- PRO billing info -->
+      <template x-if="$store.dashboard.isPro">
+        <div>
+          <div class="section-title">Billing</div>
+          <div class="billing-info">
+            <div class="billing-row">
+              <span class="billing-label">Plan</span>
+              <span class="billing-value">PRO <span class="pro-badge-sm">Active</span></span>
+            </div>
+            <div class="billing-row" x-show="$store.dashboard.periodEnd > 0">
+              <span class="billing-label">Next billing date</span>
+              <span class="billing-value" x-text="new Date($store.dashboard.periodEnd * 1000).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })"></span>
+            </div>
+            <div class="billing-actions">
+              <a href="/billing/portal" class="billing-link">Manage Subscription</a>
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <!-- Free user plan info -->
+      <template x-if="!$store.dashboard.isPro">
+        <div>
+          <div class="section-title">Plan</div>
+          <div class="billing-info">
+            <div class="billing-row">
+              <span class="billing-label">Current plan</span>
+              <span class="billing-value">Free</span>
+            </div>
+            <p class="billing-upgrade-hint">Upgrade to PRO for custom themes, slugs, and AI insights.</p>
+          </div>
+        </div>
+      </template>
+    </div>
+
   </div><!-- /dashboard content -->
 </div><!-- /page -->
 
