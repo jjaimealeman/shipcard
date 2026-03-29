@@ -6,8 +6,11 @@
  * Key naming scheme:
  *   card:{username}:{theme}:{layout}:{style}              — rendered SVG variant cache (no hide)
  *   card:{username}:{theme}:{layout}:{style}:hide={a,b}   — SVG variant with hidden stats
+ *   card:{username}:{layout}:t={theme}                    — v2 curated theme cache
+ *   card:{username}:{layout}:t={theme}:hide={a,b}         — v2 curated theme cache with hidden stats
  *   user:{username}:data                                   — SafeStats JSON payload
  *   user:{username}:timeseries                             — SafeTimeSeries JSON payload
+ *   user:{username}:pro                                    — PRO subscription status ("1" = PRO)
  *   token:{token}:username                                 — auth token → username lookup
  */
 
@@ -246,5 +249,77 @@ export async function getCardsServedCount(kv: KVNamespace): Promise<number> {
 export async function incrementCardsServed(kv: KVNamespace): Promise<void> {
   const current = await getCardsServedCount(kv);
   await kv.put(CARDS_SERVED_KEY, String(current + 1));
+}
+
+// ---------------------------------------------------------------------------
+// PRO subscription gate (USER_DATA_KV)
+// ---------------------------------------------------------------------------
+
+/**
+ * Check whether a user has an active PRO subscription.
+ *
+ * Reads the `user:{username}:pro` key from KV.
+ * Returns true if the value is exactly "1".
+ *
+ * Phase 18 (Stripe Subscriptions) will write this key via webhook.
+ * Phase 17 (Theme System) only reads it for BYOT gating.
+ */
+export async function isUserPro(
+  kv: KVNamespace,
+  username: string
+): Promise<boolean> {
+  const val = await kv.get(`user:${username}:pro`);
+  return val === "1";
+}
+
+// ---------------------------------------------------------------------------
+// V2 card cache — curated themes (CARDS_KV)
+// ---------------------------------------------------------------------------
+
+/**
+ * Build the v2 KV key for a curated-theme rendered SVG card.
+ *
+ * Uses `t=` prefix to disambiguate curated theme keys from legacy keys.
+ * Key format: card:{username}:{layout}:t={theme}[:{hide suffix}]
+ */
+function cardKeyV2(
+  username: string,
+  layout: string,
+  theme: string,
+  hide: string[] = []
+): string {
+  const base = `card:${username}:${layout}:t=${theme}`;
+  if (hide.length === 0) return base;
+  const sorted = [...hide].sort().join(",");
+  return `${base}:hide=${sorted}`;
+}
+
+/**
+ * Read a rendered SVG from the v2 curated theme card cache.
+ * Returns null on cache miss.
+ */
+export async function getCardCacheV2(
+  kv: KVNamespace,
+  username: string,
+  layout: string,
+  theme: string,
+  hide: string[] = []
+): Promise<string | null> {
+  return kv.get(cardKeyV2(username, layout, theme, hide));
+}
+
+/**
+ * Write a rendered SVG to the v2 curated theme card cache.
+ * No expirationTtl — cache is valid until the next sync invalidates it.
+ */
+export async function putCardCacheV2(
+  kv: KVNamespace,
+  username: string,
+  layout: string,
+  theme: string,
+  svg: string,
+  hide: string[] = []
+): Promise<void> {
+  await kv.put(cardKeyV2(username, layout, theme, hide), svg);
 }
 
