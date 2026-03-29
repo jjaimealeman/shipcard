@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 
 ## Current Position
 
-Phase: 17 — Theme System (complete)
-Plan: 03 of 3 — Phase fully complete
-Status: Phase complete — ready for Phase 18
-Last activity: 2026-03-29 — 17-03 complete: Theme Configurator dashboard UI approved and finalized
+Phase: 18 — Stripe Subscriptions (in progress)
+Plan: 01 of 5 — Foundation complete
+Status: In progress
+Last activity: 2026-03-29 — 18-01 complete: Stripe SDK installed, D1 schema + query helpers created
 
-Progress: █████░░░░░ 44% (4/9 plans complete across v2.0)
+Progress: ██████░░░░ 56% (5/9 plans complete across v2.0)
 
 ## Performance Metrics
 
@@ -64,11 +64,17 @@ See PROJECT.md Key Decisions table for full history.
 | 17-03 | Preview img uses window.location.origin, embed code uses shipcard.dev | Preview must work in local dev; embed code is for users to paste in READMEs |
 | 17-03 | Theme palettes embedded inline in HTML (not fetched) | Avoids extra API call; 9 themes is small enough for inline data |
 | 17-03 | BYOT inputs debounced at 300ms | Prevents excessive card fetches while user types hex values |
+| 18-01 | Stripe.createFetchHttpClient() for CF Workers | Workers runtime has no Node.js http module; fetch-based client mandatory |
+| 18-01 | past_due treated as PRO in isUserProFromD1() | Grace period for payment failures; prevents immediate access loss |
+| 18-01 | D1 chosen over KV for subscriptions | Strong consistency required for billing state; KV eventual consistency unsuitable |
+| 18-01 | ON CONFLICT(username) DO UPDATE for upsertSubscription | Handles first-time subscribers and webhook updates in single query |
 
 ### Pending Todos
 
-- Set up Stripe account before Phase 18 begins
-- Execute Phase 18 (Stripe Subscriptions)
+- Set up Stripe account (create products, configure portal, get API keys)
+- Create D1 database: `npx wrangler d1 create shipcard-db` then update wrangler.jsonc database_id
+- Apply D1 schema: `npx wrangler d1 execute shipcard-db --file=src/db/schema.sql`
+- Execute Phase 18 Plans 02-05 (webhook handler, checkout API, portal API, PRO gate)
 
 ### Blockers/Concerns
 
@@ -78,6 +84,6 @@ See PROJECT.md Key Decisions table for full history.
 
 ## Session Continuity
 
-Last session: 2026-03-29T02:30:00Z
-Stopped at: 17-03 complete — Phase 17 (Theme System) fully complete
-Resume with: Execute Phase 18 (Stripe Subscriptions) — requires Stripe account setup first
+Last session: 2026-03-29T07:51:33Z
+Stopped at: 18-01 complete — Stripe SDK foundation layer built
+Resume with: Execute Phase 18 Plan 02 (webhook handler) — requires Stripe account + D1 database setup first
