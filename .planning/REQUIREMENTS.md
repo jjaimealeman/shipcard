@@ -25,12 +25,12 @@
 
 ### Card Enhancements
 
-- [ ] **CARD-01**: PRO cards display a small PRO badge on the SVG
-- [ ] **CARD-02**: PRO cards refresh cache instantly on sync (free: 1 hour TTL)
-- [ ] **CARD-03**: PRO user can create custom card URL slugs (`/u/:username/:slug`)
-- [ ] **CARD-04**: Each slug maps to a saved card configuration (theme, layout, style)
-- [ ] **CARD-05**: Free users get 1 card (default), PRO users get unlimited slugs
-- [ ] **CARD-06**: Slug system enforces reserved word list and minimum length
+- [x] **CARD-01**: PRO cards display a small PRO badge on the SVG
+- [x] **CARD-02**: PRO cards refresh cache instantly on sync (free: 1 hour TTL)
+- [x] **CARD-03**: PRO user can create custom card URL slugs (`/u/:username/:slug`)
+- [x] **CARD-04**: Each slug maps to a saved card configuration (theme, layout, style)
+- [x] **CARD-05**: Free users get 1 card (default), PRO users get unlimited slugs
+- [x] **CARD-06**: Slug system enforces reserved word list and minimum length
 
 ### AI Insights
 
@@ -91,12 +91,12 @@
 | PAY-04 | Phase 18 | Complete |
 | PAY-05 | Phase 18 | Complete |
 | PAY-06 | Phase 18 | Complete |
-| CARD-01 | Phase 19 | Pending |
-| CARD-02 | Phase 19 | Pending |
-| CARD-03 | Phase 19 | Pending |
-| CARD-04 | Phase 19 | Pending |
-| CARD-05 | Phase 19 | Pending |
-| CARD-06 | Phase 19 | Pending |
+| CARD-01 | Phase 19 | Complete |
+| CARD-02 | Phase 19 | Complete |
+| CARD-03 | Phase 19 | Complete |
+| CARD-04 | Phase 19 | Complete |
+| CARD-05 | Phase 19 | Complete |
+| CARD-06 | Phase 19 | Complete |
 | INSIGHT-01 | Phase 20 | Pending |
 | INSIGHT-02 | Phase 20 | Pending |
 | INSIGHT-03 | Phase 20 | Pending |
@@ -111,4 +111,4 @@
 
 ---
 *Requirements defined: 2026-03-28*
-*Last updated: 2026-03-29 — Phase 18 PAY-01 through PAY-06 marked Complete*
+*Last updated: 2026-03-29 — Phase 19 CARD-01 through CARD-06 marked Complete*
