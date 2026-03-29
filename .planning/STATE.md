@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 ## Current Position
 
 Phase: 17 — Theme System (in progress)
-Plan: 01 of 3 complete
+Plan: 02 of 3 complete
 Status: In progress
-Last activity: 2026-03-29 — Completed 17-01-PLAN.md (curated palettes + contrast validator + renderer plumbing)
+Last activity: 2026-03-29 — Completed 17-02-PLAN.md (card route upgrade: curated themes, BYOT, PRO gate, v2 cache keys)
 
-Progress: ███░░░░░░░ 22% (2/9 plans complete across v2.0)
+Progress: ████░░░░░░ 33% (3/9 plans complete across v2.0)
 
 ## Performance Metrics
 
@@ -55,6 +55,9 @@ See PROJECT.md Key Decisions table for full history.
 | 17-01 | MIN_RATIO = 3.0 (WCAG 1.4.11 for UI components, not 4.5:1) | SVG card is a graphic/UI component, not body text; 4.5:1 rejects valid palettes |
 | 17-01 | resolveThemeV2() defaults to catppuccin for unknown/missing theme | New requests get best visual default; legacy ?theme=dark still routes to github-dark |
 | 17-01 | resolveCuratedTheme() returns null (not throws) for unknown names | Card route handles gracefully without try/catch |
+| 17-02 | PRO gate checked before contrast validation | Prevents free users from learning which color combos would pass contrast |
+| 17-02 | BYOT cards skip KV cache entirely | Prevents unbounded cache growth from arbitrary hex combinations |
+| 17-02 | Default ?theme is catppuccin (not github-dark) | New users get best visual default; legacy ?theme=dark still works |
 
 ### Pending Todos
 
@@ -69,6 +72,6 @@ See PROJECT.md Key Decisions table for full history.
 
 ## Session Continuity
 
-Last session: 2026-03-29T01:32:29Z
-Stopped at: Completed 17-01-PLAN.md — curated palettes + WCAG contrast validator + renderer plumbing
-Resume with: Execute 17-02-PLAN.md (card route upgrade)
+Last session: 2026-03-29T01:37:30Z
+Stopped at: Completed 17-02-PLAN.md — card route upgrade: curated themes, BYOT, PRO gate, v2 cache keys
+Resume with: Execute 17-03-PLAN.md (theme picker UI or remaining Phase 17 work)
