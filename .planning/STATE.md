@@ -79,6 +79,10 @@ See PROJECT.md Key Decisions table for full history.
 | 18-04 | Billing section uses x-if templates (not x-show) | Avoids rendering both PRO and free DOM simultaneously |
 | 19-02 | card_slugs.config stored as TEXT (JSON string) | Keeps schema minimal; SlugConfig shape can evolve without D1 schema migrations |
 | 19-02 | validateSlug returns null (valid) or error string (invalid) | Consistent with existing error pattern in codebase; callers check for null |
+| 19-03 | slugRoutes mounted before cardRoutes in index.ts | Multi-segment /:username/slugs must match before /:username single-segment catch-all |
+| 19-03 | Slug KV key: card:{u}:slug:{s} namespace | Distinct from card:{u}:{layout}:t={theme} standard keys; prevents cache collisions |
+| 19-03 | Slug card route renders with isPro:true always | Only PRO users can create slugs, so all slug cards are PRO by definition |
+| 19-03 | resolveCuratedTheme falls back to catppuccin for unknown/missing theme in slug config | Matches existing card.ts behavior; graceful default for stale or partial configs |
 | 19-04 | subcommand/target added to ParsedCliArgs as positionals[1]/[2] | Generic subcommand dispatch pattern reusable by any future command |
 | 19-04 | Slug validation constants mirrored from worker (not imported) | CLI has zero dependency on worker package; keeps CLI self-contained |
 
@@ -99,6 +103,6 @@ See PROJECT.md Key Decisions table for full history.
 
 ## Session Continuity
 
-Last session: 2026-03-29T17:10:13Z
-Stopped at: Completed 19-04-PLAN.md — CLI slug subcommands
+Last session: 2026-03-29T17:10:50Z
+Stopped at: Completed 19-03-PLAN.md — Slug CRUD API routes (then 19-04 CLI slug subcommands)
 Resume file: None
