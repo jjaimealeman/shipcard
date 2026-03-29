@@ -147,11 +147,11 @@ Plans:
 **Plans:** 5 plans
 
 Plans:
-- [ ] 18-01-PLAN.md — Stripe SDK + D1 binding + schema + subscription query helpers
-- [ ] 18-02-PLAN.md — Webhook handler for Stripe subscription lifecycle events
-- [ ] 18-03-PLAN.md — Billing routes (checkout, portal, welcome) + isPro D1 migration
-- [ ] 18-04-PLAN.md — Dashboard billing UI: PRO badge, payment banner, upgrade prompts
-- [ ] 18-05-PLAN.md — Human verification of billing integration
+- [x] 18-01-PLAN.md — Stripe SDK + D1 binding + schema + subscription query helpers
+- [x] 18-02-PLAN.md — Webhook handler for Stripe subscription lifecycle events
+- [x] 18-03-PLAN.md — Billing routes (checkout, portal, welcome) + isPro D1 migration
+- [x] 18-04-PLAN.md — Dashboard billing UI: PRO badge, payment banner, upgrade prompts
+- [x] 18-05-PLAN.md — Human verification of billing integration
 
 ### Phase 19: PRO Card Features
 
@@ -215,7 +215,7 @@ Plans:
 | 15. Project Activity | v1.1 | 1/1 | Complete | 2026-03-27 |
 | 16. Agent-Agnostic Architecture | v2.0 | 2/2 | Complete | 2026-03-28 |
 | 17. Theme System | v2.0 | 3/3 | Complete | 2026-03-28 |
-| 18. Stripe Subscriptions | v2.0 | 0/— | Pending | — |
+| 18. Stripe Subscriptions | v2.0 | 5/5 | Complete | 2026-03-29 |
 | 19. PRO Card Features | v2.0 | 0/— | Pending | — |
 | 20. AI Insights | v2.0 | 0/— | Pending | — |
 | 21. Clack CLI | v2.0 | 0/— | Pending | — |

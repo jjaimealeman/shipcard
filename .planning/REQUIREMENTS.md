@@ -16,12 +16,12 @@
 
 ### Monetization
 
-- [ ] **PAY-01**: User can subscribe to PRO tier ($2/mo or $12/yr) via Stripe Checkout
-- [ ] **PAY-02**: Subscription state stored in D1 with strong consistency
-- [ ] **PAY-03**: `isPro()` gate available to all Worker routes for feature gating
-- [ ] **PAY-04**: Stripe webhook handler processes subscription lifecycle events (created, updated, canceled, payment_failed)
-- [ ] **PAY-05**: User can manage subscription (cancel, switch plan) via Stripe Customer Portal
-- [ ] **PAY-06**: Free users see upgrade prompts at PRO feature touchpoints
+- [x] **PAY-01**: User can subscribe to PRO tier ($2/mo or $20/yr) via Stripe Checkout
+- [x] **PAY-02**: Subscription state stored in D1 with strong consistency
+- [x] **PAY-03**: `isPro()` gate available to all Worker routes for feature gating
+- [x] **PAY-04**: Stripe webhook handler processes subscription lifecycle events (created, updated, canceled, payment_failed)
+- [x] **PAY-05**: User can manage subscription (cancel, switch plan) via Stripe Customer Portal
+- [x] **PAY-06**: Free users see upgrade prompts at PRO feature touchpoints
 
 ### Card Enhancements
 
@@ -85,12 +85,12 @@
 | THEME-04 | Phase 17 | Complete |
 | THEME-05 | Phase 17 | Complete |
 | THEME-06 | Phase 17 | Complete |
-| PAY-01 | Phase 18 | Pending |
-| PAY-02 | Phase 18 | Pending |
-| PAY-03 | Phase 18 | Pending |
-| PAY-04 | Phase 18 | Pending |
-| PAY-05 | Phase 18 | Pending |
-| PAY-06 | Phase 18 | Pending |
+| PAY-01 | Phase 18 | Complete |
+| PAY-02 | Phase 18 | Complete |
+| PAY-03 | Phase 18 | Complete |
+| PAY-04 | Phase 18 | Complete |
+| PAY-05 | Phase 18 | Complete |
+| PAY-06 | Phase 18 | Complete |
 | CARD-01 | Phase 19 | Pending |
 | CARD-02 | Phase 19 | Pending |
 | CARD-03 | Phase 19 | Pending |
@@ -111,4 +111,4 @@
 
 ---
 *Requirements defined: 2026-03-28*
-*Last updated: 2026-03-28 — traceability filled after roadmap creation*
+*Last updated: 2026-03-29 — Phase 18 PAY-01 through PAY-06 marked Complete*
