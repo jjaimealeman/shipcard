@@ -13,6 +13,8 @@ import { parseArgs } from "node:util";
 
 export interface ParsedCliArgs {
   command: string | undefined;
+  subcommand: string | undefined;
+  target: string | undefined;
   flags: {
     json: boolean;
     since: string | undefined;
@@ -79,6 +81,8 @@ export function parseCliArgs(): ParsedCliArgs {
 
   return {
     command: positionals[0],
+    subcommand: positionals[1],
+    target: positionals[2],
     flags: {
       json: (flags.json as boolean | undefined) ?? false,
       since: flags.since as string | undefined,
