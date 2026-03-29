@@ -50,6 +50,13 @@ export interface RenderOptions {
   layout: LayoutName;
   style: StyleName;
   theme: ThemeName;
+  /**
+   * Pre-resolved theme colors to use directly.
+   * When provided, `style` and `theme` are ignored for color resolution.
+   * Allows the card route to pass curated or BYOT colors without the renderer
+   * needing to know about the v2 theme system.
+   */
+  colors?: ThemeColors;
   /** For hero layout: which stat key to promote as the hero. */
   heroStat?: string;
 }
@@ -94,7 +101,8 @@ export const STAT_ICONS: Record<string, string> = {
  * This is a pure function — no side effects, no console.log.
  */
 export function renderSvg(data: CardData, options: RenderOptions): string {
-  const colors: ThemeColors = resolveTheme(options.style, options.theme);
+  const colors: ThemeColors =
+    options.colors ?? resolveTheme(options.style, options.theme);
 
   switch (options.layout) {
     case "compact":

@@ -15,10 +15,18 @@ import { abbreviateNumber, formatCost } from "./format.js";
 import { escapeXml } from "./xml.js";
 
 export type { LayoutName, RenderOptions } from "./renderer.js";
-export type { StyleName, ThemeName } from "./themes/index.js";
+export type { StyleName, ThemeName, ThemeColors, CuratedThemeName } from "./themes/index.js";
+export { CURATED_THEME_NAMES } from "./themes/index.js";
+export {
+  resolveCuratedTheme,
+  validateByotContrast,
+  isValidHex,
+  type ByotColors,
+  type ContrastError,
+} from "./themes/index.js";
 
 import type { LayoutName } from "./renderer.js";
-import type { StyleName, ThemeName } from "./themes/index.js";
+import type { StyleName, ThemeName, ThemeColors } from "./themes/index.js";
 
 // ---------------------------------------------------------------------------
 // Public types
@@ -32,6 +40,12 @@ export interface CardOptions {
   style?: StyleName;
   /** Dark or light variant. Default: 'dark'. */
   theme?: ThemeName;
+  /**
+   * Pre-resolved theme colors to use directly.
+   * When provided, `style` and `theme` are ignored for color resolution.
+   * Use this to pass curated or BYOT colors from the card route.
+   */
+  colors?: ThemeColors;
   /**
    * Stat keys to exclude from the card.
    * Valid keys: 'sessions', 'toolCalls', 'projects', 'cost'.
@@ -109,6 +123,7 @@ export function renderCard(
     layout = "classic",
     style = "github",
     theme = "dark",
+    colors,
     hide = [],
     heroStat,
   } = options;
@@ -121,7 +136,7 @@ export function renderCard(
     footer: "Get yours at shipcard.dev",
   };
 
-  return renderSvg(cardData, { layout, style, theme, heroStat });
+  return renderSvg(cardData, { layout, style, theme, colors, heroStat });
 }
 
 /**
