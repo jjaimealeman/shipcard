@@ -14,6 +14,7 @@ import { runCosts } from "./commands/costs.js";
 import { runCard } from "./commands/card.js";
 import { runLogin } from "./commands/login.js";
 import { runSync } from "./commands/sync.js";
+import { runSlug } from "./commands/slug.js";
 
 // Read version from package.json at runtime (works for both global install and npx).
 const _require = createRequire(import.meta.url);
@@ -34,6 +35,7 @@ Commands:
   card       Generate SVG stats card for your README
   login      Authenticate with GitHub to enable cloud sync
   sync       Sync your stats to the cloud and get an embeddable card URL
+  slug       Manage custom card slugs (PRO): create, list, delete
 
 Flags:
   --json        Output raw JSON instead of formatted table
@@ -69,6 +71,9 @@ Examples:
   shipcard sync
   shipcard sync --confirm
   shipcard sync --delete
+  shipcard slug create my-card --theme catppuccin --layout compact
+  shipcard slug list
+  shipcard slug delete my-card
 `;
 
 // ---------------------------------------------------------------------------
@@ -89,7 +94,7 @@ function shouldUseColor(flagColor: boolean, configColor?: boolean): boolean {
 // ---------------------------------------------------------------------------
 
 async function main(): Promise<void> {
-  const { command, flags } = parseCliArgs();
+  const { command, subcommand, target, flags } = parseCliArgs();
 
   // --version flag → print version and exit.
   if (flags.version) {
@@ -128,6 +133,10 @@ async function main(): Promise<void> {
 
     case "sync":
       await runSync(mergedFlags);
+      break;
+
+    case "slug":
+      await runSlug(mergedFlags, subcommand, target);
       break;
 
     default:
