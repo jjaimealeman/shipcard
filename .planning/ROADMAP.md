@@ -125,7 +125,12 @@ Plans:
   4. BYOT params with insufficient contrast (below WCAG 3:1 ratio) are rejected with a descriptive error message, not silently ignored
   5. Theme and BYOT color changes apply consistently across classic, compact, and hero card layouts
 
-**Plans:** —
+**Plans:** 3 plans
+
+Plans:
+- [ ] 17-01-PLAN.md — Curated theme palettes, WCAG contrast validator, registry + renderer update
+- [ ] 17-02-PLAN.md — Card route: curated themes, BYOT with PRO gate, backward compat
+- [ ] 17-03-PLAN.md — Dashboard theme configurator with swatch grid, BYOT inputs, live preview
 
 ### Phase 18: Stripe Subscriptions
 
@@ -202,7 +207,7 @@ Plans:
 | 14. Hero Section | v1.1 | 2/2 | Complete | 2026-03-27 |
 | 15. Project Activity | v1.1 | 1/1 | Complete | 2026-03-27 |
 | 16. Agent-Agnostic Architecture | v2.0 | 2/2 | Complete | 2026-03-28 |
-| 17. Theme System | v2.0 | 0/— | Pending | — |
+| 17. Theme System | v2.0 | 0/3 | Planned | — |
 | 18. Stripe Subscriptions | v2.0 | 0/— | Pending | — |
 | 19. PRO Card Features | v2.0 | 0/— | Pending | — |
 | 20. AI Insights | v2.0 | 0/— | Pending | — |
