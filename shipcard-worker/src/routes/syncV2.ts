@@ -22,8 +22,12 @@ import {
   invalidateCardVariants,
   putCardCache,
   incrementCardsServed,
+  isUserPro,
 } from "../kv.js";
-import { renderCard } from "../svg/index.js";
+import { renderCard, resolveCuratedTheme } from "../svg/index.js";
+import type { LayoutName } from "../svg/index.js";
+import { getUserSlugs } from "../db/slugs.js";
+import type { SlugConfig } from "../db/slugs.js";
 
 export const syncV2Routes = new Hono<AppType>();
 
@@ -118,6 +122,37 @@ syncV2Routes.post("/", authMiddleware, async (c) => {
     "github",
     defaultSvg
   );
+
+  // PRO users: re-render all slug variants so slug URLs reflect new data instantly.
+  const isPro = await isUserPro(env.DB, username);
+  if (isPro) {
+    const slugs = await getUserSlugs(env.DB, username);
+    for (const slugRow of slugs) {
+      const config = JSON.parse(slugRow.config) as SlugConfig;
+      const layout = (config.layout ?? "classic") as LayoutName;
+      const hide = config.hide ?? [];
+      const heroStat = config.heroStat;
+
+      let colors: import("../svg/themes/index.js").ThemeColors;
+      if (config.colors) {
+        colors = {
+          bg: config.colors.bg,
+          border: config.colors.border,
+          title: config.colors.title,
+          text: config.colors.text,
+          value: config.colors.title,
+          icon: config.colors.icon,
+          footer: config.colors.text,
+        };
+      } else {
+        const resolved = resolveCuratedTheme(config.theme ?? "catppuccin");
+        colors = resolved ?? resolveCuratedTheme("catppuccin")!;
+      }
+
+      const slugSvg = renderCard(body.safeStats, { layout, colors, hide, heroStat, isPro: true });
+      await env.CARDS_KV.put(`card:${username}:slug:${slugRow.slug}`, slugSvg);
+    }
+  }
 
   // Increment the global cards-served counter for community stats.
   await incrementCardsServed(env.USER_DATA_KV);
