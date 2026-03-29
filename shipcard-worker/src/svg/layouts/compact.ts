@@ -20,6 +20,22 @@ const COL_WIDTH = (CARD_WIDTH - PADDING * 2) / 2;
 const ICON_SIZE = 14;
 const FOOTER_PADDING = 14;
 
+// PRO badge constants
+const BADGE_COLOR = "#F59E0B";
+const BADGE_TEXT_COLOR = "#FFFFFF";
+const BADGE_WIDTH = 38;
+const BADGE_HEIGHT = 16;
+
+function proBadgeSvg(cardWidth: number, padding: number, badgeY: number = 12): string {
+  const badgeX = cardWidth - padding - BADGE_WIDTH;
+  return [
+    `  <rect x="${badgeX}" y="${badgeY}" width="${BADGE_WIDTH}" height="${BADGE_HEIGHT}" rx="8" fill="${BADGE_COLOR}"/>`,
+    `  <text x="${badgeX + BADGE_WIDTH / 2}" y="${badgeY + 11}" font-size="9" font-weight="700"`,
+    `    text-anchor="middle" fill="${BADGE_TEXT_COLOR}"`,
+    `    font-family="'Segoe UI',Ubuntu,'Helvetica Neue',Sans-Serif">PRO</text>`,
+  ].join("\n");
+}
+
 function iconSvg(pathD: string, color: string, x: number, y: number): string {
   return (
     `<svg x="${x}" y="${y}" width="${ICON_SIZE}" height="${ICON_SIZE}" ` +
@@ -33,7 +49,7 @@ function iconSvg(pathD: string, color: string, x: number, y: number): string {
 /**
  * Render the compact two-column grid layout to an SVG string.
  */
-export function renderCompact(data: CardData, theme: ThemeColors): string {
+export function renderCompact(data: CardData, theme: ThemeColors, isPro?: boolean): string {
   const leftStats = data.stats.filter((_, i) => i % 2 === 0);
   const rightStats = data.stats.filter((_, i) => i % 2 === 1);
   const rowCount = Math.max(leftStats.length, rightStats.length);
@@ -109,6 +125,9 @@ export function renderCompact(data: CardData, theme: ThemeColors): string {
       `text-anchor="end" opacity="0.6" fill="${escapeXml(theme.footer)}">${escapeXml(data.footer)}</text>`
   );
 
+  if (isPro) {
+    lines.push(proBadgeSvg(CARD_WIDTH, PADDING));
+  }
   lines.push(`</svg>`);
   return lines.join("\n");
 }

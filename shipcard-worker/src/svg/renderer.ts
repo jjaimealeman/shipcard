@@ -59,6 +59,8 @@ export interface RenderOptions {
   colors?: ThemeColors;
   /** For hero layout: which stat key to promote as the hero. */
   heroStat?: string;
+  /** Whether this user has an active PRO subscription. Renders a gold badge. */
+  isPro?: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -106,11 +108,11 @@ export function renderSvg(data: CardData, options: RenderOptions): string {
 
   switch (options.layout) {
     case "compact":
-      return renderCompact(data, colors);
+      return renderCompact(data, colors, options.isPro);
     case "hero":
-      return renderHero(data, colors, options.heroStat);
+      return renderHero(data, colors, options.heroStat, options.isPro);
     case "classic":
     default:
-      return renderClassic(data, colors);
+      return renderClassic(data, colors, options.isPro);
   }
 }

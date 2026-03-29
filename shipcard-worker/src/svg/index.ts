@@ -53,6 +53,8 @@ export interface CardOptions {
   hide?: string[];
   /** For hero layout: which stat key to promote as the hero stat. */
   heroStat?: string;
+  /** Whether this user has an active PRO subscription. Renders a gold badge. */
+  isPro?: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -126,6 +128,7 @@ export function renderCard(
     colors,
     hide = [],
     heroStat,
+    isPro = false,
   } = options;
 
   const builtStats = buildStats(stats, hide);
@@ -136,7 +139,7 @@ export function renderCard(
     footer: "Get yours at shipcard.dev",
   };
 
-  return renderSvg(cardData, { layout, style, theme, colors, heroStat });
+  return renderSvg(cardData, { layout, style, theme, colors, heroStat, isPro });
 }
 
 /**

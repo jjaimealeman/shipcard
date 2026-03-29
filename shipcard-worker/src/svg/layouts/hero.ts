@@ -22,6 +22,22 @@ const SECONDARY_COL_WIDTH = (CARD_WIDTH - PADDING * 2) / 4;
 const SECONDARY_ICON_SIZE = 13;
 const CARD_HEIGHT = 220;
 
+// PRO badge constants
+const BADGE_COLOR = "#F59E0B";
+const BADGE_TEXT_COLOR = "#FFFFFF";
+const BADGE_WIDTH = 38;
+const BADGE_HEIGHT = 16;
+
+function proBadgeSvg(cardWidth: number, padding: number, badgeY: number = 12): string {
+  const badgeX = cardWidth - padding - BADGE_WIDTH;
+  return [
+    `  <rect x="${badgeX}" y="${badgeY}" width="${BADGE_WIDTH}" height="${BADGE_HEIGHT}" rx="8" fill="${BADGE_COLOR}"/>`,
+    `  <text x="${badgeX + BADGE_WIDTH / 2}" y="${badgeY + 11}" font-size="9" font-weight="700"`,
+    `    text-anchor="middle" fill="${BADGE_TEXT_COLOR}"`,
+    `    font-family="'Segoe UI',Ubuntu,'Helvetica Neue',Sans-Serif">PRO</text>`,
+  ].join("\n");
+}
+
 function iconSvg(
   pathD: string,
   color: string,
@@ -47,7 +63,8 @@ function iconSvg(
 export function renderHero(
   data: CardData,
   theme: ThemeColors,
-  heroKey?: string
+  heroKey?: string,
+  isPro?: boolean
 ): string {
   // Separate hero stat from secondary stats
   const heroIndex =
@@ -150,6 +167,9 @@ export function renderHero(
       `text-anchor="end" opacity="0.6" fill="${escapeXml(theme.footer)}">${escapeXml(data.footer)}</text>`
   );
 
+  if (isPro) {
+    lines.push(proBadgeSvg(CARD_WIDTH, PADDING));
+  }
   lines.push(`</svg>`);
   return lines.join("\n");
 }
