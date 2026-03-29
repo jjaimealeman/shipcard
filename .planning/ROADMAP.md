@@ -165,7 +165,14 @@ Plans:
   4. Free users are blocked from creating custom slugs and see an upgrade prompt
   5. Creating a slug with a reserved word (e.g., "admin", "api") or fewer than 3 characters fails with a clear error message
 
-**Plans:** —
+**Plans:** 5 plans
+
+Plans:
+- [ ] 19-01-PLAN.md — PRO badge in SVG layouts + renderer plumbing
+- [ ] 19-02-PLAN.md — D1 slug schema + query helpers + validation
+- [ ] 19-03-PLAN.md — Slug CRUD API routes + slug card serving + PRO sync pre-render
+- [ ] 19-04-PLAN.md — CLI slug subcommands (create, list, delete)
+- [ ] 19-05-PLAN.md — Dashboard slug management section + upgrade block
 
 ### Phase 20: AI Insights
 
@@ -216,6 +223,6 @@ Plans:
 | 16. Agent-Agnostic Architecture | v2.0 | 2/2 | Complete | 2026-03-28 |
 | 17. Theme System | v2.0 | 3/3 | Complete | 2026-03-28 |
 | 18. Stripe Subscriptions | v2.0 | 5/5 | Complete | 2026-03-29 |
-| 19. PRO Card Features | v2.0 | 0/— | Pending | — |
+| 19. PRO Card Features | v2.0 | 0/5 | Planned | — |
 | 20. AI Insights | v2.0 | 0/— | Pending | — |
 | 21. Clack CLI | v2.0 | 0/— | Pending | — |
