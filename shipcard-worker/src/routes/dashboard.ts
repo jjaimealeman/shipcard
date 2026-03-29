@@ -1091,6 +1091,254 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
     font-size: 0.9rem;
     margin-top: 12px;
   }
+
+  /* -------------------------------------------------------------------------
+   * Slug Management section
+   * ---------------------------------------------------------------------- */
+  .slug-section {
+    margin-top: 32px;
+  }
+  .slug-connect-form {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .slug-connect-label {
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--mid);
+    margin-bottom: 8px;
+    display: block;
+  }
+  .slug-connect-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .slug-token-input {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 7px 10px;
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 12px;
+    color: var(--fg);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .slug-token-input:focus { border-color: var(--orange); }
+  .slug-connect-btn {
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    background: var(--orange);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 7px 16px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.15s;
+  }
+  .slug-connect-btn:hover { opacity: 0.85; }
+  .slug-connect-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .slug-connect-hint {
+    font-size: 11px;
+    color: var(--mid);
+    margin-top: 6px;
+  }
+  .slug-connect-hint code {
+    font-size: 11px;
+    color: var(--orange);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1px 5px;
+  }
+  .slug-error {
+    background: #2a1a18;
+    border: 1px solid #5a2a20;
+    border-radius: 4px;
+    padding: 8px 12px;
+    color: #e07060;
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 12px;
+    margin-top: 8px;
+  }
+  .slug-list {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .slug-list-empty {
+    padding: 24px;
+    text-align: center;
+    color: var(--mid);
+    font-size: 13px;
+    font-family: 'Poppins', system-ui, sans-serif;
+  }
+  .slug-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .slug-item:last-child { border-bottom: none; }
+  .slug-item-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .slug-item-name {
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--fg);
+    margin-bottom: 2px;
+  }
+  .slug-item-meta {
+    font-size: 11px;
+    color: var(--mid);
+    margin-bottom: 4px;
+  }
+  .slug-item-url {
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 11px;
+    color: var(--orange);
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 300px;
+  }
+  .slug-item-actions {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .slug-copy-btn, .slug-delete-btn {
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 4px;
+    padding: 4px 10px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+  }
+  .slug-copy-btn {
+    background: var(--bg);
+    color: var(--mid);
+  }
+  .slug-copy-btn:hover { color: var(--fg); border-color: var(--mid); }
+  .slug-copy-btn.copied { color: var(--green); border-color: var(--green); }
+  .slug-delete-btn {
+    background: var(--bg);
+    color: #e07060;
+    border-color: #5a2a20;
+  }
+  .slug-delete-btn:hover { background: #2a1a18; }
+  .slug-create-form {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+  .slug-create-title {
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--light);
+    margin-bottom: 16px;
+  }
+  .slug-form-fields {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  @media (min-width: 640px) {
+    .slug-form-fields {
+      grid-template-columns: 1fr auto auto;
+      align-items: start;
+    }
+  }
+  .slug-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .slug-field label {
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--mid);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .slug-field input, .slug-field select {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 7px 10px;
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 12px;
+    color: var(--fg);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .slug-field input:focus, .slug-field select:focus { border-color: var(--orange); }
+  .slug-field input.invalid { border-color: #cc4444; }
+  .slug-field-error {
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 10px;
+    color: #e07060;
+    min-height: 14px;
+  }
+  .slug-field select option { background: var(--surface); color: var(--fg); }
+  .slug-create-btn {
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    background: var(--orange);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 20px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .slug-create-btn:hover:not(:disabled) { opacity: 0.85; }
+  .slug-create-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .slug-upgrade-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-align: center;
+  }
+  .slug-upgrade-block h4 {
+    font-family: 'Poppins', system-ui, sans-serif;
+    color: var(--fg);
+    margin-bottom: 8px;
+    font-size: 1rem;
+  }
+  .slug-upgrade-block p {
+    color: var(--mid);
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+  }
+  .slug-upgrade-block .upgrade-btn {
+    margin-top: 12px;
+  }
 </style>
 </head>
 <body x-data x-init="$store.dashboard.load('__USERNAME__')">
@@ -1829,6 +2077,291 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
         </div>
       </template>
     </div>
+
+    <!-- =====================================================================
+         CUSTOM CARD SLUGS
+         ================================================================== -->
+    <div x-data="{
+      slugs: [],
+      slugToken: sessionStorage.getItem('shipcard_slug_token') || '',
+      slugConnected: false,
+      slugLoading: false,
+      slugError: '',
+      newSlugName: '',
+      newSlugTheme: 'catppuccin',
+      newSlugLayout: 'classic',
+      newSlugError: '',
+      slugCopied: {},
+
+      SLUG_MIN: 3,
+      SLUG_MAX: 50,
+      SLUG_REGEX: /^[a-z0-9][a-z0-9-]*[a-z0-9]$/,
+      SLUG_RESERVED: new Set([
+        'admin','api','settings','config','dashboard',
+        'billing','sync','auth','webhook','community',
+        'configure','login','logout','help','support',
+        'pro','free','upgrade','pricing',
+      ]),
+
+      validateSlugName(s) {
+        if (!s || s.length < this.SLUG_MIN) return 'Slug must be at least 3 characters';
+        if (s.length > this.SLUG_MAX) return 'Slug must be 50 characters or fewer';
+        if (!this.SLUG_REGEX.test(s)) return 'Lowercase alphanumeric and hyphens only (no leading/trailing hyphens)';
+        if (this.SLUG_RESERVED.has(s)) return '\"' + s + '\" is a reserved word';
+        return null;
+      },
+
+      get slugNameError() {
+        if (!this.newSlugName) return '';
+        return this.validateSlugName(this.newSlugName) || '';
+      },
+
+      get canCreate() {
+        return this.newSlugName.length >= this.SLUG_MIN &&
+               this.validateSlugName(this.newSlugName) === null &&
+               !this.slugLoading;
+      },
+
+      async connect() {
+        const token = this.slugToken.trim();
+        if (!token) { this.slugError = 'Enter your bearer token first.'; return; }
+        this.slugLoading = true;
+        this.slugError = '';
+        try {
+          const res = await fetch('/u/__USERNAME__/slugs', {
+            headers: { Authorization: 'Bearer ' + token }
+          });
+          if (res.status === 401 || res.status === 403) {
+            this.slugError = 'Invalid token. Run \`shipcard login\` to get a fresh token.';
+            this.slugLoading = false;
+            return;
+          }
+          if (!res.ok) {
+            this.slugError = 'Connection failed (' + res.status + '). Try again.';
+            this.slugLoading = false;
+            return;
+          }
+          const data = await res.json();
+          this.slugs = data.slugs || [];
+          sessionStorage.setItem('shipcard_slug_token', token);
+          this.slugConnected = true;
+        } catch (err) {
+          this.slugError = 'Network error. Check your connection and try again.';
+        } finally {
+          this.slugLoading = false;
+        }
+      },
+
+      async createSlug() {
+        const err = this.validateSlugName(this.newSlugName);
+        if (err) { this.newSlugError = err; return; }
+        this.slugLoading = true;
+        this.newSlugError = '';
+        try {
+          const res = await fetch('/u/__USERNAME__/slugs', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: 'Bearer ' + this.slugToken,
+            },
+            body: JSON.stringify({
+              slug: this.newSlugName,
+              config: { theme: this.newSlugTheme, layout: this.newSlugLayout },
+            }),
+          });
+          if (res.status === 409) {
+            const data = await res.json();
+            this.newSlugError = data.error || 'Slug already exists or limit reached.';
+            return;
+          }
+          if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            this.newSlugError = data.error || 'Failed to create slug (' + res.status + ').';
+            return;
+          }
+          const data = await res.json();
+          this.slugs.push({
+            slug: this.newSlugName,
+            config: JSON.stringify({ theme: this.newSlugTheme, layout: this.newSlugLayout }),
+          });
+          this.newSlugName = '';
+          this.newSlugTheme = 'catppuccin';
+          this.newSlugLayout = 'classic';
+        } catch {
+          this.newSlugError = 'Network error. Check your connection and try again.';
+        } finally {
+          this.slugLoading = false;
+        }
+      },
+
+      async deleteSlug(slugName) {
+        this.slugLoading = true;
+        try {
+          const res = await fetch('/u/__USERNAME__/slugs/' + slugName, {
+            method: 'DELETE',
+            headers: { Authorization: 'Bearer ' + this.slugToken },
+          });
+          if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            this.slugError = data.error || 'Failed to delete slug.';
+            return;
+          }
+          this.slugs = this.slugs.filter(s => s.slug !== slugName);
+        } catch {
+          this.slugError = 'Network error. Could not delete slug.';
+        } finally {
+          this.slugLoading = false;
+        }
+      },
+
+      async copySlugUrl(slugName) {
+        const url = 'https://shipcard.dev/u/__USERNAME__/' + slugName;
+        try {
+          await navigator.clipboard.writeText(url);
+          this.slugCopied = { ...this.slugCopied, [slugName]: true };
+          setTimeout(() => {
+            const next = { ...this.slugCopied };
+            delete next[slugName];
+            this.slugCopied = next;
+          }, 2000);
+        } catch {}
+      },
+
+      slugConfig(s) {
+        try { return JSON.parse(s.config || '{}'); } catch { return {}; }
+      },
+    }">
+
+      <div class="slug-section">
+        <div class="section-title">Custom Card Slugs</div>
+
+        <!-- Connect CLI token form (visible when not connected) -->
+        <template x-if="!slugConnected">
+          <div class="slug-connect-form">
+            <label class="slug-connect-label" for="slug-token-input">
+              Connect with your CLI bearer token to manage slugs
+            </label>
+            <div class="slug-connect-row">
+              <input
+                id="slug-token-input"
+                class="slug-token-input"
+                type="password"
+                placeholder="Paste your bearer token..."
+                x-model="slugToken"
+                @keydown.enter="connect()"
+              />
+              <button
+                class="slug-connect-btn"
+                @click="connect()"
+                :disabled="slugLoading || !slugToken.trim()"
+                x-text="slugLoading ? 'Connecting...' : 'Connect'">Connect</button>
+            </div>
+            <p class="slug-connect-hint">
+              Run <code>shipcard login</code> then copy the token shown in the CLI.
+              Token is stored in sessionStorage only.
+            </p>
+            <div class="slug-error" x-show="slugError" x-text="slugError" style="display:none"></div>
+          </div>
+        </template>
+
+        <!-- Slug list (visible when connected) -->
+        <template x-if="slugConnected">
+          <div>
+            <!-- Error banner -->
+            <div class="slug-error" x-show="slugError" x-text="slugError" style="display:none;margin-bottom:12px"></div>
+
+            <!-- Slug list -->
+            <div class="slug-list">
+              <template x-if="slugs.length === 0">
+                <div class="slug-list-empty">No custom slugs yet. Create one below.</div>
+              </template>
+              <template x-for="s in slugs" :key="s.slug">
+                <div class="slug-item">
+                  <div class="slug-item-info">
+                    <div class="slug-item-name" x-text="s.slug"></div>
+                    <div class="slug-item-meta">
+                      <span x-text="slugConfig(s).theme || 'catppuccin'"></span>
+                      &nbsp;&middot;&nbsp;
+                      <span x-text="slugConfig(s).layout || 'classic'"></span>
+                    </div>
+                    <div class="slug-item-url" x-text="'shipcard.dev/u/__USERNAME__/' + s.slug"></div>
+                  </div>
+                  <div class="slug-item-actions">
+                    <button
+                      class="slug-copy-btn"
+                      :class="{ copied: slugCopied[s.slug] }"
+                      @click="copySlugUrl(s.slug)"
+                      x-text="slugCopied[s.slug] ? 'Copied!' : 'Copy URL'">Copy URL</button>
+                    <button
+                      class="slug-delete-btn"
+                      @click="deleteSlug(s.slug)"
+                      :disabled="slugLoading">Delete</button>
+                  </div>
+                </div>
+              </template>
+            </div>
+
+            <!-- Create form (PRO users) -->
+            <template x-if="$store.dashboard.isPro">
+              <div class="slug-create-form">
+                <div class="slug-create-title">Create New Slug</div>
+                <div class="slug-form-fields">
+                  <div class="slug-field">
+                    <label>Slug Name</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. dark-minimal"
+                      x-model="newSlugName"
+                      :class="{ invalid: slugNameError }"
+                      @keydown.enter="canCreate && createSlug()"
+                    />
+                    <div class="slug-field-error" x-text="slugNameError"></div>
+                  </div>
+                  <div class="slug-field">
+                    <label>Theme</label>
+                    <select x-model="newSlugTheme">
+                      <option value="catppuccin">Catppuccin</option>
+                      <option value="dracula">Dracula</option>
+                      <option value="tokyo-night">Tokyo Night</option>
+                      <option value="nord">Nord</option>
+                      <option value="gruvbox">Gruvbox</option>
+                      <option value="solarized-dark">Solarized Dk</option>
+                      <option value="one-dark">One Dark</option>
+                      <option value="monokai">Monokai</option>
+                    </select>
+                  </div>
+                  <div class="slug-field">
+                    <label>Layout</label>
+                    <select x-model="newSlugLayout">
+                      <option value="classic">Classic</option>
+                      <option value="compact">Compact</option>
+                      <option value="hero">Hero</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="slug-error" x-show="newSlugError" x-text="newSlugError" style="display:none;margin-bottom:12px"></div>
+                <button
+                  class="slug-create-btn"
+                  @click="createSlug()"
+                  :disabled="!canCreate"
+                  x-text="slugLoading ? 'Creating...' : 'Create Slug'">Create Slug</button>
+              </div>
+            </template>
+
+            <!-- Upgrade block for free users instead of create form -->
+            <template x-if="!$store.dashboard.isPro">
+              <div class="slug-upgrade-block">
+                <h4>Custom Slugs &mdash; PRO Feature</h4>
+                <p>Create clean, shareable card URLs like <code style="font-size:0.85rem;color:var(--orange);background:var(--bg);border:1px solid var(--border);border-radius:3px;padding:1px 5px">/u/__USERNAME__/dark-minimal</code></p>
+                <p>Each slug saves a unique card configuration (theme, layout).</p>
+                <a href="/billing/checkout?interval=month" class="upgrade-btn" style="display:inline-block;max-width:200px;margin:12px auto 0">Upgrade to PRO</a>
+              </div>
+            </template>
+          </div>
+        </template>
+
+      </div><!-- /slug-section -->
+    </div><!-- /slug x-data -->
 
   </div><!-- /dashboard content -->
 </div><!-- /page -->
