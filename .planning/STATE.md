@@ -71,13 +71,16 @@ See PROJECT.md Key Decisions table for full history.
 | 18-03 | GET + GitHub OAuth redirect flow for billing (no Bearer tokens) | Dashboard is public — OAuth redirect is the only viable browser auth mechanism |
 | 18-03 | BillingState with nonce encoded as base64url JSON in OAuth state param | Carries checkout/portal intent through redirect; nonce prevents replay attacks |
 | 18-03 | isUserPro() kept as thin wrapper in kv.ts after D1 migration | Avoids changing all call sites; only param type changed from KVNamespace to D1Database |
+| 18-02 | getSubscriptionPeriodEnd() reads from SubscriptionItem (Stripe v21) | stripe-node v21 moved current_period_end from Subscription root to SubscriptionItem |
+| 18-02 | getInvoiceSubscriptionId() navigates invoice.parent.subscription_details | stripe-node v21 moved invoice.subscription to nested parent.subscription_details path |
+| 18-02 | markEventProcessed before processing body | Concurrent delivery prevention; mark-before-process ensures only one execution proceeds |
 
 ### Pending Todos
 
 - Set up Stripe account (create products, configure portal, get API keys)
 - Create D1 database: `npx wrangler d1 create shipcard-db` then update wrangler.jsonc database_id
 - Apply D1 schema: `npx wrangler d1 execute shipcard-db --file=src/db/schema.sql`
-- Execute Phase 18 Plans 02, 04, 05 (webhook handler, dashboard billing buttons, PRO gate)
+- Execute Phase 18 Plans 04, 05 (dashboard billing buttons, PRO gate)
 
 ### Blockers/Concerns
 
@@ -87,6 +90,6 @@ See PROJECT.md Key Decisions table for full history.
 
 ## Session Continuity
 
-Last session: 2026-03-29T07:59:00Z
-Stopped at: 18-03 complete — billing routes + isUserPro D1 migration
-Resume with: Execute Phase 18 Plans 02, 04, 05 (webhook handler, dashboard billing UI, PRO gate)
+Last session: 2026-03-29T07:59:33Z
+Stopped at: 18-02 complete — Stripe webhook handler + index.ts mount
+Resume with: Execute Phase 18 Plans 04, 05 (dashboard billing UI, PRO gate)
