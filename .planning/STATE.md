@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 ## Current Position
 
 Phase: 17 — Theme System (in progress)
-Plan: 02 of 3 complete
-Status: In progress
-Last activity: 2026-03-29 — Completed 17-02-PLAN.md (card route upgrade: curated themes, BYOT, PRO gate, v2 cache keys)
+Plan: 03 of 3 — Task 1 complete, awaiting checkpoint verification (Task 2)
+Status: At checkpoint — human verify required
+Last activity: 2026-03-29 — 17-03 Task 1 complete: Theme Configurator UI added to dashboard
 
-Progress: ████░░░░░░ 33% (3/9 plans complete across v2.0)
+Progress: ████░░░░░░ 36% (3.5/9 plans complete across v2.0)
 
 ## Performance Metrics
 
@@ -58,6 +58,9 @@ See PROJECT.md Key Decisions table for full history.
 | 17-02 | PRO gate checked before contrast validation | Prevents free users from learning which color combos would pass contrast |
 | 17-02 | BYOT cards skip KV cache entirely | Prevents unbounded cache growth from arbitrary hex combinations |
 | 17-02 | Default ?theme is catppuccin (not github-dark) | New users get best visual default; legacy ?theme=dark still works |
+| 17-03 | Theme Configurator uses local x-data (not global Alpine store) | Self-contained component; no store pollution |
+| 17-03 | isPro injected server-side via __IS_PRO__ placeholder | No client-side fetch flash; single KV read at page serve time |
+| 17-03 | byotMode activates only when all 5 fields filled + valid + passing contrast | Prevents partial BYOT URLs from being served |
 
 ### Pending Todos
 
@@ -72,6 +75,6 @@ See PROJECT.md Key Decisions table for full history.
 
 ## Session Continuity
 
-Last session: 2026-03-29T01:37:30Z
-Stopped at: Completed 17-02-PLAN.md — card route upgrade: curated themes, BYOT, PRO gate, v2 cache keys
-Resume with: Execute 17-03-PLAN.md (theme picker UI or remaining Phase 17 work)
+Last session: 2026-03-29T01:42:47Z
+Stopped at: 17-03 Task 1 complete — Theme Configurator UI in dashboard.ts; at checkpoint:human-verify (Task 2)
+Resume with: After user approves checkpoint, continue 17-03 to mark plan complete and create final metadata commit
