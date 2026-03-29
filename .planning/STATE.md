@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 ## Current Position
 
 Phase: 19 — PRO Card Features (in progress)
-Plan: 01 of 5 — In progress
+Plan: 04 of 5 — In progress
 Status: In progress
-Last activity: 2026-03-29 — Completed 19-01-PLAN.md (PRO badge in SVG layouts)
+Last activity: 2026-03-29 — Completed 19-04-PLAN.md (CLI slug subcommands)
 
-Progress: ██████████░ 91% (10/11 plans complete across v2.0 phases 16-19 so far)
+Progress: ██████████░ 91% (12/13 plans complete across v2.0 phases 16-19 so far)
 
 ## Performance Metrics
 
@@ -79,6 +79,8 @@ See PROJECT.md Key Decisions table for full history.
 | 18-04 | Billing section uses x-if templates (not x-show) | Avoids rendering both PRO and free DOM simultaneously |
 | 19-02 | card_slugs.config stored as TEXT (JSON string) | Keeps schema minimal; SlugConfig shape can evolve without D1 schema migrations |
 | 19-02 | validateSlug returns null (valid) or error string (invalid) | Consistent with existing error pattern in codebase; callers check for null |
+| 19-04 | subcommand/target added to ParsedCliArgs as positionals[1]/[2] | Generic subcommand dispatch pattern reusable by any future command |
+| 19-04 | Slug validation constants mirrored from worker (not imported) | CLI has zero dependency on worker package; keeps CLI self-contained |
 
 ### Pending Todos
 
@@ -97,6 +99,6 @@ See PROJECT.md Key Decisions table for full history.
 
 ## Session Continuity
 
-Last session: 2026-03-29T17:04:57Z
-Stopped at: Completed 19-01-PLAN.md — PRO badge in SVG layouts
+Last session: 2026-03-29T17:10:13Z
+Stopped at: Completed 19-04-PLAN.md — CLI slug subcommands
 Resume file: None
