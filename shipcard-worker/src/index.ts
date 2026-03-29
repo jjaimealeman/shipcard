@@ -16,6 +16,7 @@
  */
 
 import { Hono } from "hono";
+import { trimTrailingSlash } from "hono/trailing-slash";
 import type { AppType } from "./types.js";
 import { apiRoutes } from "./routes/api.js";
 import { cardRoutes } from "./routes/card.js";
@@ -28,6 +29,9 @@ import { communityRoutes } from "./routes/community.js";
 import { dashboardRoutes } from "./routes/dashboard.js";
 
 const app = new Hono<AppType>();
+
+// Strip trailing slashes — /u/username/ → /u/username (prevents 404s)
+app.use(trimTrailingSlash());
 
 // Landing page — product front door
 app.route("/", landingRoutes);
