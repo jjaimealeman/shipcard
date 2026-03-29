@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 ## Current Position
 
 Phase: 18 — Stripe Subscriptions (in progress)
-Plan: 01 of 5 — Foundation complete
+Plan: 03 of 5 — Billing routes + isUserPro D1 migration complete
 Status: In progress
-Last activity: 2026-03-29 — 18-01 complete: Stripe SDK installed, D1 schema + query helpers created
+Last activity: 2026-03-29 — 18-03 complete: billing routes (GET/OAuth flow), Stripe Checkout/Portal, isUserPro migrated to D1
 
-Progress: ██████░░░░ 56% (5/9 plans complete across v2.0)
+Progress: ███████░░░ 67% (6/9 plans complete across v2.0)
 
 ## Performance Metrics
 
@@ -68,13 +68,16 @@ See PROJECT.md Key Decisions table for full history.
 | 18-01 | past_due treated as PRO in isUserProFromD1() | Grace period for payment failures; prevents immediate access loss |
 | 18-01 | D1 chosen over KV for subscriptions | Strong consistency required for billing state; KV eventual consistency unsuitable |
 | 18-01 | ON CONFLICT(username) DO UPDATE for upsertSubscription | Handles first-time subscribers and webhook updates in single query |
+| 18-03 | GET + GitHub OAuth redirect flow for billing (no Bearer tokens) | Dashboard is public — OAuth redirect is the only viable browser auth mechanism |
+| 18-03 | BillingState with nonce encoded as base64url JSON in OAuth state param | Carries checkout/portal intent through redirect; nonce prevents replay attacks |
+| 18-03 | isUserPro() kept as thin wrapper in kv.ts after D1 migration | Avoids changing all call sites; only param type changed from KVNamespace to D1Database |
 
 ### Pending Todos
 
 - Set up Stripe account (create products, configure portal, get API keys)
 - Create D1 database: `npx wrangler d1 create shipcard-db` then update wrangler.jsonc database_id
 - Apply D1 schema: `npx wrangler d1 execute shipcard-db --file=src/db/schema.sql`
-- Execute Phase 18 Plans 02-05 (webhook handler, checkout API, portal API, PRO gate)
+- Execute Phase 18 Plans 02, 04, 05 (webhook handler, dashboard billing buttons, PRO gate)
 
 ### Blockers/Concerns
 
@@ -84,6 +87,6 @@ See PROJECT.md Key Decisions table for full history.
 
 ## Session Continuity
 
-Last session: 2026-03-29T07:51:33Z
-Stopped at: 18-01 complete — Stripe SDK foundation layer built
-Resume with: Execute Phase 18 Plan 02 (webhook handler) — requires Stripe account + D1 database setup first
+Last session: 2026-03-29T07:59:00Z
+Stopped at: 18-03 complete — billing routes + isUserPro D1 migration
+Resume with: Execute Phase 18 Plans 02, 04, 05 (webhook handler, dashboard billing UI, PRO gate)
