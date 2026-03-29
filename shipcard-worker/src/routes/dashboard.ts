@@ -1325,11 +1325,11 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
              this._debounceTimer = setTimeout(() => this.updateByot(), 300);
            },
 
-           buildPreviewUrl(username) {
+           _buildCardPath(username) {
              if (this.byotMode) {
                const b = this.byot;
                const enc = (v) => encodeURIComponent(v.trim().replace('#',''));
-               return 'https://shipcard.dev/u/' + username
+               return '/u/' + username
                  + '?bg=' + enc(b.bg)
                  + '&title=' + enc(b.title)
                  + '&text=' + enc(b.text)
@@ -1337,13 +1337,17 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
                  + '&border=' + enc(b.border)
                  + '&layout=' + this.selectedLayout;
              }
-             return 'https://shipcard.dev/u/' + username
+             return '/u/' + username
                + '?theme=' + this.selectedTheme
                + '&layout=' + this.selectedLayout;
            },
 
+           buildPreviewUrl(username) {
+             return window.location.origin + this._buildCardPath(username);
+           },
+
            buildEmbedCode(username) {
-             return '![ShipCard](' + this.buildPreviewUrl(username) + ')';
+             return '![ShipCard](https://shipcard.dev' + this._buildCardPath(username) + ')';
            },
 
            async copyEmbed(username) {
