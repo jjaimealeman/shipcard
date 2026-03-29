@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 
 ## Current Position
 
-Phase: 18 — Stripe Subscriptions (complete)
-Plan: 05 of 5 — Phase fully complete
-Status: Phase complete — ready for Phase 19
-Last activity: 2026-03-29 — 18-05 complete: Human verification approved, phase verified
+Phase: 19 — PRO Card Features (in progress)
+Plan: 02 of 5 — In progress
+Status: In progress
+Last activity: 2026-03-29 — Completed 19-02: D1 slug schema and query helpers
 
-Progress: █████████░ 89% (9/9 plans complete across v2.0 phases 16-18)
+Progress: ██████████░ 91% (11/12 plans complete across v2.0 phases 16-19 so far)
 
 ## Performance Metrics
 
@@ -77,6 +77,8 @@ See PROJECT.md Key Decisions table for full history.
 | 18-04 | isPro/billing state in Alpine.store('dashboard') | Shared state needed across filter-bar, banner, and billing section without prop drilling |
 | 18-04 | Payment banner outside .page div, directly below filter-bar | Maximum visibility; always above all page content even on scroll |
 | 18-04 | Billing section uses x-if templates (not x-show) | Avoids rendering both PRO and free DOM simultaneously |
+| 19-02 | card_slugs.config stored as TEXT (JSON string) | Keeps schema minimal; SlugConfig shape can evolve without D1 schema migrations |
+| 19-02 | validateSlug returns null (valid) or error string (invalid) | Consistent with existing error pattern in codebase; callers check for null |
 
 ### Pending Todos
 
@@ -95,6 +97,6 @@ See PROJECT.md Key Decisions table for full history.
 
 ## Session Continuity
 
-Last session: 2026-03-29T08:35:00Z
-Stopped at: Phase 18 complete — Stripe Subscriptions fully verified
-Resume with: Execute Phase 19 (PRO Card Features) — or set up Stripe account first
+Last session: 2026-03-29T17:04:02Z
+Stopped at: Completed 19-02-PLAN.md — D1 slug schema and query helpers
+Resume file: None
