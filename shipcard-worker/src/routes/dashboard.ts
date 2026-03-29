@@ -16,6 +16,7 @@
 import { Hono } from "hono";
 import type { AppType } from "../types.js";
 import { isUserPro } from "../kv.js";
+import { getSubscription } from "../db/subscriptions.js";
 
 export const dashboardRoutes = new Hono<AppType>();
 
@@ -944,6 +945,152 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
   .embed-code-textarea:focus {
     border-color: var(--border);
   }
+
+  /* -------------------------------------------------------------------------
+   * Billing UI — PRO badge, payment banner, upgrade card, billing section
+   * ---------------------------------------------------------------------- */
+  .pro-badge {
+    background: var(--orange);
+    color: #fff;
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 12px;
+    margin-left: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .payment-banner {
+    background: #3d1f1f;
+    border: 1px solid #7c3030;
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    margin: 12px 24px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    color: var(--fg);
+    font-size: 0.9rem;
+  }
+  .banner-btn {
+    background: var(--orange);
+    color: #fff;
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    white-space: nowrap;
+    font-size: 0.85rem;
+  }
+  .upgrade-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 20px;
+    border-radius: var(--radius);
+    text-align: center;
+  }
+  .upgrade-card h4 {
+    font-family: 'Poppins', system-ui, sans-serif;
+    color: var(--fg);
+    margin-bottom: 12px;
+    font-size: 1.1rem;
+  }
+  .upgrade-card ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 16px;
+    color: var(--mid);
+    font-size: 0.9rem;
+  }
+  .upgrade-card li {
+    padding: 4px 0;
+  }
+  .upgrade-card li::before {
+    content: '✓ ';
+    color: var(--green);
+  }
+  .upgrade-pricing {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .upgrade-btn {
+    display: block;
+    background: var(--orange);
+    color: #fff;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-family: 'Poppins', system-ui, sans-serif;
+    width: 100%;
+    text-decoration: none;
+    text-align: center;
+    font-size: 0.95rem;
+  }
+  .upgrade-annual {
+    background: transparent;
+    border: 1px solid var(--orange);
+    color: var(--orange);
+  }
+  .save-tag {
+    font-size: 0.7rem;
+    background: var(--green);
+    color: #fff;
+    padding: 1px 6px;
+    border-radius: 4px;
+    margin-left: 4px;
+  }
+  .billing-info {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+  }
+  .billing-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .billing-row:last-child {
+    border-bottom: none;
+  }
+  .billing-label {
+    color: var(--mid);
+  }
+  .billing-value {
+    color: var(--fg);
+    font-weight: 600;
+  }
+  .billing-link {
+    color: var(--orange);
+    text-decoration: none;
+  }
+  .billing-link:hover {
+    text-decoration: underline;
+  }
+  .billing-actions {
+    padding-top: 12px;
+  }
+  .pro-badge-sm {
+    font-size: 0.65rem;
+    background: var(--green);
+    color: #fff;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: 'Poppins', system-ui, sans-serif;
+  }
+  .billing-upgrade-hint {
+    color: var(--mid);
+    font-size: 0.9rem;
+    margin-top: 12px;
+  }
 </style>
 </head>
 <body x-data x-init="$store.dashboard.load('__USERNAME__')">
@@ -956,6 +1103,7 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
     <a href="/" class="brand-link">ShipCard</a>
     <span class="divider">|</span>
     <span class="username-title"><span>__USERNAME__</span>&nbsp;Analytics</span>
+    <span x-data x-show="$store.dashboard.isPro" class="pro-badge" style="display:none">PRO</span>
   </div>
   <!-- Mobile dropdown (visible below 640px, hidden above via CSS) -->
   <select class="mobile-range-select" x-model="$store.dashboard.range">
@@ -975,6 +1123,14 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
       :class="{ active: $store.dashboard.range === 'all' }"
       @click="$store.dashboard.range = 'all'">All</button>
   </div>
+</div>
+
+<!-- =========================================================================
+     PAYMENT FAILED BANNER
+     ====================================================================== -->
+<div x-data x-show="$store.dashboard.paymentFailed" class="payment-banner" style="display:none">
+  <span>Payment failed. Please update your payment method to keep PRO features.</span>
+  <a href="/billing/portal" class="banner-btn">Update Payment</a>
 </div>
 
 <!-- =========================================================================
@@ -1410,9 +1566,19 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
 
             <!-- PRO lock overlay -->
             <div class="byot-locked" x-show="!isPro" style="display:none">
-              <span class="byot-lock-icon">&#128274;</span>
-              <span class="byot-lock-msg">Custom colors require PRO</span>
-              <a href="https://shipcard.dev/upgrade" class="byot-upgrade-btn">Upgrade to PRO</a>
+              <div class="upgrade-card">
+                <h4>Unlock PRO</h4>
+                <ul>
+                  <li>Custom theme colors (BYOT)</li>
+                  <li>Custom card slugs</li>
+                  <li>AI-powered insights</li>
+                  <li>Priority cache refresh</li>
+                </ul>
+                <div class="upgrade-pricing">
+                  <a href="/billing/checkout?interval=month" class="upgrade-btn">$2/month</a>
+                  <a href="/billing/checkout?interval=year" class="upgrade-btn upgrade-annual">$20/year <span class="save-tag">Save 17%</span></a>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -1671,6 +1837,11 @@ document.addEventListener('alpine:init', () => {
     stats: null,
     timeseries: null,
     loading: true,
+    // Subscription/billing state (server-injected)
+    isPro: __IS_PRO__,
+    paymentFailed: __PAYMENT_FAILED__,
+    subscriptionStatus: '__SUBSCRIPTION_STATUS__',
+    periodEnd: __PERIOD_END__,
     error: null,
     notFound: false,
     syncedAt: null,
@@ -2970,8 +3141,14 @@ dashboardRoutes.get("/:username/dashboard", async (c) => {
   // Check PRO status for BYOT gate in the Theme Configurator
   const isPro = await isUserPro(c.env.DB, username);
 
+  // Fetch subscription details for billing UI (badge, banner, billing section)
+  const subscription = await getSubscription(c.env.DB, username);
+
   const html = DASHBOARD_HTML
     .replace(/__USERNAME__/g, username)
-    .replace("__IS_PRO__", isPro ? "true" : "false");
+    .replace("__IS_PRO__", isPro ? "true" : "false")
+    .replace("__SUBSCRIPTION_STATUS__", subscription?.status || "free")
+    .replace("__PAYMENT_FAILED__", subscription?.payment_failed_at ? "true" : "false")
+    .replace("__PERIOD_END__", String(subscription?.current_period_end || 0));
   return c.html(html);
 });
