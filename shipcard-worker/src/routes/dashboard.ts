@@ -15,6 +15,7 @@
 
 import { Hono } from "hono";
 import type { AppType } from "../types.js";
+import { isUserPro } from "../kv.js";
 
 export const dashboardRoutes = new Hono<AppType>();
 
@@ -652,6 +653,297 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
     width: 40%;
     margin-top: 4px;
   }
+
+  /* -------------------------------------------------------------------------
+   * Theme Configurator section
+   * ---------------------------------------------------------------------- */
+  .theme-configurator {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 32px;
+  }
+  .theme-configurator-body {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  @media (min-width: 1024px) {
+    .theme-configurator-body {
+      grid-template-columns: auto 1fr;
+      gap: 32px;
+    }
+  }
+  /* Left column: swatches + BYOT */
+  .theme-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+  }
+  /* Swatch grid */
+  .theme-swatches {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .theme-swatch {
+    cursor: pointer;
+    border-radius: 6px;
+    border: 2px solid transparent;
+    padding: 0;
+    background: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: border-color 0.15s;
+  }
+  .theme-swatch:hover .swatch-box {
+    opacity: 0.85;
+  }
+  .theme-swatch.active {
+    border-color: var(--orange);
+  }
+  .swatch-box {
+    width: 80px;
+    height: 60px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: opacity 0.15s;
+  }
+  .swatch-aa {
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .swatch-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+  .swatch-label {
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--mid);
+    text-align: center;
+    white-space: nowrap;
+  }
+  /* BYOT section */
+  .byot-section {
+    position: relative;
+  }
+  .byot-title {
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .byot-badge-pro {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--orange);
+    background: rgba(217,119,87,0.12);
+    border: 1px solid rgba(217,119,87,0.3);
+    border-radius: 4px;
+    padding: 1px 5px;
+  }
+  .byot-fields {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  @media (min-width: 1024px) {
+    .byot-fields {
+      grid-template-columns: 1fr;
+    }
+  }
+  .byot-field {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .byot-field label {
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--mid);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .byot-field input {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 6px 8px;
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 12px;
+    color: var(--fg);
+    width: 100%;
+    transition: border-color 0.15s;
+    outline: none;
+  }
+  .byot-field input:focus {
+    border-color: var(--orange);
+  }
+  .byot-field input.invalid {
+    border-color: #cc4444;
+  }
+  .byot-field-error {
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 10px;
+    color: #e07060;
+    min-height: 14px;
+  }
+  /* PRO lock overlay */
+  .byot-locked {
+    position: absolute;
+    inset: -8px;
+    background: rgba(20,20,19,0.82);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    backdrop-filter: blur(2px);
+    z-index: 10;
+  }
+  .byot-locked a {
+    text-decoration: none;
+  }
+  .byot-lock-icon {
+    font-size: 20px;
+    line-height: 1;
+  }
+  .byot-lock-msg {
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--mid);
+    text-align: center;
+  }
+  .byot-upgrade-btn {
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--bg);
+    background: var(--orange);
+    border: none;
+    border-radius: 4px;
+    padding: 5px 12px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: opacity 0.15s;
+  }
+  .byot-upgrade-btn:hover { opacity: 0.85; }
+  /* Right column: preview */
+  .preview-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+  }
+  .preview-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .preview-label {
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+  .preview-img-wrap {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    min-height: 120px;
+  }
+  .preview-img-wrap img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+  .embed-code-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .embed-code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .embed-code-label {
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+  .copy-btn {
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--mid);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 3px 10px;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .copy-btn:hover {
+    color: var(--fg);
+    border-color: var(--mid);
+  }
+  .copy-btn.copied {
+    color: var(--green);
+    border-color: var(--green);
+  }
+  .embed-code-textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 12px;
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 12px;
+    color: var(--fg);
+    resize: vertical;
+    min-height: 60px;
+    outline: none;
+  }
+  .embed-code-textarea:focus {
+    border-color: var(--border);
+  }
 </style>
 </head>
 <body x-data x-init="$store.dashboard.load('__USERNAME__')">
@@ -941,6 +1233,239 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
 
       </div>
     </div>
+
+    <!-- -------------------------------------------------------------------
+         THEME CONFIGURATOR
+         ---------------------------------------------------------------- -->
+    <div class="section-title">Card Theme</div>
+    <div class="theme-configurator"
+         x-data="{
+           THEMES: [
+             { name: 'catppuccin',      label: 'Catppuccin',    bg: '#1e1e2e', border: '#313244', title: '#cdd6f4', text: '#a6adc8', icon: '#89b4fa' },
+             { name: 'dracula',         label: 'Dracula',       bg: '#282a36', border: '#44475a', title: '#f8f8f2', text: '#6272a4', icon: '#bd93f9' },
+             { name: 'tokyo-night',     label: 'Tokyo Night',   bg: '#1a1b26', border: '#29355a', title: '#a9b1d6', text: '#787c99', icon: '#7aa2f7' },
+             { name: 'nord',            label: 'Nord',          bg: '#2e3440', border: '#3b4252', title: '#eceff4', text: '#d8dee9', icon: '#88c0d0' },
+             { name: 'gruvbox',         label: 'Gruvbox',       bg: '#282828', border: '#3c3836', title: '#ebdbb2', text: '#a89984', icon: '#83a598' },
+             { name: 'solarized-dark',  label: 'Solarized Dk', bg: '#002b36', border: '#073642', title: '#839496', text: '#657b83', icon: '#268bd2' },
+             { name: 'solarized-light', label: 'Solarized Lt', bg: '#fdf6e3', border: '#eee8d5', title: '#073642', text: '#657b83', icon: '#268bd2' },
+             { name: 'one-dark',        label: 'One Dark',      bg: '#282c34', border: '#3e4452', title: '#abb2bf', text: '#5c6370', icon: '#61afef' },
+             { name: 'monokai',         label: 'Monokai',       bg: '#272822', border: '#3e3d32', title: '#f8f8f2', text: '#90908a', icon: '#a6e22e' }
+           ],
+           selectedTheme: 'catppuccin',
+           selectedLayout: 'classic',
+           byotMode: false,
+           isPro: __IS_PRO__,
+           byot: { bg: '', title: '', text: '', icon: '', border: '' },
+           byotErrors: {},
+           copyDone: false,
+           _debounceTimer: null,
+
+           selectTheme(name) {
+             this.selectedTheme = name;
+             this.byotMode = false;
+           },
+
+           isValidHex(val) {
+             return /^#[0-9a-fA-F]{6}$/.test(val.trim());
+           },
+
+           relativeLuminance(hex) {
+             const h = hex.replace('#','');
+             const r = parseInt(h.slice(0,2),16)/255;
+             const g = parseInt(h.slice(2,4),16)/255;
+             const b = parseInt(h.slice(4,6),16)/255;
+             const toL = c => c <= 0.04045 ? c/12.92 : Math.pow((c+0.055)/1.055, 2.4);
+             return 0.2126*toL(r) + 0.7152*toL(g) + 0.0722*toL(b);
+           },
+
+           contrastRatio(hex1, hex2) {
+             const l1 = this.relativeLuminance(hex1);
+             const l2 = this.relativeLuminance(hex2);
+             const lighter = Math.max(l1,l2);
+             const darker  = Math.min(l1,l2);
+             return (lighter + 0.05) / (darker + 0.05);
+           },
+
+           updateByot() {
+             if (!this.isPro) return;
+             const errors = {};
+             const fields = ['bg','title','text','icon','border'];
+             const vals = this.byot;
+
+             for (const f of fields) {
+               const v = (vals[f] || '').trim();
+               if (v && !this.isValidHex(v)) {
+                 errors[f] = 'Invalid hex (use #rrggbb)';
+               }
+             }
+
+             // Contrast checks vs bg (only if bg is valid and field is valid)
+             if (!errors['bg'] && vals.bg && this.isValidHex(vals.bg)) {
+               for (const f of ['title','text','icon']) {
+                 const v = (vals[f] || '').trim();
+                 if (v && this.isValidHex(v) && !errors[f]) {
+                   const ratio = this.contrastRatio(vals.bg, v);
+                   if (ratio < 3.0) {
+                     errors[f] = 'Low contrast (' + ratio.toFixed(1) + ':1, min 3:1)';
+                   }
+                 }
+               }
+             }
+
+             this.byotErrors = errors;
+
+             // Activate BYOT mode if all 5 fields are filled, valid, and pass contrast
+             const allFilled = fields.every(f => vals[f] && vals[f].trim());
+             const noErrors = Object.keys(errors).length === 0;
+             this.byotMode = allFilled && noErrors;
+           },
+
+           debouncedByotUpdate() {
+             clearTimeout(this._debounceTimer);
+             this._debounceTimer = setTimeout(() => this.updateByot(), 300);
+           },
+
+           buildPreviewUrl(username) {
+             if (this.byotMode) {
+               const b = this.byot;
+               const enc = (v) => encodeURIComponent(v.trim().replace('#',''));
+               return 'https://shipcard.dev/u/' + username
+                 + '?bg=' + enc(b.bg)
+                 + '&title=' + enc(b.title)
+                 + '&text=' + enc(b.text)
+                 + '&icon=' + enc(b.icon)
+                 + '&border=' + enc(b.border)
+                 + '&layout=' + this.selectedLayout;
+             }
+             return 'https://shipcard.dev/u/' + username
+               + '?theme=' + this.selectedTheme
+               + '&layout=' + this.selectedLayout;
+           },
+
+           buildEmbedCode(username) {
+             return '![ShipCard](' + this.buildPreviewUrl(username) + ')';
+           },
+
+           async copyEmbed(username) {
+             try {
+               await navigator.clipboard.writeText(this.buildEmbedCode(username));
+               this.copyDone = true;
+               setTimeout(() => { this.copyDone = false; }, 2000);
+             } catch {}
+           }
+         }">
+
+      <div class="theme-configurator-body">
+
+        <!-- Left: Theme swatches + BYOT -->
+        <div class="theme-controls">
+
+          <!-- Swatch grid -->
+          <div>
+            <div class="byot-title" style="margin-bottom:10px">Curated Themes</div>
+            <div class="theme-swatches">
+              <template x-for="t in THEMES" :key="t.name">
+                <button
+                  class="theme-swatch"
+                  :class="{ active: selectedTheme === t.name && !byotMode }"
+                  @click="selectTheme(t.name)"
+                  :title="t.label">
+                  <div class="swatch-box" :style="'background:' + t.bg + ';border-color:' + t.border">
+                    <span class="swatch-aa" :style="'color:' + t.title">Aa</span>
+                    <span class="swatch-dot" :style="'background:' + t.icon"></span>
+                  </div>
+                  <span class="swatch-label" x-text="t.label"></span>
+                </button>
+              </template>
+            </div>
+          </div>
+
+          <!-- BYOT section -->
+          <div class="byot-section">
+            <div class="byot-title">
+              Custom Colors
+              <span class="byot-badge-pro">PRO</span>
+            </div>
+
+            <div class="byot-fields" :style="!isPro ? 'opacity:0.35;pointer-events:none' : ''">
+              <template x-for="field in ['bg','title','text','icon','border']" :key="field">
+                <div class="byot-field">
+                  <label x-text="field"></label>
+                  <input
+                    type="text"
+                    :placeholder="'#' + (THEMES.find(t => t.name === selectedTheme) ? THEMES.find(t => t.name === selectedTheme)[field].slice(1) : 'rrggbb')"
+                    x-model="byot[field]"
+                    :class="{ invalid: byotErrors[field] }"
+                    @input="debouncedByotUpdate()"
+                    :disabled="!isPro"
+                  />
+                  <div class="byot-field-error" x-text="byotErrors[field] || ''"></div>
+                </div>
+              </template>
+            </div>
+
+            <!-- PRO lock overlay -->
+            <div class="byot-locked" x-show="!isPro" style="display:none">
+              <span class="byot-lock-icon">&#128274;</span>
+              <span class="byot-lock-msg">Custom colors require PRO</span>
+              <a href="https://shipcard.dev/upgrade" class="byot-upgrade-btn">Upgrade to PRO</a>
+            </div>
+          </div>
+
+        </div><!-- /theme-controls -->
+
+        <!-- Right: Live preview + embed code -->
+        <div class="preview-section">
+
+          <!-- Layout selector + preview label -->
+          <div class="preview-controls">
+            <span class="preview-label">Preview</span>
+            <div class="btn-group" style="display:flex">
+              <button
+                :class="{ active: selectedLayout === 'classic' }"
+                @click="selectedLayout = 'classic'">Classic</button>
+              <button
+                :class="{ active: selectedLayout === 'compact' }"
+                @click="selectedLayout = 'compact'">Compact</button>
+              <button
+                :class="{ active: selectedLayout === 'hero' }"
+                @click="selectedLayout = 'hero'">Hero</button>
+            </div>
+          </div>
+
+          <!-- Card preview image -->
+          <div class="preview-img-wrap">
+            <img
+              :src="buildPreviewUrl('__USERNAME__')"
+              :key="buildPreviewUrl('__USERNAME__')"
+              alt="ShipCard preview"
+              loading="lazy"
+            />
+          </div>
+
+          <!-- Embed code -->
+          <div class="embed-code-wrap">
+            <div class="embed-code-header">
+              <span class="embed-code-label">Embed Code</span>
+              <button
+                class="copy-btn"
+                :class="{ copied: copyDone }"
+                @click="copyEmbed('__USERNAME__')"
+                x-text="copyDone ? 'Copied!' : 'Copy'">Copy</button>
+            </div>
+            <textarea
+              class="embed-code-textarea"
+              readonly
+              :value="buildEmbedCode('__USERNAME__')"
+              @click="$el.select()"
+            ></textarea>
+          </div>
+
+        </div><!-- /preview-section -->
+
+      </div><!-- /theme-configurator-body -->
+
+    </div><!-- /theme-configurator -->
 
     <!-- -------------------------------------------------------------------
          OVERVIEW PANELS — Activity Heatmap (wide) + Daily Activity chart
@@ -2428,7 +2953,7 @@ document.addEventListener('alpine:initialized', () => {
 // Dashboard route
 // ---------------------------------------------------------------------------
 
-dashboardRoutes.get("/:username/dashboard", (c) => {
+dashboardRoutes.get("/:username/dashboard", async (c) => {
   const raw = c.req.param("username");
 
   // Sanitize: allow only alphanumeric and hyphens (GitHub username charset)
@@ -2437,6 +2962,12 @@ dashboardRoutes.get("/:username/dashboard", (c) => {
   }
 
   const username = raw;
-  const html = DASHBOARD_HTML.replace(/__USERNAME__/g, username);
+
+  // Check PRO status for BYOT gate in the Theme Configurator
+  const isPro = await isUserPro(c.env.USER_DATA_KV, username);
+
+  const html = DASHBOARD_HTML
+    .replace(/__USERNAME__/g, username)
+    .replace("__IS_PRO__", isPro ? "true" : "false");
   return c.html(html);
 });
