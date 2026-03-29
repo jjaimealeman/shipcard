@@ -13,6 +13,11 @@
  *   POST   /sync                      — authenticated stat upload (v1)
  *   DELETE /sync                      — wipe user data (auth token preserved)
  *   GET    /configure                 — browser configurator HTML page (no auth)
+ *   GET    /billing/checkout           — Start checkout (redirects to GitHub OAuth)
+ *   GET    /billing/checkout/callback  — GitHub OAuth callback → Stripe Checkout
+ *   GET    /billing/portal             — Start portal (redirects to GitHub OAuth)
+ *   GET    /billing/portal/callback    — GitHub OAuth callback → Stripe Customer Portal
+ *   GET    /billing/welcome            — Post-checkout confirmation page
  */
 
 import { Hono } from "hono";
@@ -27,6 +32,7 @@ import { configureRoutes } from "./routes/configure.js";
 import { landingRoutes } from "./routes/landing.js";
 import { communityRoutes } from "./routes/community.js";
 import { dashboardRoutes } from "./routes/dashboard.js";
+import { billingRoutes } from "./routes/billing.js";
 
 const app = new Hono<AppType>();
 
@@ -62,5 +68,8 @@ app.route("/sync", syncRoutes);
 
 // Configure — browser configurator (no auth, stats passed via hash fragment)
 app.route("/configure", configureRoutes);
+
+// Billing — checkout + portal via GitHub OAuth redirect flow
+app.route("/billing", billingRoutes);
 
 export default app;
