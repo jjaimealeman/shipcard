@@ -222,7 +222,7 @@ cardRoutes.get("/:username", async (c) => {
       return svgResponse(c, renderPlaceholderCard(username));
     }
 
-    const svg = renderCard(userData, { layout: layoutParam, colors, hide });
+    const svg = renderCard(userData, { layout: layoutParam, colors, hide, isPro: true });
     return svgResponse(c, svg);
   }
 
@@ -254,6 +254,8 @@ cardRoutes.get("/:username", async (c) => {
     return svgResponse(c, renderPlaceholderCard(username));
   }
 
+  const isPro = await isUserPro(c.env.DB, username);
+
   if (isLegacyTheme) {
     // Legacy path: use old style+theme resolver and old cache keys
     const resolvedStyle = (styleParam ?? "github") as StyleName;
@@ -272,7 +274,7 @@ cardRoutes.get("/:username", async (c) => {
     }
 
     const colors = resolveTheme(resolvedStyle, resolvedTheme);
-    const svg = renderCard(userData, { layout: layoutParam, colors, hide });
+    const svg = renderCard(userData, { layout: layoutParam, colors, hide, isPro });
     await putCardCache(
       c.env.CARDS_KV,
       username,
@@ -298,7 +300,7 @@ cardRoutes.get("/:username", async (c) => {
   }
 
   const colors = resolveCuratedTheme(effectiveTheme)!; // always valid (defaulted above)
-  const svg = renderCard(userData, { layout: layoutParam, colors, hide });
+  const svg = renderCard(userData, { layout: layoutParam, colors, hide, isPro });
   await putCardCacheV2(
     c.env.CARDS_KV,
     username,
