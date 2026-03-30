@@ -185,7 +185,13 @@ Plans:
   3. After running `shipcard sync`, the insights panel reflects data from the latest sync within the next cron interval
   4. Free users see the insights panel placeholder with an upgrade prompt, not an error or blank space
 
-**Plans:** —
+**Plans:** 4 plans
+
+Plans:
+- [ ] 20-01-PLAN.md — Insight types, compute pure functions, Workers AI narrative module + AI binding
+- [ ] 20-02-PLAN.md — CLI hourly activity tracking in daily aggregation pipeline
+- [ ] 20-03-PLAN.md — Wire insights into syncV2 handler + KV storage + API endpoint
+- [ ] 20-04-PLAN.md — Dashboard insights panel with 3 cards + PRO narrative + empty/stale states
 
 ### Phase 21: Clack CLI
 
