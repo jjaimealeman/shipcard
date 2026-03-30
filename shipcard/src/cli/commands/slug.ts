@@ -13,6 +13,17 @@
  */
 
 import { loadAuthConfig, getWorkerUrl } from "../config.js";
+import {
+  isTTY,
+  intro,
+  outro,
+  logStep,
+  logSuccess,
+  logError,
+  logWarn,
+  confirm,
+  note,
+} from "../clack.js";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -123,7 +134,11 @@ async function runSlugCreate(flags: SlugFlags, target: string | undefined): Prom
   // Client-side validation for fast feedback
   const validationError = validateSlugLocal(target);
   if (validationError) {
-    process.stderr.write(`Invalid slug: ${validationError}\n`);
+    if (isTTY()) {
+      logError(`Invalid slug: ${validationError}`);
+    } else {
+      process.stderr.write(`Invalid slug: ${validationError}\n`);
+    }
     process.exit(1);
   }
 
@@ -136,6 +151,10 @@ async function runSlugCreate(flags: SlugFlags, target: string | undefined): Prom
   }
 
   const { username, token } = authConfig;
+
+  if (isTTY()) {
+    intro("ShipCard -- Create Slug");
+  }
 
   // Build SlugConfig from flags
   const slugConfig: SlugConfig = {
@@ -158,17 +177,32 @@ async function runSlugCreate(flags: SlugFlags, target: string | undefined): Prom
 
     if (res.status === 201) {
       const cardUrl = `${workerUrl}/u/${username}/${target}`;
-      process.stdout.write(`Slug created: ${target}\n`);
-      process.stdout.write(`Card URL: ${cardUrl}\n`);
-      process.stdout.write(`Markdown: ![ShipCard Stats](${cardUrl})\n`);
+
+      if (isTTY()) {
+        logSuccess(`Slug created: ${target}`);
+        note(
+          `Card URL: ${cardUrl}\n\nMarkdown:\n  ![ShipCard Stats](${cardUrl})`,
+          "Embed"
+        );
+        outro("Slug is live!");
+      } else {
+        process.stdout.write(`Slug created: ${target}\n`);
+        process.stdout.write(`Card URL: ${cardUrl}\n`);
+        process.stdout.write(`Markdown: ![ShipCard Stats](${cardUrl})\n`);
+      }
       return;
     }
 
     if (res.status === 403) {
-      process.stderr.write(
-        "Custom slugs are a PRO feature.\n" +
-        "Upgrade at: shipcard.dev/billing\n"
-      );
+      if (isTTY()) {
+        logError("Custom slugs are a PRO feature.");
+        logStep("Upgrade at: shipcard.dev/billing");
+      } else {
+        process.stderr.write(
+          "Custom slugs are a PRO feature.\n" +
+          "Upgrade at: shipcard.dev/billing\n"
+        );
+      }
       process.exit(1);
     }
 
@@ -178,7 +212,11 @@ async function runSlugCreate(flags: SlugFlags, target: string | undefined): Prom
         const body = (await res.json()) as { error?: string };
         if (body.error) detail = body.error;
       } catch { /* ignore */ }
-      process.stderr.write(`Conflict: ${detail}\n`);
+      if (isTTY()) {
+        logError(`Conflict: ${detail}`);
+      } else {
+        process.stderr.write(`Conflict: ${detail}\n`);
+      }
       process.exit(1);
     }
 
@@ -187,16 +225,27 @@ async function runSlugCreate(flags: SlugFlags, target: string | undefined): Prom
       const body = (await res.json()) as { error?: string };
       if (body.error) detail = `: ${body.error}`;
     } catch { /* ignore */ }
-    process.stderr.write(`Create failed: HTTP ${res.status}${detail}\n`);
+    if (isTTY()) {
+      logError(`Create failed: HTTP ${res.status}${detail}`);
+    } else {
+      process.stderr.write(`Create failed: HTTP ${res.status}${detail}\n`);
+    }
     process.exit(1);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);
-    process.stderr.write(`Request failed: ${message}\n`);
+    if (isTTY()) {
+      logError(`Request failed: ${message}`);
+    } else {
+      process.stderr.write(`Request failed: ${message}\n`);
+    }
     process.exit(1);
   }
 }
 
 async function runSlugList(flags: SlugFlags): Promise<void> {
+  // --json mode or non-TTY: zero Clack framing
+  const useClack = isTTY() && !flags.json;
+
   const authConfig = await loadAuthConfig();
   const workerUrl = await getWorkerUrl();
 
@@ -206,6 +255,10 @@ async function runSlugList(flags: SlugFlags): Promise<void> {
   }
 
   const { username, token } = authConfig;
+
+  if (useClack) {
+    intro("ShipCard -- Custom Slugs");
+  }
 
   try {
     const res = await fetch(`${workerUrl}/u/${username}/slugs`, {
@@ -238,16 +291,24 @@ async function runSlugList(flags: SlugFlags): Promise<void> {
     const slugs = data.slugs ?? [];
 
     if (flags.json) {
+      // --json: raw JSON, zero Clack framing
       process.stdout.write(JSON.stringify(slugs, null, 2) + "\n");
       return;
     }
 
     if (slugs.length === 0) {
-      process.stdout.write("No custom slugs yet.\n");
-      process.stdout.write("Create one: shipcard slug create <name>\n");
+      if (useClack) {
+        logWarn("No custom slugs yet.");
+        logStep("Create one: shipcard slug create <name>");
+        outro("Done.");
+      } else {
+        process.stdout.write("No custom slugs yet.\n");
+        process.stdout.write("Create one: shipcard slug create <name>\n");
+      }
       return;
     }
 
+    // List output — keep as process.stdout.write (data output)
     process.stdout.write(`Custom slugs for ${username}:\n\n`);
     for (const row of slugs) {
       let config: Partial<SlugConfig> = {};
@@ -261,6 +322,10 @@ async function runSlugList(flags: SlugFlags): Promise<void> {
       process.stdout.write(`  ${row.slug}\n`);
       process.stdout.write(`    Theme: ${theme}  Layout: ${layout}\n`);
       process.stdout.write(`    URL: ${cardUrl}\n\n`);
+    }
+
+    if (useClack) {
+      outro("Done.");
     }
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);
@@ -286,6 +351,19 @@ async function runSlugDelete(flags: SlugFlags, target: string | undefined): Prom
   }
 
   const { username, token } = authConfig;
+
+  if (isTTY()) {
+    intro("ShipCard -- Delete Slug");
+
+    // Clack confirm prompt in TTY mode
+    const shouldDelete = await confirm(
+      `Delete slug "${target}"? This cannot be undone.`
+    );
+    if (!shouldDelete) {
+      outro("Cancelled.");
+      return;
+    }
+  }
 
   try {
     const res = await fetch(`${workerUrl}/u/${username}/slugs/${target}`, {
@@ -319,7 +397,12 @@ async function runSlugDelete(flags: SlugFlags, target: string | undefined): Prom
       process.exit(1);
     }
 
-    process.stdout.write(`Slug deleted: ${target}\n`);
+    if (isTTY()) {
+      logSuccess(`Slug deleted: ${target}`);
+      outro("Done.");
+    } else {
+      process.stdout.write(`Slug deleted: ${target}\n`);
+    }
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);
     process.stderr.write(`Request failed: ${message}\n`);
