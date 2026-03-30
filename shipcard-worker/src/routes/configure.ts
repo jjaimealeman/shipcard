@@ -343,7 +343,7 @@ const CONFIGURATOR_HTML = `<!DOCTYPE html>
   <a href="/" class="nav-brand">ShipCard</a>
   <div class="nav-links">
   <a href="/">Home</a>
-  <a href="https://www.npmjs.com/package/shipcard" target="_blank" rel="noopener">npm</a>
+  <a href="https://www.npmjs.com/package/@jjaimealeman/shipcard" target="_blank" rel="noopener">npm</a>
     <a href="https://github.com/jjaimealeman/shipcard" target="_blank" rel="noopener">GitHub</a>
   </div>
 </nav>

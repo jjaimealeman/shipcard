@@ -283,7 +283,7 @@ communityRoutes.get("/", async (c) => {
       <div class="nav-links">
         <a href="/community" class="active">Community</a>
         <a href="/configure">Configurator</a>
-        <a href="https://www.npmjs.com/package/shipcard" target="_blank" rel="noopener">npm</a>
+        <a href="https://www.npmjs.com/package/@jjaimealeman/shipcard" target="_blank" rel="noopener">npm</a>
         <a href="https://github.com/jjaimealeman/shipcard" target="_blank" rel="noopener">GitHub</a>
       </div>
     </nav>
@@ -361,7 +361,7 @@ communityRoutes.get("/", async (c) => {
   <div class="container">
     <div class="footer-links">
       <a href="https://github.com/jjaimealeman/shipcard" target="_blank" rel="noopener">GitHub</a>
-      <a href="https://www.npmjs.com/package/shipcard" target="_blank" rel="noopener">npm</a>
+      <a href="https://www.npmjs.com/package/@jjaimealeman/shipcard" target="_blank" rel="noopener">npm</a>
       <a href="/configure">Configurator</a>
     </div>
     <p>MIT License &middot; Made by <a href="https://github.com/jjaimealeman" style="color:var(--orange);text-decoration:none;">jjaimealeman</a></p>
