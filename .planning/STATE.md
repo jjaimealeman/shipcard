@@ -87,6 +87,9 @@ See PROJECT.md Key Decisions table for full history.
 | 19-04 | Slug validation constants mirrored from worker (not imported) | CLI has zero dependency on worker package; keeps CLI self-contained |
 | 19-05 | Slug section uses local x-data (not Alpine.store) | Self-contained; slug state doesn't need sharing with other dashboard components |
 | 19-05 | Bearer token in sessionStorage (not localStorage) | Privacy-first; user re-connects each session intentionally |
+| 20-01 | BaseAiTextGenerationModels removed from ai.run() cast | Type doesn't exist; string literal satisfies keyof AiModels generic constraint directly |
+| 20-01 | hourlyActivity?: number[] added to SafeDailyStats | compute.ts requires the field; optional so old payloads still validate |
+| 20-01 | peakHours returns undefined when no hourlyActivity data | Cleaner than empty object; callers guard with if(insights.peakHours) |
 
 ### Pending Todos
 
