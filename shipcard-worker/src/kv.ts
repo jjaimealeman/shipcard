@@ -10,10 +10,12 @@
  *   card:{username}:{layout}:t={theme}:hide={a,b}         — v2 curated theme cache with hidden stats
  *   user:{username}:data                                   — SafeStats JSON payload
  *   user:{username}:timeseries                             — SafeTimeSeries JSON payload
+ *   user:{username}:insights                              — computed InsightResult JSON
  *   token:{token}:username                                 — auth token → username lookup
  */
 
 import type { CommunityMeta, SafeStats, SafeTimeSeries } from "./types.js";
+import type { InsightResult } from "./insights/types.js";
 import { isUserProFromD1 } from "./db/subscriptions.js";
 
 // ---------------------------------------------------------------------------
@@ -196,6 +198,39 @@ export async function putTimeSeries(
   data: SafeTimeSeries
 ): Promise<void> {
   await kv.put(`user:${username}:timeseries`, JSON.stringify(data));
+}
+
+// ---------------------------------------------------------------------------
+// Insights data (USER_DATA_KV)
+// ---------------------------------------------------------------------------
+
+/**
+ * Read a user's computed insights from KV.
+ * Returns null if no insights have been computed yet.
+ */
+export async function getInsights(
+  kv: KVNamespace,
+  username: string
+): Promise<InsightResult | null> {
+  const raw = await kv.get(`user:${username}:insights`);
+  if (raw === null) return null;
+  try {
+    return JSON.parse(raw) as InsightResult;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Store a user's computed insights in KV.
+ * Called at sync time after insight computation completes.
+ */
+export async function putInsights(
+  kv: KVNamespace,
+  username: string,
+  insights: InsightResult
+): Promise<void> {
+  await kv.put(`user:${username}:insights`, JSON.stringify(insights));
 }
 
 // ---------------------------------------------------------------------------
