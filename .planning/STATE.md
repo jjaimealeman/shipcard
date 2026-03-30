@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 
 ## Current Position
 
-Phase: 20 — AI Insights (complete)
-Plan: 04 of 4 — Phase fully complete
-Status: Phase complete — ready for Phase 21
-Last activity: 2026-03-29 — Phase 20 verified: insights panel, compute engine, sync pipeline, API endpoint
+Phase: 21 — Clack CLI (in progress)
+Plan: 01 of N — Plan 01 complete
+Status: In progress
+Last activity: 2026-03-30 — Completed 21-01: @clack/prompts installed, clack.ts TTY-guard module, Clack framing on summary/costs/card
 
-Progress: ███████████░ 96% (18/18 plans complete across v2.0 phases 16-20)
+Progress: ███████████░ 96% (18/18 v2.0 plans complete + Phase 21 underway)
 
 ## Performance Metrics
 
@@ -95,6 +95,9 @@ See PROJECT.md Key Decisions table for full history.
 | 20-03 | Insights API endpoint is public and CORS-enabled | Consistent access model with stats and timeseries endpoints |
 | 20-04 | insightsPanel() references server-injected username const directly | Avoids Alpine store timing dependency; username known at page generation time |
 | 20-04 | No upgrade banners inside insights panel | Per CONTEXT.md: /upgrade page is the single place for free-vs-PRO comparison; free users see real 14-day data |
+| 21-01 | All Clack imports centralized in clack.ts | Commands never import from @clack/prompts directly; single import point enforces TTY-guard pattern |
+| 21-01 | intro() is a no-op in non-TTY (not stderr write) | Pipe and MCP consumers must see zero UI chrome; even stderr framing would break consumers |
+| 21-01 | Silent try/catch fallback on all TTY Clack calls | Edge-case terminal robustness; any rendering error silently falls through to non-TTY path |
 
 ### Pending Todos
 
@@ -111,6 +114,6 @@ See PROJECT.md Key Decisions table for full history.
 
 ## Session Continuity
 
-Last session: 2026-03-30T02:03:00Z
-Stopped at: Phase 20 complete — AI Insights fully verified
-Resume with: Plan Phase 21 (Clack CLI) or audit milestone
+Last session: 2026-03-30T03:48:29Z
+Stopped at: Completed 21-01-PLAN.md — @clack/prompts + clack.ts + read-only command framing
+Resume file: .planning/phases/21-clack-cli/21-02-PLAN.md (if it exists)
