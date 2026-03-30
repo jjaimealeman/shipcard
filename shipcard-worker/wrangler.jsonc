@@ -27,6 +27,9 @@
   "define": {
     "__APP_VERSION__": "\"0.1.0\""
   },
+  "ai": {
+    "binding": "AI",
+  },
   "d1_databases": [
     {
       // Subscription state — strong-consistency storage for PRO user records.

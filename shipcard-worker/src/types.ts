@@ -33,6 +33,8 @@ export interface Env {
   STRIPE_PRO_MONTHLY_PRICE_ID: string;
   /** Stripe Price ID for PRO annual plan (set via wrangler secret put). */
   STRIPE_PRO_ANNUAL_PRICE_ID: string;
+  /** Cloudflare Workers AI binding for insight narrative generation. */
+  AI: Ai;
 }
 
 // ---------------------------------------------------------------------------
