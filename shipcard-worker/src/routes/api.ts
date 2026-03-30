@@ -12,7 +12,7 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import type { AppType } from "../types.js";
-import { getUserData, getTimeSeries } from "../kv.js";
+import { getUserData, getTimeSeries, getInsights } from "../kv.js";
 
 export const apiRoutes = new Hono<AppType>();
 
@@ -65,4 +65,19 @@ apiRoutes.get("/:username/api/timeseries", async (c) => {
   }
 
   return c.json({ data, syncedAt: data.generatedAt });
+});
+
+// ---------------------------------------------------------------------------
+// GET /:username/api/insights
+// ---------------------------------------------------------------------------
+
+apiRoutes.get("/:username/api/insights", async (c) => {
+  const username = c.req.param("username");
+  const data = await getInsights(c.env.USER_DATA_KV, username);
+
+  if (data === null) {
+    return c.json({ error: "No insights available. Run `shipcard sync` to generate." }, 404);
+  }
+
+  return c.json({ data });
 });

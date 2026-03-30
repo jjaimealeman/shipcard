@@ -23,7 +23,10 @@ import {
   putCardCache,
   incrementCardsServed,
   isUserPro,
+  putInsights,
 } from "../kv.js";
+import { computeAllInsights } from "../insights/compute.js";
+import { callWorkersAI } from "../insights/narrative.js";
 import { renderCard, resolveCuratedTheme } from "../svg/index.js";
 import type { LayoutName } from "../svg/index.js";
 import { getUserSlugs } from "../db/slugs.js";
@@ -156,6 +159,32 @@ syncV2Routes.post("/", authMiddleware, async (c) => {
 
   // Increment the global cards-served counter for community stats.
   await incrementCardsServed(env.USER_DATA_KV);
+
+  // --- Insight computation (Phase 20) ---
+  const insightResult = computeAllInsights(
+    body.timeSeries.days,
+    username,
+    isPro
+  );
+
+  // Store base insights immediately (stats are instant, no LLM needed)
+  await putInsights(env.USER_DATA_KV, username, insightResult);
+
+  // PRO users: generate AI narrative in background (non-blocking)
+  if (isPro) {
+    c.executionCtx.waitUntil(
+      (async () => {
+        const narrative = await callWorkersAI(env.AI, insightResult);
+        if (narrative) {
+          insightResult.narrative = narrative;
+          insightResult.narrativeError = false;
+        } else {
+          insightResult.narrativeError = true;
+        }
+        await putInsights(env.USER_DATA_KV, username, insightResult);
+      })()
+    );
+  }
 
   return c.json({ ok: true, apiVersion: "v2", syncedAt, username, variantsInvalidated });
 });
