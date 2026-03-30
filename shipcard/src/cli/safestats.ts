@@ -76,6 +76,8 @@ export interface SafeDailyStats {
   costCents: number;
   models: Record<string, number>;
   toolCalls: Record<string, number>;
+  /** 24-bucket hourly activity (index 0 = midnight UTC). Always included when available. */
+  hourlyActivity?: number[];
   /** Only present when --show-projects flag is set. */
   projects?: string[];
   /** Per-project breakdown. Only present when --show-projects flag is set. */
@@ -163,6 +165,10 @@ export function toSafeTimeSeries(
         models: { ...day.models },
         toolCalls: { ...day.toolCalls },
       };
+      // Include hourly activity data (non-identifying — just hour-of-day counts)
+      if (day.hourlyActivity) {
+        safe.hourlyActivity = [...day.hourlyActivity];
+      }
       if (showProjects) {
         safe.projects = day.projects;
         if (day.byProject) {
