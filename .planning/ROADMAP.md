@@ -203,7 +203,12 @@ Plans:
   2. Running `shipcard sync` in a terminal shows a Clack spinner and success/error messages with the Clack visual style
   3. All existing command flags and output formats (`shipcard summary`, `shipcard costs`, `shipcard card`) are unchanged — no breaking changes
 
-**Plans:** —
+**Plans:** 3 plans
+
+Plans:
+- [ ] 21-01-PLAN.md — Install @clack/prompts, create TTY guard module, add light framing to read-only commands
+- [ ] 21-02-PLAN.md — Full Clack walkthrough for login command
+- [ ] 21-03-PLAN.md — Clack spinners and confirm prompts for sync and slug commands
 
 ---
 
@@ -231,4 +236,4 @@ Plans:
 | 18. Stripe Subscriptions | v2.0 | 5/5 | Complete | 2026-03-29 |
 | 19. PRO Card Features | v2.0 | 5/5 | Complete | 2026-03-29 |
 | 20. AI Insights | v2.0 | 4/4 | Complete | 2026-03-29 |
-| 21. Clack CLI | v2.0 | 0/— | Pending | — |
+| 21. Clack CLI | v2.0 | 0/3 | Pending | — |
