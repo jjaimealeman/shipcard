@@ -20,7 +20,7 @@ import {
   putUserData,
   putTimeSeries,
   invalidateCardVariants,
-  putCardCache,
+  putCardCacheV2,
   incrementCardsServed,
   isUserPro,
   putInsights,
@@ -47,7 +47,7 @@ export const syncV2Routes = new Hono<AppType>();
  * 4. Store SafeStats in user:{username}:data (same key as v1, adds syncedAt)
  * 5. Store SafeTimeSeries in user:{username}:timeseries (new key)
  * 6. Invalidate all cached card variants
- * 7. Synchronously re-render and cache the default variant (dark/classic/github)
+ * 7. Synchronously re-render and cache the default variant (catppuccin/classic)
  *    to avoid KV eventual consistency issues (Pitfall 2 from research)
  */
 syncV2Routes.post("/", authMiddleware, async (c) => {
@@ -112,17 +112,17 @@ syncV2Routes.post("/", authMiddleware, async (c) => {
   // Synchronously re-render and cache the default card variant.
   // This prevents the next GET /u/:username from reading stale KV data
   // due to Cloudflare KV's eventual consistency model.
+  // Uses v2 key format (card:{username}:{layout}:t={theme}) matching the card route.
+  const defaultColors = resolveCuratedTheme("catppuccin")!;
   const defaultSvg = renderCard(body.safeStats, {
-    theme: "dark",
     layout: "classic",
-    style: "github",
+    colors: defaultColors,
   });
-  await putCardCache(
+  await putCardCacheV2(
     env.CARDS_KV,
     username,
-    "dark",
     "classic",
-    "github",
+    "catppuccin",
     defaultSvg
   );
 

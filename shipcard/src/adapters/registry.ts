@@ -28,9 +28,3 @@ export function getAdapter(name?: string): SourceAdapter {
   return adapter;
 }
 
-/**
- * List all registered adapter IDs. Useful for CLI help text.
- */
-export function listAdapters(): string[] {
-  return Object.keys(ADAPTERS);
-}
