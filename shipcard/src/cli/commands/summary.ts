@@ -7,6 +7,7 @@
 
 import { runEngine } from "../../index.js";
 import { formatSummary } from "../format.js";
+import { intro, outro, isTTY } from "../clack.js";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -43,6 +44,10 @@ If you've used Claude Code on this machine, check that the directory exists.`;
  *   2 — partial parse errors (linesSkipped > 0)
  */
 export async function runSummary(flags: SummaryFlags): Promise<void> {
+  if (isTTY() && !flags.json) {
+    intro("ShipCard -- Summary");
+  }
+
   const result = await runEngine({
     since: flags.since,
     until: flags.until,
@@ -81,6 +86,10 @@ export async function runSummary(flags: SummaryFlags): Promise<void> {
       `Warning: ${result.meta.linesSkipped} line(s) skipped due to parse errors.\n`
     );
     process.exit(2);
+  }
+
+  if (isTTY() && !flags.json) {
+    outro("Done.");
   }
 
   process.exit(0);

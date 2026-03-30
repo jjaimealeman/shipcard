@@ -14,6 +14,7 @@ import { renderCard } from "../../card/index.js";
 import type { LayoutName, StyleName, ThemeName } from "../../card/index.js";
 import { findGitRoot } from "../../card/git.js";
 import { openInBrowser } from "../../card/preview.js";
+import { intro, outro, isTTY } from "../clack.js";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -64,6 +65,10 @@ If you've used Claude Code on this machine, check that the directory exists.`;
  *   2 — partial parse errors (linesSkipped > 0)
  */
 export async function runCard(flags: CardFlags): Promise<void> {
+  if (isTTY() && !flags.json) {
+    intro("ShipCard -- Card");
+  }
+
   const result = await runEngine({
     since: flags.since,
     until: flags.until,
@@ -141,6 +146,10 @@ export async function runCard(flags: CardFlags): Promise<void> {
         `Warning: ${result.meta.linesSkipped} line(s) skipped due to parse errors.\n`
       );
       process.exit(2);
+    }
+
+    if (isTTY()) {
+      outro("Card saved! Embed it in your README.");
     }
 
     process.exit(0);
