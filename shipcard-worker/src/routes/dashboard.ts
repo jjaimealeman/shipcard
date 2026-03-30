@@ -2174,16 +2174,16 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
 
               <!-- Peak Activity card -->
               <div class="insight-card">
-                <h4 x-text="data.peakHours ? 'Peak Hours' : 'Peak Days'"></h4>
+                <h4 x-text="data.peakHours && data.peakHours.topHours.length > 0 ? 'Peak Hours' : 'Peak Days'"></h4>
                 <!-- Peak hours bar chart -->
-                <template x-if="data.peakHours && data.peakHours.length > 0">
+                <template x-if="data.peakHours && data.peakHours.topHours.length > 0">
                   <div>
-                    <template x-for="(item, i) in data.peakHours.slice(0, 3)" :key="i">
+                    <template x-for="(item, i) in data.peakHours.topHours.slice(0, 3)" :key="i">
                       <div class="insight-bar">
-                        <span class="insight-bar-label" x-text="item.hour + ':00'"></span>
+                        <span class="insight-bar-label" x-text="item.label"></span>
                         <div class="insight-bar-track">
                           <div class="insight-bar-fill"
-                            :style="'width:' + Math.round((item.totalSessions / data.peakHours[0].totalSessions) * 100) + '%'">
+                            :style="'width:' + Math.round((item.totalSessions / data.peakHours.topHours[0].totalSessions) * 100) + '%'">
                           </div>
                         </div>
                         <span style="font-size:11px;color:var(--mid);width:24px;text-align:right" x-text="item.totalSessions"></span>
@@ -2192,14 +2192,14 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
                   </div>
                 </template>
                 <!-- Peak days bar chart (fallback when no hourly data) -->
-                <template x-if="!data.peakHours && data.peakDays && data.peakDays.length > 0">
+                <template x-if="(!data.peakHours || data.peakHours.topHours.length === 0) && data.peakDays && data.peakDays.topDays.length > 0">
                   <div>
-                    <template x-for="(item, i) in data.peakDays.slice(0, 3)" :key="i">
+                    <template x-for="(item, i) in data.peakDays.topDays.slice(0, 3)" :key="i">
                       <div class="insight-bar">
-                        <span class="insight-bar-label" x-text="['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][item.dayOfWeek] || item.dayOfWeek"></span>
+                        <span class="insight-bar-label" x-text="item.label"></span>
                         <div class="insight-bar-track">
                           <div class="insight-bar-fill"
-                            :style="'width:' + Math.round((item.avgSessions / data.peakDays[0].avgSessions) * 100) + '%'">
+                            :style="'width:' + Math.round((item.avgSessions / data.peakDays.topDays[0].avgSessions) * 100) + '%'">
                           </div>
                         </div>
                         <span style="font-size:11px;color:var(--mid);width:32px;text-align:right" x-text="item.avgSessions.toFixed(1)"></span>
@@ -2208,7 +2208,7 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
                   </div>
                 </template>
                 <!-- No activity data -->
-                <template x-if="!data.peakHours && (!data.peakDays || data.peakDays.length === 0)">
+                <template x-if="(!data.peakHours || data.peakHours.topHours.length === 0) && (!data.peakDays || data.peakDays.topDays.length === 0)">
                   <div class="insight-detail" style="color:var(--mid)">No activity data yet.</div>
                 </template>
               </div>
@@ -2216,21 +2216,21 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
               <!-- Cost Trend card -->
               <div class="insight-card">
                 <h4>Cost Trend</h4>
-                <template x-if="data.costTrend && data.costTrend.weeks && data.costTrend.weeks.length > 0">
+                <template x-if="data.costTrend && data.costTrend.weeklyTotals && data.costTrend.weeklyTotals.length > 0">
                   <div>
-                    <div class="insight-value" x-text="formatCost(data.costTrend.weeks[data.costTrend.weeks.length - 1])"></div>
+                    <div class="insight-value" x-text="formatCost(data.costTrend.weeklyTotals[data.costTrend.weeklyTotals.length - 1].costCents)"></div>
                     <div class="insight-sub">
-                      <span :class="data.costTrend.direction === 'up' ? 'trend-up' : data.costTrend.direction === 'down' ? 'trend-down' : 'trend-flat'">
-                        <span x-text="data.costTrend.direction === 'up' ? '↑' : data.costTrend.direction === 'down' ? '↓' : '—'"></span>
-                        <span x-text="data.costTrend.deltaPercent != null ? Math.abs(data.costTrend.deltaPercent) + '% vs last week' : 'vs last week'"></span>
+                      <span :class="data.costTrend.trend === 'up' ? 'trend-up' : data.costTrend.trend === 'down' ? 'trend-down' : 'trend-flat'">
+                        <span x-text="data.costTrend.trend === 'up' ? '↑' : data.costTrend.trend === 'down' ? '↓' : '—'"></span>
+                        <span x-text="data.costTrend.deltaPercent != null ? Math.abs(Math.round(data.costTrend.deltaPercent)) + '% vs last week' : 'vs last week'"></span>
                       </span>
                     </div>
-                    <div class="insight-detail" x-show="data.costTrend.weeks.length >= 2">
-                      <span x-text="data.costTrend.weeks.slice(-2).map((c, i) => 'W' + (i+1) + ': ' + formatCost(c)).join(' → ')"></span>
+                    <div class="insight-detail" x-show="data.costTrend.weeklyTotals.length >= 2">
+                      <span x-text="data.costTrend.weeklyTotals.slice(-2).map((w, i) => 'W' + (i+1) + ': ' + formatCost(w.costCents)).join(' → ')"></span>
                     </div>
                   </div>
                 </template>
-                <template x-if="!data.costTrend || !data.costTrend.weeks || data.costTrend.weeks.length === 0">
+                <template x-if="!data.costTrend || !data.costTrend.weeklyTotals || data.costTrend.weeklyTotals.length === 0">
                   <div class="insight-detail" style="color:var(--mid)">No cost data yet.</div>
                 </template>
               </div>
@@ -2242,11 +2242,11 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
                   <div>
                     <div class="insight-value">
                       <span class="streak-flame">🔥</span>
-                      <span x-text="data.streak.current"></span>
+                      <span x-text="data.streak.currentStreak"></span>
                     </div>
-                    <div class="insight-sub" x-text="data.streak.current === 1 ? 'day streak' : 'days streak'"></div>
+                    <div class="insight-sub" x-text="data.streak.currentStreak === 1 ? 'day streak' : 'days streak'"></div>
                     <div class="insight-detail">
-                      <div>Longest: <span x-text="data.streak.longest"></span> days</div>
+                      <div>Longest: <span x-text="data.streak.longestStreak"></span> days</div>
                       <div>Active this week: <span x-text="data.streak.activeDaysThisWeek"></span>/7 days</div>
                     </div>
                   </div>
