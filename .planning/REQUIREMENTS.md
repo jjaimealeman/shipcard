@@ -34,9 +34,9 @@
 
 ### AI Insights
 
-- [ ] **INSIGHT-01**: PRO users see weekly coding insights on dashboard (peak hours, cost trends, streaks)
-- [ ] **INSIGHT-02**: Insights are pre-computed (Workers AI or Haiku cron), not live LLM calls
-- [ ] **INSIGHT-03**: Insights update automatically when user syncs
+- [x] **INSIGHT-01**: PRO users see weekly coding insights on dashboard (peak hours, cost trends, streaks)
+- [x] **INSIGHT-02**: Insights are pre-computed (Workers AI or Haiku cron), not live LLM calls
+- [x] **INSIGHT-03**: Insights update automatically when user syncs
 
 ### CLI
 
@@ -97,9 +97,9 @@
 | CARD-04 | Phase 19 | Complete |
 | CARD-05 | Phase 19 | Complete |
 | CARD-06 | Phase 19 | Complete |
-| INSIGHT-01 | Phase 20 | Pending |
-| INSIGHT-02 | Phase 20 | Pending |
-| INSIGHT-03 | Phase 20 | Pending |
+| INSIGHT-01 | Phase 20 | Complete |
+| INSIGHT-02 | Phase 20 | Complete |
+| INSIGHT-03 | Phase 20 | Complete |
 | CLI-01 | Phase 21 | Pending |
 | CLI-02 | Phase 21 | Pending |
 | CLI-03 | Phase 21 | Pending |

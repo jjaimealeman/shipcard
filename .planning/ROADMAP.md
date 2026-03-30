@@ -188,10 +188,10 @@ Plans:
 **Plans:** 4 plans
 
 Plans:
-- [ ] 20-01-PLAN.md — Insight types, compute pure functions, Workers AI narrative module + AI binding
-- [ ] 20-02-PLAN.md — CLI hourly activity tracking in daily aggregation pipeline
-- [ ] 20-03-PLAN.md — Wire insights into syncV2 handler + KV storage + API endpoint
-- [ ] 20-04-PLAN.md — Dashboard insights panel with 3 cards + PRO narrative + empty/stale states
+- [x] 20-01-PLAN.md — Insight types, compute pure functions, Workers AI narrative module + AI binding
+- [x] 20-02-PLAN.md — CLI hourly activity tracking in daily aggregation pipeline
+- [x] 20-03-PLAN.md — Wire insights into syncV2 handler + KV storage + API endpoint
+- [x] 20-04-PLAN.md — Dashboard insights panel with 3 cards + PRO narrative + empty/stale states
 
 ### Phase 21: Clack CLI
 
@@ -230,5 +230,5 @@ Plans:
 | 17. Theme System | v2.0 | 3/3 | Complete | 2026-03-28 |
 | 18. Stripe Subscriptions | v2.0 | 5/5 | Complete | 2026-03-29 |
 | 19. PRO Card Features | v2.0 | 5/5 | Complete | 2026-03-29 |
-| 20. AI Insights | v2.0 | 0/— | Pending | — |
+| 20. AI Insights | v2.0 | 4/4 | Complete | 2026-03-29 |
 | 21. Clack CLI | v2.0 | 0/— | Pending | — |
