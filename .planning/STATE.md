@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 ## Current Position
 
 Phase: 21 — Clack CLI (in progress)
-Plan: 01 of N — Plan 01 complete
+Plan: 02 of 3 — Plans 01 and 02 complete
 Status: In progress
-Last activity: 2026-03-30 — Completed 21-01: @clack/prompts installed, clack.ts TTY-guard module, Clack framing on summary/costs/card
+Last activity: 2026-03-30 — Completed 21-02: Login command full Clack walkthrough (TTY/non-TTY branching)
 
-Progress: ███████████░ 96% (18/18 v2.0 plans complete + Phase 21 underway)
+Progress: ███████████░ 97% (18/18 v2.0 plans complete + Phase 21 plans 01-02 done)
 
 ## Performance Metrics
 
@@ -98,6 +98,10 @@ See PROJECT.md Key Decisions table for full history.
 | 21-01 | All Clack imports centralized in clack.ts | Commands never import from @clack/prompts directly; single import point enforces TTY-guard pattern |
 | 21-01 | intro() is a no-op in non-TTY (not stderr write) | Pipe and MCP consumers must see zero UI chrome; even stderr framing would break consumers |
 | 21-01 | Silent try/catch fallback on all TTY Clack calls | Edge-case terminal robustness; any rendering error silently falls through to non-TTY path |
+| 21-02 | spinner.start() called inside onVerification callback | Note box must fully render before spinner; ensures user sees URL+code before animation begins |
+| 21-02 | spinnerStarted flag guards spinner.stop() in catch block | Prevents stop() call if auth fails before device code generation (onVerification never fired) |
+| 21-02 | outro() replaces stdout write in TTY; non-TTY keeps stdout write | TTY gets branded farewell; pipe/script consumers still receive parseable "Logged in as {username}" on stdout |
+| 21-02 | tty = isTTY() hoisted once at top of runLogin() | Single branch point; eliminates repeated isTTY() calls and establishes canonical pattern for future write commands |
 
 ### Pending Todos
 
@@ -114,6 +118,6 @@ See PROJECT.md Key Decisions table for full history.
 
 ## Session Continuity
 
-Last session: 2026-03-30T03:48:29Z
-Stopped at: Completed 21-01-PLAN.md — @clack/prompts + clack.ts + read-only command framing
-Resume file: .planning/phases/21-clack-cli/21-02-PLAN.md (if it exists)
+Last session: 2026-03-30T03:52:17Z
+Stopped at: Completed 21-02-PLAN.md — Login command full Clack walkthrough (TTY/non-TTY branching)
+Resume file: .planning/phases/21-clack-cli/21-03-PLAN.md
