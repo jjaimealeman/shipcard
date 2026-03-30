@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 
 ## Current Position
 
-Phase: 21 — Clack CLI (in progress)
-Plan: 02 of 3 — Plans 01 and 02 complete
-Status: In progress
-Last activity: 2026-03-30 — Completed 21-02: Login command full Clack walkthrough (TTY/non-TTY branching)
+Phase: 21 — Clack CLI (complete)
+Plan: 03 of 3 — All plans complete
+Status: Phase complete
+Last activity: 2026-03-30 — Completed 21-03: Sync and slug commands upgraded with Clack spinners, confirm prompts, intro/outro framing
 
-Progress: ███████████░ 97% (18/18 v2.0 plans complete + Phase 21 plans 01-02 done)
+Progress: ████████████ 100% (18/18 v2.0 plans complete + Phase 21 all 3 plans done)
 
 ## Performance Metrics
 
@@ -102,6 +102,10 @@ See PROJECT.md Key Decisions table for full history.
 | 21-02 | spinnerStarted flag guards spinner.stop() in catch block | Prevents stop() call if auth fails before device code generation (onVerification never fired) |
 | 21-02 | outro() replaces stdout write in TTY; non-TTY keeps stdout write | TTY gets branded farewell; pipe/script consumers still receive parseable "Logged in as {username}" on stdout |
 | 21-02 | tty = isTTY() hoisted once at top of runLogin() | Single branch point; eliminates repeated isTTY() calls and establishes canonical pattern for future write commands |
+| 21-03 | Sync preview table stays as process.stdout.write | Data output must not be converted to Clack log calls — piped consumers parse the preview table |
+| 21-03 | useClack local var for compound guards (isTTY && !flags.json) | Computed once per subhandler; avoids repeated compound expressions throughout slug list |
+| 21-03 | Spinner stop before logError on failure | Prevents dangling spinner animation; s.stop() before logError() and process.exit(1) |
+| 21-03 | slug --json bypasses all Clack regardless of TTY state | --json is an explicit machine-readable flag; overrides TTY framing |
 
 ### Pending Todos
 
@@ -118,6 +122,6 @@ See PROJECT.md Key Decisions table for full history.
 
 ## Session Continuity
 
-Last session: 2026-03-30T03:52:17Z
-Stopped at: Completed 21-02-PLAN.md — Login command full Clack walkthrough (TTY/non-TTY branching)
-Resume file: .planning/phases/21-clack-cli/21-03-PLAN.md
+Last session: 2026-03-30T03:54:30Z
+Stopped at: Completed 21-03-PLAN.md — Sync and slug commands upgraded with Clack spinners, confirm prompts, intro/outro framing
+Resume file: None (Phase 21 complete)
