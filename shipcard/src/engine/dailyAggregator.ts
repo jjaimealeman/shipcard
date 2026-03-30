@@ -42,6 +42,7 @@ export interface DailyStats {
   costCents: number;         // Math.round(costDollars * 100) — integer cents
   models: Record<string, number>;    // model name -> total tokens used that day
   toolCalls: Record<string, number>; // tool name -> call count that day
+  hourlyActivity: number[];  // 24 buckets: index 0 = midnight UTC, 23 = 11pm UTC
   projects: string[];        // unique project names (last path segment) this day
   byProject?: Record<string, PerProjectDailyStats>; // per-project breakdown (optional)
 }
@@ -68,6 +69,7 @@ interface DayAccumulator {
   costRaw: number;
   models: Record<string, number>;
   toolCalls: Record<string, number>;
+  hourlyActivity: number[];
   projects: Set<string>;
   byProject: Map<string, ProjectDayAccumulator>;
 }
@@ -138,6 +140,7 @@ export function aggregateDaily(
         costRaw: 0,
         models: {},
         toolCalls: {},
+        hourlyActivity: Array(24).fill(0) as number[],
         projects: new Set<string>(),
         byProject: new Map<string, ProjectDayAccumulator>(),
       };
@@ -167,6 +170,10 @@ export function aggregateDaily(
     for (const tool of msg.toolCalls) {
       bucket.toolCalls[tool] = (bucket.toolCalls[tool] ?? 0) + 1;
     }
+
+    // Extract UTC hour from ISO timestamp for hourly activity tracking
+    const hour = new Date(msg.timestamp).getUTCHours();
+    bucket.hourlyActivity[hour] += 1;
 
     // projects: unique project names from cwd
     const projectName = projectNameFromCwd(msg.cwd);
@@ -229,6 +236,7 @@ export function aggregateDaily(
       costCents: Math.round(bucket.costRaw * 100),
       models: bucket.models,
       toolCalls: bucket.toolCalls,
+      hourlyActivity: bucket.hourlyActivity,
       projects: Array.from(bucket.projects).sort(),
       ...(bucket.byProject.size > 0 ? { byProject: byProjectRecord } : {}),
     });
