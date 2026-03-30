@@ -19,6 +19,16 @@ import { aggregateDaily } from "../../engine/dailyAggregator.js";
 import { getPricing } from "../../engine/cost.js";
 import { loadAuthConfig, getWorkerUrl } from "../config.js";
 import { spawn } from "node:child_process";
+import {
+  isTTY,
+  intro,
+  outro,
+  logSuccess,
+  logError,
+  note,
+  confirm,
+  createSpinner,
+} from "../clack.js";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -93,43 +103,116 @@ export async function runSync(flags: SyncFlags): Promise<void> {
 
   // --delete: wipe all user data from cloud
   if (flags.delete) {
-    process.stderr.write(`Deleting all data for ${username}...\n`);
-    try {
-      const res = await fetch(`${workerUrl}/sync`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "User-Agent": "shipcard-cli/1.0",
-        },
-      });
-      if (!res.ok) {
-        let detail = "";
-        try {
-          const body = (await res.json()) as { error?: string };
-          if (body.error) detail = `: ${body.error}`;
-        } catch {
-          // ignore
+    if (isTTY()) {
+      intro("ShipCard -- Delete Cloud Data");
+
+      // Clack confirm prompt in TTY mode
+      const shouldDelete = await confirm(
+        `Delete all cloud data for ${username}? This cannot be undone.`
+      );
+      if (!shouldDelete) {
+        outro("Cancelled.");
+        return;
+      }
+
+      const s = createSpinner();
+      s.start("Deleting cloud data...");
+      try {
+        const res = await fetch(`${workerUrl}/sync`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "User-Agent": "shipcard-cli/1.0",
+          },
+        });
+        if (!res.ok) {
+          let detail = "";
+          try {
+            const body = (await res.json()) as { error?: string };
+            if (body.error) detail = `: ${body.error}`;
+          } catch {
+            // ignore
+          }
+          s.stop("Delete failed");
+          logError(`Delete failed: HTTP ${res.status}${detail}`);
+          process.exit(1);
         }
-        process.stderr.write(
-          `Delete failed: HTTP ${res.status}${detail}\n`
-        );
+        s.stop("Data deleted");
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : String(err);
+        s.stop("Delete failed");
+        logError(`Delete request failed: ${message}`);
         process.exit(1);
       }
-      process.stdout.write(`All data removed for ${username}\n`);
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : String(err);
-      process.stderr.write(`Delete request failed: ${message}\n`);
-      process.exit(1);
+
+      outro(`All data removed for ${username}.`);
+    } else {
+      // Non-TTY: identical to original behavior (no confirm, plain stderr/stdout)
+      process.stderr.write(`Deleting all data for ${username}...\n`);
+      try {
+        const res = await fetch(`${workerUrl}/sync`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "User-Agent": "shipcard-cli/1.0",
+          },
+        });
+        if (!res.ok) {
+          let detail = "";
+          try {
+            const body = (await res.json()) as { error?: string };
+            if (body.error) detail = `: ${body.error}`;
+          } catch {
+            // ignore
+          }
+          process.stderr.write(
+            `Delete failed: HTTP ${res.status}${detail}\n`
+          );
+          process.exit(1);
+        }
+        process.stdout.write(`All data removed for ${username}\n`);
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : String(err);
+        process.stderr.write(`Delete request failed: ${message}\n`);
+        process.exit(1);
+      }
     }
     return;
   }
 
-  // Run the analytics engine (full result for daily aggregation)
-  process.stderr.write("Analyzing local stats...\n");
-  const { result, messages, userMessagesByDate } = await runEngineFull({
-    since: flags.since,
-    until: flags.until,
-  });
+  // ---------------------------------------------------------------------------
+  // Analysis phase — run engine and build preview
+  // ---------------------------------------------------------------------------
+
+  if (isTTY()) {
+    intro("ShipCard -- Sync");
+  }
+
+  let result: Awaited<ReturnType<typeof runEngineFull>>["result"];
+  let messages: Awaited<ReturnType<typeof runEngineFull>>["messages"];
+  let userMessagesByDate: Awaited<ReturnType<typeof runEngineFull>>["userMessagesByDate"];
+
+  if (isTTY()) {
+    const s = createSpinner();
+    s.start("Analyzing local stats...");
+    const engineResult = await runEngineFull({
+      since: flags.since,
+      until: flags.until,
+    });
+    result = engineResult.result;
+    messages = engineResult.messages;
+    userMessagesByDate = engineResult.userMessagesByDate;
+    s.stop("Stats analyzed");
+  } else {
+    process.stderr.write("Analyzing local stats...\n");
+    const engineResult = await runEngineFull({
+      since: flags.since,
+      until: flags.until,
+    });
+    result = engineResult.result;
+    messages = engineResult.messages;
+    userMessagesByDate = engineResult.userMessagesByDate;
+  }
 
   if (result.meta.filesRead === 0) {
     process.stderr.write(
@@ -147,7 +230,7 @@ export async function runSync(flags: SyncFlags): Promise<void> {
   const dailyStats = aggregateDaily(messages, pricing, userMessagesByDate);
   const safeTimeSeries = toSafeTimeSeries(dailyStats, username, flags.showProjects);
 
-  // Print sync preview
+  // Print sync preview (unchanged — data output stays as process.stdout.write)
   const totalTokens =
     safeStats.totalTokens.input +
     safeStats.totalTokens.output +
@@ -177,87 +260,173 @@ export async function runSync(flags: SyncFlags): Promise<void> {
 
   // --confirm: non-interactive POST — try v2 first, fall back to v1 on 404
   if (flags.confirm) {
-    process.stderr.write("Syncing to cloud...\n");
     let syncedV2 = false;
 
-    // Attempt v2 endpoint
-    try {
-      const v2res = await fetch(`${workerUrl}/sync/v2`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-          "User-Agent": "shipcard-cli/2.0",
-        },
-        body: JSON.stringify({ safeStats, timeSeries: safeTimeSeries }),
-      });
-      if (v2res.status === 404) {
-        // Worker doesn't have v2 yet — fall back to v1
-        process.stderr.write("Worker v2 not available, using v1...\n");
-      } else if (!v2res.ok) {
-        // Real error — do NOT fall back, exit with error
-        let detail = "";
-        try {
-          const body = (await v2res.json()) as { error?: string };
-          if (body.error) detail = `: ${body.error}`;
-        } catch {
-          // ignore
-        }
-        process.stderr.write(`Sync failed: HTTP ${v2res.status}${detail}\n`);
-        process.exit(1);
-      } else {
-        syncedV2 = true;
-      }
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : String(err);
-      process.stderr.write(`Sync request failed: ${message}\n`);
-      process.exit(1);
-    }
+    if (isTTY()) {
+      // TTY: spinner for cloud sync
+      const s = createSpinner();
+      s.start("Syncing to cloud...");
 
-    // Fallback to v1 if v2 returned 404
-    if (!syncedV2) {
+      // Attempt v2 endpoint
       try {
-        const v1res = await fetch(`${workerUrl}/sync`, {
+        const v2res = await fetch(`${workerUrl}/sync/v2`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
-            "User-Agent": "shipcard-cli/1.0",
+            "User-Agent": "shipcard-cli/2.0",
           },
-          body: JSON.stringify(safeStats),
+          body: JSON.stringify({ safeStats, timeSeries: safeTimeSeries }),
         });
-        if (!v1res.ok) {
+        if (v2res.status === 404) {
+          // Worker doesn't have v2 yet — fall back to v1
+        } else if (!v2res.ok) {
+          // Real error — do NOT fall back, exit with error
           let detail = "";
           try {
-            const body = (await v1res.json()) as { error?: string };
+            const body = (await v2res.json()) as { error?: string };
             if (body.error) detail = `: ${body.error}`;
           } catch {
             // ignore
           }
-          process.stderr.write(`Sync failed: HTTP ${v1res.status}${detail}\n`);
+          s.stop("Sync failed");
+          logError(`Sync failed: HTTP ${v2res.status}${detail}`);
           process.exit(1);
+        } else {
+          syncedV2 = true;
+        }
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : String(err);
+        s.stop("Sync failed");
+        logError(`Sync request failed: ${message}`);
+        process.exit(1);
+      }
+
+      // Fallback to v1 if v2 returned 404
+      if (!syncedV2) {
+        try {
+          const v1res = await fetch(`${workerUrl}/sync`, {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+              "User-Agent": "shipcard-cli/1.0",
+            },
+            body: JSON.stringify(safeStats),
+          });
+          if (!v1res.ok) {
+            let detail = "";
+            try {
+              const body = (await v1res.json()) as { error?: string };
+              if (body.error) detail = `: ${body.error}`;
+            } catch {
+              // ignore
+            }
+            s.stop("Sync failed");
+            logError(`Sync failed: HTTP ${v1res.status}${detail}`);
+            process.exit(1);
+          }
+        } catch (err: unknown) {
+          const message = err instanceof Error ? err.message : String(err);
+          s.stop("Sync failed");
+          logError(`Sync request failed: ${message}`);
+          process.exit(1);
+        }
+      }
+
+      s.stop("Synced!");
+
+      // Print success with embed snippets using Clack helpers
+      const cardUrl = `${workerUrl}/u/${username}`;
+      logSuccess(`Card synced: ${cardUrl}`);
+      note(
+        `Markdown:\n  ![ShipCard Stats](${cardUrl})\n\nHTML:\n  <img src="${cardUrl}" alt="ShipCard Stats" />\n\nCustomize:\n  ?theme=dark&layout=hero&style=branded`,
+        "Embed snippets"
+      );
+      outro(`View your card at ${cardUrl}`);
+    } else {
+      // Non-TTY: identical to original behavior
+      process.stderr.write("Syncing to cloud...\n");
+
+      // Attempt v2 endpoint
+      try {
+        const v2res = await fetch(`${workerUrl}/sync/v2`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            "User-Agent": "shipcard-cli/2.0",
+          },
+          body: JSON.stringify({ safeStats, timeSeries: safeTimeSeries }),
+        });
+        if (v2res.status === 404) {
+          // Worker doesn't have v2 yet — fall back to v1
+          process.stderr.write("Worker v2 not available, using v1...\n");
+        } else if (!v2res.ok) {
+          // Real error — do NOT fall back, exit with error
+          let detail = "";
+          try {
+            const body = (await v2res.json()) as { error?: string };
+            if (body.error) detail = `: ${body.error}`;
+          } catch {
+            // ignore
+          }
+          process.stderr.write(`Sync failed: HTTP ${v2res.status}${detail}\n`);
+          process.exit(1);
+        } else {
+          syncedV2 = true;
         }
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : String(err);
         process.stderr.write(`Sync request failed: ${message}\n`);
         process.exit(1);
       }
-    }
 
-    // Print success with embed snippets
-    const cardUrl = `${workerUrl}/u/${username}`;
-    process.stdout.write("Card synced! View at:\n");
-    process.stdout.write(`  ${cardUrl}\n\n`);
-    process.stdout.write("Markdown:\n");
-    process.stdout.write(`  ![ShipCard Stats](${cardUrl})\n\n`);
-    process.stdout.write("HTML:\n");
-    process.stdout.write(
-      `  <img src="${cardUrl}" alt="ShipCard Stats" />\n\n`
-    );
-    process.stdout.write("Customize appearance with query params:\n");
-    process.stdout.write(
-      `  ?theme=dark&layout=hero&style=branded\n`
-    );
+      // Fallback to v1 if v2 returned 404
+      if (!syncedV2) {
+        try {
+          const v1res = await fetch(`${workerUrl}/sync`, {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+              "User-Agent": "shipcard-cli/1.0",
+            },
+            body: JSON.stringify(safeStats),
+          });
+          if (!v1res.ok) {
+            let detail = "";
+            try {
+              const body = (await v1res.json()) as { error?: string };
+              if (body.error) detail = `: ${body.error}`;
+            } catch {
+              // ignore
+            }
+            process.stderr.write(`Sync failed: HTTP ${v1res.status}${detail}\n`);
+            process.exit(1);
+          }
+        } catch (err: unknown) {
+          const message = err instanceof Error ? err.message : String(err);
+          process.stderr.write(`Sync request failed: ${message}\n`);
+          process.exit(1);
+        }
+      }
+
+      // Print success with embed snippets (unchanged)
+      const cardUrl = `${workerUrl}/u/${username}`;
+      process.stdout.write("Card synced! View at:\n");
+      process.stdout.write(`  ${cardUrl}\n\n`);
+      process.stdout.write("Markdown:\n");
+      process.stdout.write(`  ![ShipCard Stats](${cardUrl})\n\n`);
+      process.stdout.write("HTML:\n");
+      process.stdout.write(
+        `  <img src="${cardUrl}" alt="ShipCard Stats" />\n\n`
+      );
+      process.stdout.write("Customize appearance with query params:\n");
+      process.stdout.write(
+        `  ?theme=dark&layout=hero&style=branded\n`
+      );
+    }
     return;
   }
 
@@ -265,14 +434,20 @@ export async function runSync(flags: SyncFlags): Promise<void> {
   const statsBase64 = Buffer.from(JSON.stringify(safeStats)).toString("base64");
   const configuratorUrl = `${workerUrl}/configure#${statsBase64}`;
 
-  process.stdout.write("Opening browser configurator...\n");
-  process.stdout.write(`  ${configuratorUrl}\n\n`);
-  openUrl(configuratorUrl);
-
-  process.stdout.write(
-    "Configure your card in the browser, then run the command shown there.\n"
-  );
-  process.stdout.write(
-    "Or sync with defaults: shipcard sync --confirm\n"
-  );
+  if (isTTY()) {
+    process.stdout.write("Opening browser configurator...\n");
+    process.stdout.write(`  ${configuratorUrl}\n\n`);
+    openUrl(configuratorUrl);
+    outro("Configure your card in the browser, then sync with --confirm.");
+  } else {
+    process.stdout.write("Opening browser configurator...\n");
+    process.stdout.write(`  ${configuratorUrl}\n\n`);
+    openUrl(configuratorUrl);
+    process.stdout.write(
+      "Configure your card in the browser, then run the command shown there.\n"
+    );
+    process.stdout.write(
+      "Or sync with defaults: shipcard sync --confirm\n"
+    );
+  }
 }
