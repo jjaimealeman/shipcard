@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 
 ## Current Position
 
-Phase: 19 — PRO Card Features (complete)
-Plan: 05 of 5 — Phase fully complete
-Status: Phase complete — ready for Phase 20
-Last activity: 2026-03-29 — Phase 19 verified: PRO badge, custom slugs, dashboard slug management
+Phase: 20 — AI Insights (in progress)
+Plan: 02 of 4 — 2 plans complete (20-01 and 20-02)
+Status: In progress
+Last activity: 2026-03-29 — Completed 20-02: hourly activity tracking pipeline
 
-Progress: ██████████░ 93% (14/14 plans complete across v2.0 phases 16-19)
+Progress: ██████████░ 93% (plans 20-01 and 20-02 complete, 20-03/20-04 remaining)
 
 ## Performance Metrics
 
@@ -103,6 +103,6 @@ See PROJECT.md Key Decisions table for full history.
 
 ## Session Continuity
 
-Last session: 2026-03-29T17:22:00Z
-Stopped at: Phase 19 complete — PRO Card Features fully verified
-Resume with: Plan Phase 20 (AI Insights) or Phase 21 (Clack CLI)
+Last session: 2026-03-30T01:47:00Z
+Stopped at: Completed 20-02-PLAN.md (hourly activity tracking pipeline)
+Resume with: 20-03 (Worker insight compute: computePeakHours + aggregateInsights) or 20-04 (dashboard display)
