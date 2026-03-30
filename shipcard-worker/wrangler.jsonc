@@ -1,59 +1,57 @@
 {
-  "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "shipcard",
-  "main": "src/index.ts",
-  "compatibility_date": "2026-03-25",
-  "routes": [
-    {
-      "pattern": "shipcard.dev",
-      "custom_domain": true,
-    },
-  ],
-  "kv_namespaces": [
-    {
-      // Card SVG cache — one entry per (username, theme, layout, style) variant.
-      "binding": "CARDS_KV",
-      "id": "4ef9089113d04b0f81a90b451aecfb67",
-    },
-    {
-      // User SafeStats data store — also stores auth tokens.
-      "binding": "USER_DATA_KV",
-      "id": "682c4a90e7ee445ba9dab2ed7eb2722f",
-    },
-  ],
-  // Build-time defines — __GIT_HASH__ is injected by deploy command:
-  //   npx wrangler deploy --define __GIT_HASH__:'"$(git rev-parse --short HEAD)"'
-  // __APP_VERSION__ reads from this file's vars:
-  "define": {
-    "__APP_VERSION__": "\"0.1.0\""
-  },
-  "ai": {
-    "binding": "AI",
-  },
-  "d1_databases": [
-    {
-      // Subscription state — strong-consistency storage for PRO user records.
-      // Run: npx wrangler d1 create shipcard-db
-      // Then replace the database_id below with the output database_id.
-      "binding": "DB",
-      "database_name": "shipcard-db",
-      "database_id": "placeholder-replace-before-deploy",
-    },
-  ],
-  // Secrets are set via wrangler CLI, NOT in this file:
-  //   npx wrangler secret put GITHUB_CLIENT_SECRET
-  //   npx wrangler secret put TOKEN_SECRET
-  //   npx wrangler secret put STRIPE_SECRET_KEY
-  //   npx wrangler secret put STRIPE_WEBHOOK_SECRET
-  //   npx wrangler secret put STRIPE_PRO_MONTHLY_PRICE_ID
-  //   npx wrangler secret put STRIPE_PRO_ANNUAL_PRICE_ID
-  //
-  // Local dev secrets go in .dev.vars (gitignored):
-  //   GITHUB_CLIENT_ID="<your-github-oauth-app-client-id>"
-  //   GITHUB_CLIENT_SECRET="<your-github-oauth-app-secret>"
-  //   TOKEN_SECRET="<random-32-byte-hex>"
-  //   STRIPE_SECRET_KEY="sk_test_..."
-  //   STRIPE_WEBHOOK_SECRET="whsec_..."
-  //   STRIPE_PRO_MONTHLY_PRICE_ID="price_..."
-  //   STRIPE_PRO_ANNUAL_PRICE_ID="price_..."
+	"$schema": "./node_modules/wrangler/config-schema.json",
+	"name": "shipcard",
+	"main": "src/index.ts",
+	"compatibility_date": "2026-03-25",
+	"routes": [
+		{
+			"pattern": "shipcard.dev",
+			"custom_domain": true,
+		},
+	],
+	"kv_namespaces": [
+		{
+			// Card SVG cache — one entry per (username, theme, layout, style) variant.
+			"binding": "CARDS_KV",
+			"id": "4ef9089113d04b0f81a90b451aecfb67",
+		},
+		{
+			// User SafeStats data store — also stores auth tokens.
+			"binding": "USER_DATA_KV",
+			"id": "682c4a90e7ee445ba9dab2ed7eb2722f",
+		},
+	],
+	// Build-time defines — __GIT_HASH__ is injected by deploy command:
+	//   npx wrangler deploy --define __GIT_HASH__:'"$(git rev-parse --short HEAD)"'
+	// __APP_VERSION__ reads from this file's vars:
+	"define": {
+		"__APP_VERSION__": "\"0.1.0\""
+	},
+	"ai": {
+		"binding": "AI",
+	},
+	"d1_databases": [
+		{
+			// Subscription state — strong-consistency storage for PRO user records.
+			"binding": "DB",
+			"database_name": "shipcard-db",
+			"database_id": "b0996186-42b5-496a-b0b9-0417227ca236",
+		},
+	],
+	// Secrets are set via wrangler CLI, NOT in this file:
+	//   npx wrangler secret put GITHUB_CLIENT_SECRET
+	//   npx wrangler secret put TOKEN_SECRET
+	//   npx wrangler secret put STRIPE_SECRET_KEY
+	//   npx wrangler secret put STRIPE_WEBHOOK_SECRET
+	//   npx wrangler secret put STRIPE_PRO_MONTHLY_PRICE_ID
+	//   npx wrangler secret put STRIPE_PRO_ANNUAL_PRICE_ID
+	//
+	// Local dev secrets go in .dev.vars (gitignored):
+	//   GITHUB_CLIENT_ID="<your-github-oauth-app-client-id>"
+	//   GITHUB_CLIENT_SECRET="<your-github-oauth-app-secret>"
+	//   TOKEN_SECRET="<random-32-byte-hex>"
+	//   STRIPE_SECRET_KEY="sk_test_..."
+	//   STRIPE_WEBHOOK_SECRET="whsec_..."
+	//   STRIPE_PRO_MONTHLY_PRICE_ID="price_..."
+	//   STRIPE_PRO_ANNUAL_PRICE_ID="price_..."
 }

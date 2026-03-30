@@ -1500,86 +1500,6 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
   <div x-show="!$store.dashboard.loading && !$store.dashboard.notFound && !$store.dashboard.error" style="display:block">
 
     <!-- -------------------------------------------------------------------
-         HERO STATS
-         ---------------------------------------------------------------- -->
-    <div class="section-title">Overview</div>
-    <div class="hero-grid">
-
-      <!-- Collecting Since -->
-      <div class="stat-card" :class="{ loading: $store.dashboard.loading }">
-        <div class="stat-label">Collecting Since</div>
-        <div class="skel-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="skel-sub skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="skel-sparkline skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="stat-value" x-show="!$store.dashboard.loading" x-text="$store.dashboard.heroTenure" style="display:none"></div>
-        <div class="stat-sub" x-show="!$store.dashboard.loading" style="display:none">
-          <strong x-text="$store.dashboard.heroFirstDate"></strong>
-        </div>
-        <div class="sparkline-wrap" x-show="!$store.dashboard.loading" style="display:none">
-          <svg viewBox="0 0 200 36" preserveAspectRatio="none">
-            <polygon :points="$store.dashboard.sparkSessionsArea(200,36)" class="sparkline-area" fill="var(--orange)" />
-            <polyline :points="$store.dashboard.sparkSessions(200,36)" stroke="var(--orange)" />
-          </svg>
-        </div>
-      </div>
-
-      <!-- Total Tokens -->
-      <div class="stat-card" :class="{ loading: $store.dashboard.loading }">
-        <div class="stat-label">Total Tokens</div>
-        <div class="skel-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="skel-sub skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="skel-sparkline skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="stat-value" x-show="!$store.dashboard.loading" x-text="$store.dashboard.heroTokens" style="display:none"></div>
-        <div class="stat-sub" x-show="!$store.dashboard.loading" style="display:none">
-          <strong x-text="$store.dashboard.heroCacheHitPct"></strong> cache hit rate
-        </div>
-        <div class="sparkline-wrap" x-show="!$store.dashboard.loading" style="display:none">
-          <svg viewBox="0 0 200 36" preserveAspectRatio="none">
-            <polygon :points="$store.dashboard.sparkTokensArea(200,36)" class="sparkline-area" fill="var(--blue)" />
-            <polyline :points="$store.dashboard.sparkTokens(200,36)" stroke="var(--blue)" />
-          </svg>
-        </div>
-      </div>
-
-      <!-- Total Cost -->
-      <div class="stat-card" :class="{ loading: $store.dashboard.loading }">
-        <div class="stat-label">Total Cost</div>
-        <div class="skel-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="skel-sub skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="skel-sparkline skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="stat-value" x-show="!$store.dashboard.loading" x-text="$store.dashboard.heroCost" style="display:none"></div>
-        <div class="stat-sub" x-show="!$store.dashboard.loading" style="display:none">
-          for <strong x-text="$store.dashboard.heroSessions"></strong> sessions
-        </div>
-        <div class="sparkline-wrap" x-show="!$store.dashboard.loading" style="display:none">
-          <svg viewBox="0 0 200 36" preserveAspectRatio="none">
-            <polygon :points="$store.dashboard.sparkCostArea(200,36)" class="sparkline-area" fill="var(--orange)" />
-            <polyline :points="$store.dashboard.sparkCost(200,36)" stroke="var(--orange)" />
-          </svg>
-        </div>
-      </div>
-
-      <!-- Cost / Session (ROI) -->
-      <div class="stat-card" :class="{ loading: $store.dashboard.loading }">
-        <div class="stat-label">Cost / Session</div>
-        <div class="skel-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="skel-sub skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="skel-sparkline skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="stat-value" x-show="!$store.dashboard.loading" x-text="$store.dashboard.heroCostPerSession" style="display:none"></div>
-        <div class="stat-sub" x-show="!$store.dashboard.loading" style="display:none">
-          avg per session &mdash; <strong x-text="$store.dashboard.heroRange"></strong>
-        </div>
-        <div class="sparkline-wrap" x-show="!$store.dashboard.loading" style="display:none">
-          <svg viewBox="0 0 200 36" preserveAspectRatio="none">
-            <polygon :points="$store.dashboard.sparkCpsArea(200,36)" class="sparkline-area" fill="var(--green)" />
-            <polyline :points="$store.dashboard.sparkCps(200,36)" stroke="var(--green)" />
-          </svg>
-        </div>
-      </div>
-
-    </div><!-- /hero-grid -->
-
-    <!-- -------------------------------------------------------------------
          TODAY'S ACTIVITY
          ---------------------------------------------------------------- -->
     <div class="section-title">Today's Activity</div>
@@ -1736,251 +1656,84 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
     </div>
 
     <!-- -------------------------------------------------------------------
-         THEME CONFIGURATOR
+         HERO STATS
          ---------------------------------------------------------------- -->
-    <div class="section-title">Card Theme</div>
-    <div class="theme-configurator"
-         x-data="{
-           THEMES: [
-             { name: 'catppuccin',      label: 'Catppuccin',    bg: '#1e1e2e', border: '#313244', title: '#cdd6f4', text: '#a6adc8', icon: '#89b4fa' },
-             { name: 'dracula',         label: 'Dracula',       bg: '#282a36', border: '#44475a', title: '#f8f8f2', text: '#6272a4', icon: '#bd93f9' },
-             { name: 'tokyo-night',     label: 'Tokyo Night',   bg: '#1a1b26', border: '#29355a', title: '#a9b1d6', text: '#787c99', icon: '#7aa2f7' },
-             { name: 'nord',            label: 'Nord',          bg: '#2e3440', border: '#3b4252', title: '#eceff4', text: '#d8dee9', icon: '#88c0d0' },
-             { name: 'gruvbox',         label: 'Gruvbox',       bg: '#282828', border: '#3c3836', title: '#ebdbb2', text: '#a89984', icon: '#83a598' },
-             { name: 'solarized-dark',  label: 'Solarized Dk', bg: '#002b36', border: '#073642', title: '#839496', text: '#657b83', icon: '#268bd2' },
-             { name: 'solarized-light', label: 'Solarized Lt', bg: '#fdf6e3', border: '#eee8d5', title: '#073642', text: '#657b83', icon: '#268bd2' },
-             { name: 'one-dark',        label: 'One Dark',      bg: '#282c34', border: '#3e4452', title: '#abb2bf', text: '#5c6370', icon: '#61afef' },
-             { name: 'monokai',         label: 'Monokai',       bg: '#272822', border: '#3e3d32', title: '#f8f8f2', text: '#90908a', icon: '#a6e22e' }
-           ],
-           selectedTheme: 'catppuccin',
-           selectedLayout: 'classic',
-           byotMode: false,
-           isPro: __IS_PRO__,
-           byot: { bg: '', title: '', text: '', icon: '', border: '' },
-           byotErrors: {},
-           copyDone: false,
-           _debounceTimer: null,
+    <div class="section-title">Overview</div>
+    <div class="hero-grid">
 
-           selectTheme(name) {
-             this.selectedTheme = name;
-             this.byotMode = false;
-           },
+      <!-- Collecting Since -->
+      <div class="stat-card" :class="{ loading: $store.dashboard.loading }">
+        <div class="stat-label">Collecting Since</div>
+        <div class="skel-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="skel-sub skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="skel-sparkline skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="stat-value" x-show="!$store.dashboard.loading" x-text="$store.dashboard.heroTenure" style="display:none"></div>
+        <div class="stat-sub" x-show="!$store.dashboard.loading" style="display:none">
+          <strong x-text="$store.dashboard.heroFirstDate"></strong>
+        </div>
+        <div class="sparkline-wrap" x-show="!$store.dashboard.loading" style="display:none">
+          <svg viewBox="0 0 200 36" preserveAspectRatio="none">
+            <polygon :points="$store.dashboard.sparkSessionsArea(200,36)" class="sparkline-area" fill="var(--orange)" />
+            <polyline :points="$store.dashboard.sparkSessions(200,36)" stroke="var(--orange)" />
+          </svg>
+        </div>
+      </div>
 
-           isValidHex(val) {
-             return /^#[0-9a-fA-F]{6}$/.test(val.trim());
-           },
+      <!-- Total Tokens -->
+      <div class="stat-card" :class="{ loading: $store.dashboard.loading }">
+        <div class="stat-label">Total Tokens</div>
+        <div class="skel-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="skel-sub skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="skel-sparkline skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="stat-value" x-show="!$store.dashboard.loading" x-text="$store.dashboard.heroTokens" style="display:none"></div>
+        <div class="stat-sub" x-show="!$store.dashboard.loading" style="display:none">
+          <strong x-text="$store.dashboard.heroCacheHitPct"></strong> cache hit rate
+        </div>
+        <div class="sparkline-wrap" x-show="!$store.dashboard.loading" style="display:none">
+          <svg viewBox="0 0 200 36" preserveAspectRatio="none">
+            <polygon :points="$store.dashboard.sparkTokensArea(200,36)" class="sparkline-area" fill="var(--blue)" />
+            <polyline :points="$store.dashboard.sparkTokens(200,36)" stroke="var(--blue)" />
+          </svg>
+        </div>
+      </div>
 
-           relativeLuminance(hex) {
-             const h = hex.replace('#','');
-             const r = parseInt(h.slice(0,2),16)/255;
-             const g = parseInt(h.slice(2,4),16)/255;
-             const b = parseInt(h.slice(4,6),16)/255;
-             const toL = c => c <= 0.03928 ? c/12.92 : Math.pow((c+0.055)/1.055, 2.4);
-             return 0.2126*toL(r) + 0.7152*toL(g) + 0.0722*toL(b);
-           },
+      <!-- Total Cost -->
+      <div class="stat-card" :class="{ loading: $store.dashboard.loading }">
+        <div class="stat-label">Total Cost</div>
+        <div class="skel-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="skel-sub skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="skel-sparkline skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="stat-value" x-show="!$store.dashboard.loading" x-text="$store.dashboard.heroCost" style="display:none"></div>
+        <div class="stat-sub" x-show="!$store.dashboard.loading" style="display:none">
+          for <strong x-text="$store.dashboard.heroSessions"></strong> sessions
+        </div>
+        <div class="sparkline-wrap" x-show="!$store.dashboard.loading" style="display:none">
+          <svg viewBox="0 0 200 36" preserveAspectRatio="none">
+            <polygon :points="$store.dashboard.sparkCostArea(200,36)" class="sparkline-area" fill="var(--orange)" />
+            <polyline :points="$store.dashboard.sparkCost(200,36)" stroke="var(--orange)" />
+          </svg>
+        </div>
+      </div>
 
-           contrastRatio(hex1, hex2) {
-             const l1 = this.relativeLuminance(hex1);
-             const l2 = this.relativeLuminance(hex2);
-             const lighter = Math.max(l1,l2);
-             const darker  = Math.min(l1,l2);
-             return (lighter + 0.05) / (darker + 0.05);
-           },
+      <!-- Cost / Session (ROI) -->
+      <div class="stat-card" :class="{ loading: $store.dashboard.loading }">
+        <div class="stat-label">Cost / Session</div>
+        <div class="skel-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="skel-sub skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="skel-sparkline skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="stat-value" x-show="!$store.dashboard.loading" x-text="$store.dashboard.heroCostPerSession" style="display:none"></div>
+        <div class="stat-sub" x-show="!$store.dashboard.loading" style="display:none">
+          avg per session &mdash; <strong x-text="$store.dashboard.heroRange"></strong>
+        </div>
+        <div class="sparkline-wrap" x-show="!$store.dashboard.loading" style="display:none">
+          <svg viewBox="0 0 200 36" preserveAspectRatio="none">
+            <polygon :points="$store.dashboard.sparkCpsArea(200,36)" class="sparkline-area" fill="var(--green)" />
+            <polyline :points="$store.dashboard.sparkCps(200,36)" stroke="var(--green)" />
+          </svg>
+        </div>
+      </div>
 
-           updateByot() {
-             if (!this.isPro) return;
-             const errors = {};
-             const fields = ['bg','title','text','icon','border'];
-             const vals = this.byot;
-
-             for (const f of fields) {
-               const v = (vals[f] || '').trim();
-               if (v && !this.isValidHex(v)) {
-                 errors[f] = 'Invalid hex (use #rrggbb)';
-               }
-             }
-
-             // Contrast checks vs bg (only if bg is valid and field is valid)
-             if (!errors['bg'] && vals.bg && this.isValidHex(vals.bg)) {
-               for (const f of ['title','text','icon']) {
-                 const v = (vals[f] || '').trim();
-                 if (v && this.isValidHex(v) && !errors[f]) {
-                   const ratio = this.contrastRatio(vals.bg, v);
-                   if (ratio < 3.0) {
-                     errors[f] = 'Low contrast (' + ratio.toFixed(1) + ':1, min 3:1)';
-                   }
-                 }
-               }
-             }
-
-             this.byotErrors = errors;
-
-             // Activate BYOT mode if all 5 fields are filled, valid, and pass contrast
-             const allFilled = fields.every(f => vals[f] && vals[f].trim());
-             const noErrors = Object.keys(errors).length === 0;
-             this.byotMode = allFilled && noErrors;
-           },
-
-           debouncedByotUpdate() {
-             clearTimeout(this._debounceTimer);
-             this._debounceTimer = setTimeout(() => this.updateByot(), 300);
-           },
-
-           _buildCardPath(username) {
-             if (this.byotMode) {
-               const b = this.byot;
-               const enc = (v) => encodeURIComponent(v.trim().replace('#',''));
-               return '/u/' + username
-                 + '?bg=' + enc(b.bg)
-                 + '&title=' + enc(b.title)
-                 + '&text=' + enc(b.text)
-                 + '&icon=' + enc(b.icon)
-                 + '&border=' + enc(b.border)
-                 + '&layout=' + this.selectedLayout;
-             }
-             return '/u/' + username
-               + '?theme=' + this.selectedTheme
-               + '&layout=' + this.selectedLayout;
-           },
-
-           buildPreviewUrl(username) {
-             return window.location.origin + this._buildCardPath(username);
-           },
-
-           buildEmbedCode(username) {
-             return '![ShipCard](https://shipcard.dev' + this._buildCardPath(username) + ')';
-           },
-
-           async copyEmbed(username) {
-             try {
-               await navigator.clipboard.writeText(this.buildEmbedCode(username));
-               this.copyDone = true;
-               setTimeout(() => { this.copyDone = false; }, 2000);
-             } catch {}
-           }
-         }">
-
-      <div class="theme-configurator-body">
-
-        <!-- Left: Theme swatches + BYOT -->
-        <div class="theme-controls">
-
-          <!-- Swatch grid -->
-          <div>
-            <div class="byot-title" style="margin-bottom:10px">Curated Themes</div>
-            <div class="theme-swatches">
-              <template x-for="t in THEMES" :key="t.name">
-                <button
-                  class="theme-swatch"
-                  :class="{ active: selectedTheme === t.name && !byotMode }"
-                  @click="selectTheme(t.name)"
-                  :title="t.label">
-                  <div class="swatch-box" :style="'background:' + t.bg + ';border-color:' + t.border">
-                    <span class="swatch-aa" :style="'color:' + t.title">Aa</span>
-                    <span class="swatch-dot" :style="'background:' + t.icon"></span>
-                  </div>
-                  <span class="swatch-label" x-text="t.label"></span>
-                </button>
-              </template>
-            </div>
-          </div>
-
-          <!-- BYOT section -->
-          <div class="byot-section">
-            <div class="byot-title">
-              Custom Colors
-              <span class="byot-badge-pro">PRO</span>
-            </div>
-
-            <div class="byot-fields" :style="!isPro ? 'opacity:0.35;pointer-events:none' : ''">
-              <template x-for="field in ['bg','title','text','icon','border']" :key="field">
-                <div class="byot-field">
-                  <label x-text="field"></label>
-                  <input
-                    type="text"
-                    :placeholder="'#' + (THEMES.find(t => t.name === selectedTheme) ? THEMES.find(t => t.name === selectedTheme)[field].slice(1) : 'rrggbb')"
-                    x-model="byot[field]"
-                    :class="{ invalid: byotErrors[field] }"
-                    @input="debouncedByotUpdate()"
-                    :disabled="!isPro"
-                  />
-                  <div class="byot-field-error" x-text="byotErrors[field] || ''"></div>
-                </div>
-              </template>
-            </div>
-
-            <!-- PRO lock overlay -->
-            <div class="byot-locked" x-show="!isPro" style="display:none">
-              <div class="upgrade-card">
-                <h4>Unlock PRO</h4>
-                <ul>
-                  <li>Custom theme colors (BYOT)</li>
-                  <li>Custom card slugs</li>
-                  <li>AI-powered insights</li>
-                  <li>Priority cache refresh</li>
-                </ul>
-                <div class="upgrade-pricing">
-                  <a href="/billing/checkout?interval=month" class="upgrade-btn">$2/month</a>
-                  <a href="/billing/checkout?interval=year" class="upgrade-btn upgrade-annual">$20/year <span class="save-tag">Save 17%</span></a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div><!-- /theme-controls -->
-
-        <!-- Right: Live preview + embed code -->
-        <div class="preview-section">
-
-          <!-- Layout selector + preview label -->
-          <div class="preview-controls">
-            <span class="preview-label">Preview</span>
-            <div class="btn-group" style="display:flex">
-              <button
-                :class="{ active: selectedLayout === 'classic' }"
-                @click="selectedLayout = 'classic'">Classic</button>
-              <button
-                :class="{ active: selectedLayout === 'compact' }"
-                @click="selectedLayout = 'compact'">Compact</button>
-              <button
-                :class="{ active: selectedLayout === 'hero' }"
-                @click="selectedLayout = 'hero'">Hero</button>
-            </div>
-          </div>
-
-          <!-- Card preview image -->
-          <div class="preview-img-wrap">
-            <img
-              :src="buildPreviewUrl('__USERNAME__')"
-              :key="buildPreviewUrl('__USERNAME__')"
-              alt="ShipCard preview"
-              loading="lazy"
-            />
-          </div>
-
-          <!-- Embed code -->
-          <div class="embed-code-wrap">
-            <div class="embed-code-header">
-              <span class="embed-code-label">Embed Code</span>
-              <button
-                class="copy-btn"
-                :class="{ copied: copyDone }"
-                @click="copyEmbed('__USERNAME__')"
-                x-text="copyDone ? 'Copied!' : 'Copy'">Copy</button>
-            </div>
-            <textarea
-              class="embed-code-textarea"
-              readonly
-              :value="buildEmbedCode('__USERNAME__')"
-              @click="$el.select()"
-            ></textarea>
-          </div>
-
-        </div><!-- /preview-section -->
-
-      </div><!-- /theme-configurator-body -->
-
-    </div><!-- /theme-configurator -->
+    </div><!-- /hero-grid -->
 
     <!-- -------------------------------------------------------------------
          OVERVIEW PANELS — Activity Heatmap (wide) + Daily Activity chart
@@ -2261,330 +2014,6 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
         </template>
       </div><!-- /insights loaded -->
     </div><!-- /insightsPanel -->
-
-    <!-- =====================================================================
-         BILLING
-         ================================================================== -->
-    <div x-data>
-      <!-- PRO billing info -->
-      <template x-if="$store.dashboard.isPro">
-        <div>
-          <div class="section-title">Billing</div>
-          <div class="billing-info">
-            <div class="billing-row">
-              <span class="billing-label">Plan</span>
-              <span class="billing-value">PRO <span class="pro-badge-sm">Active</span></span>
-            </div>
-            <div class="billing-row" x-show="$store.dashboard.periodEnd > 0">
-              <span class="billing-label">Next billing date</span>
-              <span class="billing-value" x-text="new Date($store.dashboard.periodEnd * 1000).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })"></span>
-            </div>
-            <div class="billing-actions">
-              <a href="/billing/portal" class="billing-link">Manage Subscription</a>
-            </div>
-          </div>
-        </div>
-      </template>
-
-      <!-- Free user plan info -->
-      <template x-if="!$store.dashboard.isPro">
-        <div>
-          <div class="section-title">Plan</div>
-          <div class="billing-info">
-            <div class="billing-row">
-              <span class="billing-label">Current plan</span>
-              <span class="billing-value">Free</span>
-            </div>
-            <p class="billing-upgrade-hint">Upgrade to PRO for custom themes, slugs, and AI insights.</p>
-          </div>
-        </div>
-      </template>
-    </div>
-
-    <!-- =====================================================================
-         CUSTOM CARD SLUGS
-         ================================================================== -->
-    <div x-data="{
-      slugs: [],
-      slugToken: sessionStorage.getItem('shipcard_slug_token') || '',
-      slugConnected: false,
-      slugLoading: false,
-      slugError: '',
-      newSlugName: '',
-      newSlugTheme: 'catppuccin',
-      newSlugLayout: 'classic',
-      newSlugError: '',
-      slugCopied: {},
-
-      SLUG_MIN: 3,
-      SLUG_MAX: 50,
-      SLUG_REGEX: /^[a-z0-9][a-z0-9-]*[a-z0-9]$/,
-      SLUG_RESERVED: new Set([
-        'admin','api','settings','config','dashboard',
-        'billing','sync','auth','webhook','community',
-        'configure','login','logout','help','support',
-        'pro','free','upgrade','pricing',
-      ]),
-
-      validateSlugName(s) {
-        if (!s || s.length < this.SLUG_MIN) return 'Slug must be at least 3 characters';
-        if (s.length > this.SLUG_MAX) return 'Slug must be 50 characters or fewer';
-        if (!this.SLUG_REGEX.test(s)) return 'Lowercase alphanumeric and hyphens only (no leading/trailing hyphens)';
-        if (this.SLUG_RESERVED.has(s)) return '\"' + s + '\" is a reserved word';
-        return null;
-      },
-
-      get slugNameError() {
-        if (!this.newSlugName) return '';
-        return this.validateSlugName(this.newSlugName) || '';
-      },
-
-      get canCreate() {
-        return this.newSlugName.length >= this.SLUG_MIN &&
-               this.validateSlugName(this.newSlugName) === null &&
-               !this.slugLoading;
-      },
-
-      async connect() {
-        const token = this.slugToken.trim();
-        if (!token) { this.slugError = 'Enter your bearer token first.'; return; }
-        this.slugLoading = true;
-        this.slugError = '';
-        try {
-          const res = await fetch('/u/__USERNAME__/slugs', {
-            headers: { Authorization: 'Bearer ' + token }
-          });
-          if (res.status === 401 || res.status === 403) {
-            this.slugError = 'Invalid token. Run \`shipcard login\` to get a fresh token.';
-            this.slugLoading = false;
-            return;
-          }
-          if (!res.ok) {
-            this.slugError = 'Connection failed (' + res.status + '). Try again.';
-            this.slugLoading = false;
-            return;
-          }
-          const data = await res.json();
-          this.slugs = data.slugs || [];
-          sessionStorage.setItem('shipcard_slug_token', token);
-          this.slugConnected = true;
-        } catch (err) {
-          this.slugError = 'Network error. Check your connection and try again.';
-        } finally {
-          this.slugLoading = false;
-        }
-      },
-
-      async createSlug() {
-        const err = this.validateSlugName(this.newSlugName);
-        if (err) { this.newSlugError = err; return; }
-        this.slugLoading = true;
-        this.newSlugError = '';
-        try {
-          const res = await fetch('/u/__USERNAME__/slugs', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: 'Bearer ' + this.slugToken,
-            },
-            body: JSON.stringify({
-              slug: this.newSlugName,
-              config: { theme: this.newSlugTheme, layout: this.newSlugLayout },
-            }),
-          });
-          if (res.status === 409) {
-            const data = await res.json();
-            this.newSlugError = data.error || 'Slug already exists or limit reached.';
-            return;
-          }
-          if (!res.ok) {
-            const data = await res.json().catch(() => ({}));
-            this.newSlugError = data.error || 'Failed to create slug (' + res.status + ').';
-            return;
-          }
-          const data = await res.json();
-          this.slugs.push({
-            slug: this.newSlugName,
-            config: JSON.stringify({ theme: this.newSlugTheme, layout: this.newSlugLayout }),
-          });
-          this.newSlugName = '';
-          this.newSlugTheme = 'catppuccin';
-          this.newSlugLayout = 'classic';
-        } catch {
-          this.newSlugError = 'Network error. Check your connection and try again.';
-        } finally {
-          this.slugLoading = false;
-        }
-      },
-
-      async deleteSlug(slugName) {
-        this.slugLoading = true;
-        try {
-          const res = await fetch('/u/__USERNAME__/slugs/' + slugName, {
-            method: 'DELETE',
-            headers: { Authorization: 'Bearer ' + this.slugToken },
-          });
-          if (!res.ok) {
-            const data = await res.json().catch(() => ({}));
-            this.slugError = data.error || 'Failed to delete slug.';
-            return;
-          }
-          this.slugs = this.slugs.filter(s => s.slug !== slugName);
-        } catch {
-          this.slugError = 'Network error. Could not delete slug.';
-        } finally {
-          this.slugLoading = false;
-        }
-      },
-
-      async copySlugUrl(slugName) {
-        const url = 'https://shipcard.dev/u/__USERNAME__/' + slugName;
-        try {
-          await navigator.clipboard.writeText(url);
-          this.slugCopied = { ...this.slugCopied, [slugName]: true };
-          setTimeout(() => {
-            const next = { ...this.slugCopied };
-            delete next[slugName];
-            this.slugCopied = next;
-          }, 2000);
-        } catch {}
-      },
-
-      slugConfig(s) {
-        try { return JSON.parse(s.config || '{}'); } catch { return {}; }
-      },
-    }">
-
-      <div class="slug-section">
-        <div class="section-title">Custom Card Slugs</div>
-
-        <!-- Connect CLI token form (visible when not connected) -->
-        <template x-if="!slugConnected">
-          <div class="slug-connect-form">
-            <label class="slug-connect-label" for="slug-token-input">
-              Connect with your CLI bearer token to manage slugs
-            </label>
-            <div class="slug-connect-row">
-              <input
-                id="slug-token-input"
-                class="slug-token-input"
-                type="password"
-                placeholder="Paste your bearer token..."
-                x-model="slugToken"
-                @keydown.enter="connect()"
-              />
-              <button
-                class="slug-connect-btn"
-                @click="connect()"
-                :disabled="slugLoading || !slugToken.trim()"
-                x-text="slugLoading ? 'Connecting...' : 'Connect'">Connect</button>
-            </div>
-            <p class="slug-connect-hint">
-              Run <code>shipcard login</code> then copy the token shown in the CLI.
-              Token is stored in sessionStorage only.
-            </p>
-            <div class="slug-error" x-show="slugError" x-text="slugError" style="display:none"></div>
-          </div>
-        </template>
-
-        <!-- Slug list (visible when connected) -->
-        <template x-if="slugConnected">
-          <div>
-            <!-- Error banner -->
-            <div class="slug-error" x-show="slugError" x-text="slugError" style="display:none;margin-bottom:12px"></div>
-
-            <!-- Slug list -->
-            <div class="slug-list">
-              <template x-if="slugs.length === 0">
-                <div class="slug-list-empty">No custom slugs yet. Create one below.</div>
-              </template>
-              <template x-for="s in slugs" :key="s.slug">
-                <div class="slug-item">
-                  <div class="slug-item-info">
-                    <div class="slug-item-name" x-text="s.slug"></div>
-                    <div class="slug-item-meta">
-                      <span x-text="slugConfig(s).theme || 'catppuccin'"></span>
-                      &nbsp;&middot;&nbsp;
-                      <span x-text="slugConfig(s).layout || 'classic'"></span>
-                    </div>
-                    <div class="slug-item-url" x-text="'shipcard.dev/u/__USERNAME__/' + s.slug"></div>
-                  </div>
-                  <div class="slug-item-actions">
-                    <button
-                      class="slug-copy-btn"
-                      :class="{ copied: slugCopied[s.slug] }"
-                      @click="copySlugUrl(s.slug)"
-                      x-text="slugCopied[s.slug] ? 'Copied!' : 'Copy URL'">Copy URL</button>
-                    <button
-                      class="slug-delete-btn"
-                      @click="deleteSlug(s.slug)"
-                      :disabled="slugLoading">Delete</button>
-                  </div>
-                </div>
-              </template>
-            </div>
-
-            <!-- Create form (PRO users) -->
-            <template x-if="$store.dashboard.isPro">
-              <div class="slug-create-form">
-                <div class="slug-create-title">Create New Slug</div>
-                <div class="slug-form-fields">
-                  <div class="slug-field">
-                    <label>Slug Name</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. dark-minimal"
-                      x-model="newSlugName"
-                      :class="{ invalid: slugNameError }"
-                      @keydown.enter="canCreate && createSlug()"
-                    />
-                    <div class="slug-field-error" x-text="slugNameError"></div>
-                  </div>
-                  <div class="slug-field">
-                    <label>Theme</label>
-                    <select x-model="newSlugTheme">
-                      <option value="catppuccin">Catppuccin</option>
-                      <option value="dracula">Dracula</option>
-                      <option value="tokyo-night">Tokyo Night</option>
-                      <option value="nord">Nord</option>
-                      <option value="gruvbox">Gruvbox</option>
-                      <option value="solarized-dark">Solarized Dk</option>
-                      <option value="one-dark">One Dark</option>
-                      <option value="monokai">Monokai</option>
-                    </select>
-                  </div>
-                  <div class="slug-field">
-                    <label>Layout</label>
-                    <select x-model="newSlugLayout">
-                      <option value="classic">Classic</option>
-                      <option value="compact">Compact</option>
-                      <option value="hero">Hero</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="slug-error" x-show="newSlugError" x-text="newSlugError" style="display:none;margin-bottom:12px"></div>
-                <button
-                  class="slug-create-btn"
-                  @click="createSlug()"
-                  :disabled="!canCreate"
-                  x-text="slugLoading ? 'Creating...' : 'Create Slug'">Create Slug</button>
-              </div>
-            </template>
-
-            <!-- Upgrade block for free users instead of create form -->
-            <template x-if="!$store.dashboard.isPro">
-              <div class="slug-upgrade-block">
-                <h4>Custom Slugs &mdash; PRO Feature</h4>
-                <p>Create clean, shareable card URLs like <code style="font-size:0.85rem;color:var(--orange);background:var(--bg);border:1px solid var(--border);border-radius:3px;padding:1px 5px">/u/__USERNAME__/dark-minimal</code></p>
-                <p>Each slug saves a unique card configuration (theme, layout).</p>
-                <a href="/billing/checkout?interval=month" class="upgrade-btn" style="display:inline-block;max-width:200px;margin:12px auto 0">Upgrade to PRO</a>
-              </div>
-            </template>
-          </div>
-        </template>
-
-      </div><!-- /slug-section -->
-    </div><!-- /slug x-data -->
 
   </div><!-- /dashboard content -->
 </div><!-- /page -->
@@ -3665,8 +3094,8 @@ function buildHeatmap(allDays) {
     const label = dateObj.toLocaleDateString('en', { month: 'short', day: 'numeric', year: 'numeric' });
     tooltip.textContent = val + ' session' + (val === '1' ? '' : 's') + ' on ' + label;
     const r = rect.getBoundingClientRect();
-    tooltip.style.left = (r.left + r.width / 2 - 60) + 'px';
-    tooltip.style.top = (r.top - 30) + 'px';
+    tooltip.style.left = (r.left + window.scrollX + r.width / 2 - 60) + 'px';
+    tooltip.style.top = (r.top + window.scrollY - 30) + 'px';
     tooltip.style.display = 'block';
   });
   container.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
@@ -3928,7 +3357,7 @@ function insightsPanel() {
     staleDays: 0,
     async init() {
       try {
-        const res = await fetch('/' + username + '/api/insights');
+        const res = await fetch('/u/' + username + '/api/insights');
         if (res.status === 404) { this.empty = true; this.loading = false; return; }
         if (!res.ok) { this.empty = true; this.loading = false; return; }
         const json = await res.json();
@@ -3974,9 +3403,9 @@ dashboardRoutes.get("/:username/dashboard", async (c) => {
 
   const html = DASHBOARD_HTML
     .replace(/__USERNAME__/g, username)
-    .replace("__IS_PRO__", isPro ? "true" : "false")
-    .replace("__SUBSCRIPTION_STATUS__", subscription?.status || "free")
-    .replace("__PAYMENT_FAILED__", subscription?.payment_failed_at ? "true" : "false")
-    .replace("__PERIOD_END__", String(subscription?.current_period_end || 0));
+    .replace(/__IS_PRO__/g, isPro ? "true" : "false")
+    .replace(/__SUBSCRIPTION_STATUS__/g, subscription?.status || "free")
+    .replace(/__PAYMENT_FAILED__/g, subscription?.payment_failed_at ? "true" : "false")
+    .replace(/__PERIOD_END__/g, String(subscription?.current_period_end || 0));
   return c.html(html);
 });
