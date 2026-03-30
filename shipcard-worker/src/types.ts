@@ -238,6 +238,12 @@ export interface SafeDailyStats {
   projects?: string[];
   /** Per-project breakdown. Only present when --show-projects flag is set. */
   byProject?: Record<string, PerProjectDailyStats>;
+  /**
+   * 24-bucket hourly session distribution (index 0=midnight, 23=11pm).
+   * Only present when the CLI computes and uploads hourly breakdowns.
+   * Used by computePeakHours() in the insights engine.
+   */
+  hourlyActivity?: number[];
 }
 
 /**
