@@ -1339,6 +1339,103 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
   .slug-upgrade-block .upgrade-btn {
     margin-top: 12px;
   }
+
+  /* -------------------------------------------------------------------------
+   * Insights section
+   * ---------------------------------------------------------------------- */
+  .insights-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .insight-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+  .insight-card h4 {
+    font-size: 13px;
+    color: var(--mid);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+  }
+  .insight-value {
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--fg);
+    line-height: 1.2;
+  }
+  .insight-sub {
+    font-size: 12px;
+    color: var(--mid);
+    margin-top: 4px;
+  }
+  .insight-detail {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--light);
+  }
+  .insight-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 4px 0;
+  }
+  .insight-bar-label {
+    width: 40px;
+    font-size: 12px;
+    color: var(--mid);
+    text-align: right;
+  }
+  .insight-bar-track {
+    flex: 1;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .insight-bar-fill {
+    height: 100%;
+    background: var(--orange);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+  }
+  .narrative-card {
+    background: linear-gradient(135deg, var(--surface), #1a1f2e);
+    border: 1px solid var(--blue);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .narrative-card .narrative-label {
+    font-size: 11px;
+    color: var(--blue);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+  .narrative-card .narrative-text {
+    font-size: 14px;
+    color: var(--light);
+    line-height: 1.7;
+  }
+  .stale-badge {
+    display: inline-block;
+    font-size: 11px;
+    color: var(--mid);
+    background: var(--border);
+    border-radius: 4px;
+    padding: 2px 8px;
+    margin-left: 8px;
+  }
+  .trend-up { color: var(--orange); }
+  .trend-down { color: var(--blue); }
+  .trend-flat { color: var(--mid); }
+  .streak-flame { color: var(--orange); }
 </style>
 </head>
 <body x-data x-init="$store.dashboard.load('__USERNAME__')">
@@ -2038,6 +2135,132 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
         </div>
       </div>
     </div>
+
+    <!-- =====================================================================
+         INSIGHTS
+         ================================================================== -->
+    <div x-data="insightsPanel()">
+      <div x-show="!loading">
+        <div class="section-title">
+          Insights
+          <template x-if="data && data.windowDays">
+            <span style="font-size:12px;font-weight:400;color:var(--mid);margin-left:6px" x-text="data.windowDays + '-day window'"></span>
+          </template>
+          <template x-if="staleDays > 3">
+            <span class="stale-badge" x-text="'Last updated ' + staleDays + ' days ago'"></span>
+          </template>
+        </div>
+
+        <!-- Empty state -->
+        <template x-if="empty">
+          <div class="insight-card" style="text-align:center;color:var(--mid);padding:32px 20px">
+            <p>Run <code style="color:var(--orange)">shipcard sync</code> to generate insights.</p>
+          </div>
+        </template>
+
+        <!-- Insights content -->
+        <template x-if="!empty && data">
+          <div>
+            <!-- PRO narrative card (only when narrative data exists) -->
+            <template x-if="data.narrative">
+              <div class="narrative-card">
+                <div class="narrative-label">AI Weekly Summary</div>
+                <div class="narrative-text" x-text="data.narrative"></div>
+              </div>
+            </template>
+
+            <!-- Insight cards grid -->
+            <div class="insights-grid">
+
+              <!-- Peak Activity card -->
+              <div class="insight-card">
+                <h4 x-text="data.peakHours ? 'Peak Hours' : 'Peak Days'"></h4>
+                <!-- Peak hours bar chart -->
+                <template x-if="data.peakHours && data.peakHours.length > 0">
+                  <div>
+                    <template x-for="(item, i) in data.peakHours.slice(0, 3)" :key="i">
+                      <div class="insight-bar">
+                        <span class="insight-bar-label" x-text="item.hour + ':00'"></span>
+                        <div class="insight-bar-track">
+                          <div class="insight-bar-fill"
+                            :style="'width:' + Math.round((item.totalSessions / data.peakHours[0].totalSessions) * 100) + '%'">
+                          </div>
+                        </div>
+                        <span style="font-size:11px;color:var(--mid);width:24px;text-align:right" x-text="item.totalSessions"></span>
+                      </div>
+                    </template>
+                  </div>
+                </template>
+                <!-- Peak days bar chart (fallback when no hourly data) -->
+                <template x-if="!data.peakHours && data.peakDays && data.peakDays.length > 0">
+                  <div>
+                    <template x-for="(item, i) in data.peakDays.slice(0, 3)" :key="i">
+                      <div class="insight-bar">
+                        <span class="insight-bar-label" x-text="['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][item.dayOfWeek] || item.dayOfWeek"></span>
+                        <div class="insight-bar-track">
+                          <div class="insight-bar-fill"
+                            :style="'width:' + Math.round((item.avgSessions / data.peakDays[0].avgSessions) * 100) + '%'">
+                          </div>
+                        </div>
+                        <span style="font-size:11px;color:var(--mid);width:32px;text-align:right" x-text="item.avgSessions.toFixed(1)"></span>
+                      </div>
+                    </template>
+                  </div>
+                </template>
+                <!-- No activity data -->
+                <template x-if="!data.peakHours && (!data.peakDays || data.peakDays.length === 0)">
+                  <div class="insight-detail" style="color:var(--mid)">No activity data yet.</div>
+                </template>
+              </div>
+
+              <!-- Cost Trend card -->
+              <div class="insight-card">
+                <h4>Cost Trend</h4>
+                <template x-if="data.costTrend && data.costTrend.weeks && data.costTrend.weeks.length > 0">
+                  <div>
+                    <div class="insight-value" x-text="formatCost(data.costTrend.weeks[data.costTrend.weeks.length - 1])"></div>
+                    <div class="insight-sub">
+                      <span :class="data.costTrend.direction === 'up' ? 'trend-up' : data.costTrend.direction === 'down' ? 'trend-down' : 'trend-flat'">
+                        <span x-text="data.costTrend.direction === 'up' ? '↑' : data.costTrend.direction === 'down' ? '↓' : '—'"></span>
+                        <span x-text="data.costTrend.deltaPercent != null ? Math.abs(data.costTrend.deltaPercent) + '% vs last week' : 'vs last week'"></span>
+                      </span>
+                    </div>
+                    <div class="insight-detail" x-show="data.costTrend.weeks.length >= 2">
+                      <span x-text="data.costTrend.weeks.slice(-2).map((c, i) => 'W' + (i+1) + ': ' + formatCost(c)).join(' → ')"></span>
+                    </div>
+                  </div>
+                </template>
+                <template x-if="!data.costTrend || !data.costTrend.weeks || data.costTrend.weeks.length === 0">
+                  <div class="insight-detail" style="color:var(--mid)">No cost data yet.</div>
+                </template>
+              </div>
+
+              <!-- Coding Streak card -->
+              <div class="insight-card">
+                <h4>Coding Streak</h4>
+                <template x-if="data.streak">
+                  <div>
+                    <div class="insight-value">
+                      <span class="streak-flame">🔥</span>
+                      <span x-text="data.streak.current"></span>
+                    </div>
+                    <div class="insight-sub" x-text="data.streak.current === 1 ? 'day streak' : 'days streak'"></div>
+                    <div class="insight-detail">
+                      <div>Longest: <span x-text="data.streak.longest"></span> days</div>
+                      <div>Active this week: <span x-text="data.streak.activeDaysThisWeek"></span>/7 days</div>
+                    </div>
+                  </div>
+                </template>
+                <template x-if="!data.streak">
+                  <div class="insight-detail" style="color:var(--mid)">No streak data yet.</div>
+                </template>
+              </div>
+
+            </div><!-- /insights-grid -->
+          </div>
+        </template>
+      </div><!-- /insights loaded -->
+    </div><!-- /insightsPanel -->
 
     <!-- =====================================================================
          BILLING
@@ -3691,6 +3914,39 @@ document.addEventListener('alpine:initialized', () => {
     }
   });
 });
+
+// ---------------------------------------------------------------------------
+// insightsPanel() — Alpine component for the Insights section
+// Fetches pre-computed insights from GET /:username/api/insights (no live LLM)
+// ---------------------------------------------------------------------------
+const username = '__USERNAME__';
+function insightsPanel() {
+  return {
+    data: null,
+    empty: false,
+    loading: true,
+    staleDays: 0,
+    async init() {
+      try {
+        const res = await fetch('/' + username + '/api/insights');
+        if (res.status === 404) { this.empty = true; this.loading = false; return; }
+        if (!res.ok) { this.empty = true; this.loading = false; return; }
+        const json = await res.json();
+        this.data = json.data;
+        // Compute stale days
+        if (this.data && this.data.computedAt) {
+          this.staleDays = Math.floor((Date.now() - new Date(this.data.computedAt).getTime()) / 86400000);
+        }
+      } catch {
+        this.empty = true;
+      }
+      this.loading = false;
+    },
+    formatCost(cents) {
+      return '$' + (cents / 100).toFixed(2);
+    }
+  };
+}
 </script>
 
 </body>
