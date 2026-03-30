@@ -1,5 +1,32 @@
 # Project Milestones: ShipCard
 
+## v2.0 Themes + Monetization (Shipped: 2026-03-29)
+
+**Delivered:** Sustainable business layer — 9 curated card themes, Stripe PRO subscriptions ($2/mo), custom URL slugs, AI-powered weekly insights, and polished Clack CLI.
+
+**Phases completed:** 16-21 (22 plans total)
+
+**Key accomplishments:**
+- Agent-agnostic SourceAdapter architecture for future multi-agent support
+- 9 curated card themes with WCAG contrast validation and BYOT custom colors for PRO
+- Stripe subscription billing with D1 strong consistency and GitHub OAuth checkout flow
+- PRO card features: SVG badge, custom URL slugs with saved configs, instant cache refresh
+- AI-powered weekly coding insights (peak hours, cost trends, streaks) via Workers AI
+- Polished Clack CLI with TTY-guarded interactive prompts across all 6 commands
+
+**Stats:**
+- 358 files created/modified
+- ~19,714 lines of TypeScript/HTML/JSON
+- 6 phases, 22 plans
+- 2 days from start to ship (2026-03-28 → 2026-03-29)
+- 91 commits
+
+**Git range:** `docs(16): capture phase context` → `docs(21): complete Clack CLI phase`
+
+**What's next:** Production deploy (Stripe setup, D1 migration, wrangler deploy), then user acquisition
+
+---
+
 ## v1.0 MVP (Shipped: 2026-03-27)
 
 **Delivered:** Full analytics platform for agentic developers — local JSONL parser + CLI + MCP server, Cloudflare Worker serving embeddable SVG cards, analytics dashboard, and community leaderboard.

@@ -2,19 +2,19 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-28)
+See: .planning/PROJECT.md (updated 2026-03-29)
 
 **Core value:** Developers using Claude Code can see what they shipped and what it cost, and share verifiable proof via an embeddable card and analytics dashboard.
-**Current focus:** v2.0 — Themes + Monetization (complete)
+**Current focus:** Planning next milestone
 
 ## Current Position
 
-Phase: 21 — Clack CLI (complete)
-Plan: 03 of 3 — All plans complete
-Status: Phase complete
-Last activity: 2026-03-30 — Phase 21 verified and approved: all CLI commands have Clack framing, spinners, confirm prompts
+Phase: 21 of 21 (all milestones complete)
+Plan: N/A
+Status: Ready for next milestone
+Last activity: 2026-03-29 — v2.0 milestone completed and archived
 
-Progress: ████████████ 100% (21/21 v2.0 plans complete across phases 16-21)
+Progress: ████████████ 100% (v1.0 + v1.1 + v2.0 shipped)
 
 ## Performance Metrics
 
@@ -31,10 +31,12 @@ Progress: ████████████ 100% (21/21 v2.0 plans complete a
 - ~14,396 LOC total project
 - 1 day (2026-03-27)
 
-**v2.0 Totals (complete):**
-- 6 phases, 21 plans
-- 27 requirements across 6 categories (27 complete)
-- 5 days (2026-03-28 → 2026-03-29)
+**v2.0 Totals:**
+- 6 phases, 22 plans
+- 91 commits
+- 358 files changed (+22,129 / -2,024)
+- ~19,714 LOC total project
+- 2 days (2026-03-28 → 2026-03-29)
 
 ## Accumulated Context
 
@@ -42,87 +44,18 @@ Progress: ████████████ 100% (21/21 v2.0 plans complete a
 
 See PROJECT.md Key Decisions table for full history.
 
-### Decisions
-
-| Phase | Decision | Rationale |
-|-------|----------|-----------|
-| 16-01 | Used git mv for directory rename | Preserves 100% git history across all 81 renamed files |
-| 16-01 | Left historical shiplog CLI command name in old phase plans | Accurate historical context, only path refs updated |
-| 16-01 | shipcard-worker verified via tsc --noEmit (no build script) | Wrangler handles compilation; noEmit is correct for CF Workers |
-| 16-02 | Function-object style for ClaudeCodeAdapter | Matches codebase conventions; no class keyword anywhere in codebase |
-| 16-02 | ParseResult re-exported from adapters/interface.ts | Engine never reaches into parser internals; clean import boundary |
-| 16-02 | Default adapter is "claude-code" | Zero breaking changes; EngineOptions.adapter is optional |
-| 16-02 | v2.0.0 bumped in both packages simultaneously | Per CLAUDE.md versioning rules; both packages share same version |
-| 17-01 | MIN_RATIO = 3.0 (WCAG 1.4.11 for UI components, not 4.5:1) | SVG card is a graphic/UI component, not body text; 4.5:1 rejects valid palettes |
-| 17-01 | resolveThemeV2() defaults to catppuccin for unknown/missing theme | New requests get best visual default; legacy ?theme=dark still routes to github-dark |
-| 17-01 | resolveCuratedTheme() returns null (not throws) for unknown names | Card route handles gracefully without try/catch |
-| 17-02 | PRO gate checked before contrast validation | Prevents free users from learning which color combos would pass contrast |
-| 17-02 | BYOT cards skip KV cache entirely | Prevents unbounded cache growth from arbitrary hex combinations |
-| 17-02 | Default ?theme is catppuccin (not github-dark) | New users get best visual default; legacy ?theme=dark still works |
-| 17-03 | Theme Configurator uses local x-data (not global Alpine store) | Self-contained component; no store pollution |
-| 17-03 | isPro injected server-side via __IS_PRO__ placeholder | No client-side fetch flash; single KV read at page serve time |
-| 17-03 | byotMode activates only when all 5 fields filled + valid + passing contrast | Prevents partial BYOT URLs from being served |
-| 17-03 | Preview img uses window.location.origin, embed code uses shipcard.dev | Preview must work in local dev; embed code is for users to paste in READMEs |
-| 17-03 | Theme palettes embedded inline in HTML (not fetched) | Avoids extra API call; 9 themes is small enough for inline data |
-| 17-03 | BYOT inputs debounced at 300ms | Prevents excessive card fetches while user types hex values |
-| 18-01 | Stripe.createFetchHttpClient() for CF Workers | Workers runtime has no Node.js http module; fetch-based client mandatory |
-| 18-01 | past_due treated as PRO in isUserProFromD1() | Grace period for payment failures; prevents immediate access loss |
-| 18-01 | D1 chosen over KV for subscriptions | Strong consistency required for billing state; KV eventual consistency unsuitable |
-| 18-01 | ON CONFLICT(username) DO UPDATE for upsertSubscription | Handles first-time subscribers and webhook updates in single query |
-| 18-03 | GET + GitHub OAuth redirect flow for billing (no Bearer tokens) | Dashboard is public — OAuth redirect is the only viable browser auth mechanism |
-| 18-03 | BillingState with nonce encoded as base64url JSON in OAuth state param | Carries checkout/portal intent through redirect; nonce prevents replay attacks |
-| 18-03 | isUserPro() kept as thin wrapper in kv.ts after D1 migration | Avoids changing all call sites; only param type changed from KVNamespace to D1Database |
-| 18-02 | getSubscriptionPeriodEnd() reads from SubscriptionItem (Stripe v21) | stripe-node v21 moved current_period_end from Subscription root to SubscriptionItem |
-| 18-02 | getInvoiceSubscriptionId() navigates invoice.parent.subscription_details | stripe-node v21 moved invoice.subscription to nested parent.subscription_details path |
-| 18-02 | markEventProcessed before processing body | Concurrent delivery prevention; mark-before-process ensures only one execution proceeds |
-| 18-04 | isPro/billing state in Alpine.store('dashboard') | Shared state needed across filter-bar, banner, and billing section without prop drilling |
-| 18-04 | Payment banner outside .page div, directly below filter-bar | Maximum visibility; always above all page content even on scroll |
-| 18-04 | Billing section uses x-if templates (not x-show) | Avoids rendering both PRO and free DOM simultaneously |
-| 19-02 | card_slugs.config stored as TEXT (JSON string) | Keeps schema minimal; SlugConfig shape can evolve without D1 schema migrations |
-| 19-02 | validateSlug returns null (valid) or error string (invalid) | Consistent with existing error pattern in codebase; callers check for null |
-| 19-03 | slugRoutes mounted before cardRoutes in index.ts | Multi-segment /:username/slugs must match before /:username single-segment catch-all |
-| 19-03 | Slug KV key: card:{u}:slug:{s} namespace | Distinct from card:{u}:{layout}:t={theme} standard keys; prevents cache collisions |
-| 19-03 | Slug card route renders with isPro:true always | Only PRO users can create slugs, so all slug cards are PRO by definition |
-| 19-03 | resolveCuratedTheme falls back to catppuccin for unknown/missing theme in slug config | Matches existing card.ts behavior; graceful default for stale or partial configs |
-| 19-04 | subcommand/target added to ParsedCliArgs as positionals[1]/[2] | Generic subcommand dispatch pattern reusable by any future command |
-| 19-04 | Slug validation constants mirrored from worker (not imported) | CLI has zero dependency on worker package; keeps CLI self-contained |
-| 19-05 | Slug section uses local x-data (not Alpine.store) | Self-contained; slug state doesn't need sharing with other dashboard components |
-| 19-05 | Bearer token in sessionStorage (not localStorage) | Privacy-first; user re-connects each session intentionally |
-| 20-01 | BaseAiTextGenerationModels removed from ai.run() cast | Type doesn't exist; string literal satisfies keyof AiModels generic constraint directly |
-| 20-01 | hourlyActivity?: number[] added to SafeDailyStats | compute.ts requires the field; optional so old payloads still validate |
-| 20-01 | peakHours returns undefined when no hourlyActivity data | Cleaner than empty object; callers guard with if(insights.peakHours) |
-| 20-03 | PRO narrative uses two-write pattern to KV (stats first, narrative after waitUntil) | CLI gets 200 immediately; dashboard shows partial data while AI generates |
-| 20-03 | Reused isPro variable already computed for slug pre-rendering | Avoids second D1 query in sync handler |
-| 20-03 | Insights API endpoint is public and CORS-enabled | Consistent access model with stats and timeseries endpoints |
-| 20-04 | insightsPanel() references server-injected username const directly | Avoids Alpine store timing dependency; username known at page generation time |
-| 20-04 | No upgrade banners inside insights panel | Per CONTEXT.md: /upgrade page is the single place for free-vs-PRO comparison; free users see real 14-day data |
-| 21-01 | All Clack imports centralized in clack.ts | Commands never import from @clack/prompts directly; single import point enforces TTY-guard pattern |
-| 21-01 | intro() is a no-op in non-TTY (not stderr write) | Pipe and MCP consumers must see zero UI chrome; even stderr framing would break consumers |
-| 21-01 | Silent try/catch fallback on all TTY Clack calls | Edge-case terminal robustness; any rendering error silently falls through to non-TTY path |
-| 21-02 | spinner.start() called inside onVerification callback | Note box must fully render before spinner; ensures user sees URL+code before animation begins |
-| 21-02 | spinnerStarted flag guards spinner.stop() in catch block | Prevents stop() call if auth fails before device code generation (onVerification never fired) |
-| 21-02 | outro() replaces stdout write in TTY; non-TTY keeps stdout write | TTY gets branded farewell; pipe/script consumers still receive parseable "Logged in as {username}" on stdout |
-| 21-02 | tty = isTTY() hoisted once at top of runLogin() | Single branch point; eliminates repeated isTTY() calls and establishes canonical pattern for future write commands |
-| 21-03 | Sync preview table stays as process.stdout.write | Data output must not be converted to Clack log calls — piped consumers parse the preview table |
-| 21-03 | useClack local var for compound guards (isTTY && !flags.json) | Computed once per subhandler; avoids repeated compound expressions throughout slug list |
-| 21-03 | Spinner stop before logError on failure | Prevents dangling spinner animation; s.stop() before logError() and process.exit(1) |
-| 21-03 | slug --json bypasses all Clack regardless of TTY state | --json is an explicit machine-readable flag; overrides TTY framing |
-
 ### Pending Todos
 
 - Set up Stripe account (create products, configure portal, get API keys)
 - Create D1 database: `npx wrangler d1 create shipcard-db` then update wrangler.jsonc database_id
 - Apply D1 schema: `npx wrangler d1 execute shipcard-db --file=src/db/schema.sql`
-- Deploy worker with D1 + Stripe secrets
-### Blockers/Concerns
-
-- [Action]: Replace placeholder OAuth client ID in login.ts with real GitHub OAuth App
-- [Action]: Set real KV namespace IDs in wrangler.jsonc before production deploy
-- [Action]: Replace D1 database_id placeholder in wrangler.jsonc after `wrangler d1 create`
-- [Action]: Set Stripe secrets via `wrangler secret put` before production deploy
+- Deploy worker with D1 + Stripe + AI secrets
+- Replace placeholder OAuth client ID in login.ts with real GitHub OAuth App
+- Set real KV namespace IDs in wrangler.jsonc before production deploy
+- Run 18 visual/runtime human verification tests with live Worker + Stripe
 
 ## Session Continuity
 
-Last session: 2026-03-30T04:00:00Z
-Stopped at: Phase 21 complete — v2.0 milestone fully complete
-Resume with: /gsd:audit-milestone or /gsd:complete-milestone
+Last session: 2026-03-30T04:40:00Z
+Stopped at: v2.0 milestone archived and tagged
+Resume with: /gsd:new-milestone or production deploy tasks

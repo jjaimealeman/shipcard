@@ -2,7 +2,7 @@
 
 ## What This Is
 
-ShipCard is the analytics platform for agentic developers. A local MCP server + CLI reads Claude Code JSONL files, computes cost and activity analytics, and generates embeddable SVG stats cards. A Cloudflare Worker serves cards at the edge, hosts an analytics dashboard, and powers a community leaderboard. Privacy-first — nothing leaves your machine unless you opt in.
+ShipCard is the analytics platform for agentic developers. A local MCP server + CLI reads Claude Code JSONL files, computes cost and activity analytics, and generates embeddable SVG stats cards. A Cloudflare Worker serves themed cards at the edge, hosts an analytics dashboard with AI-powered insights, and powers a community leaderboard. PRO subscribers get custom themes, URL slugs, and weekly coding insights. Privacy-first — nothing leaves your machine unless you opt in.
 
 ## Core Value
 
@@ -10,27 +10,21 @@ Developers using Claude Code can see what they shipped and what it cost, and sha
 
 ## Current State
 
-**Version:** v1.1 shipped 2026-03-28
+**Version:** v2.0 shipped 2026-03-29
 **Package:** `shipcard` on npm (MIT licensed)
-**Codebase:** ~14,396 LOC TypeScript/HTML/JSON
-**Stack:** Node.js/TypeScript local tool + Cloudflare Worker + KV
+**Codebase:** ~19,714 LOC TypeScript/HTML/JSON
+**Stack:** Node.js/TypeScript local tool + Cloudflare Worker + D1 + KV
 
-**What shipped in v1.0:**
-- Streaming JSONL parser with resilient deduplication
-- CLI: `shipcard summary`, `costs`, `card`, `login`, `sync`
-- MCP server: `shipcard:summary`, `shipcard:costs`, `shipcard:card`
-- SVG card renderer: 3 layouts (classic, compact, hero) x 3 styles x 2 themes
-- Cloudflare Worker: card serving, OAuth login, v1+v2 sync, JSON API
-- Analytics dashboard: 9 chart panels with Alpine.js + Chart.js
-- Community: homepage teaser, /community leaderboard, cards-served counter
-- Landing page at shipcard.dev with live card configurator
-
-**What shipped in v1.1:**
-- Today's Activity hero (4 metrics with % change vs yesterday, calendar day boundaries)
-- Peak Days cards (4 per-metric all-time records with date and project name)
-- Project Activity sort toggle (messages, tokens, sessions, cost)
-- Per-project stats in sync payload (tokens, sessions, cost per project per day)
-- Dashboard section reorder (static sections first, range-reactive below)
+**What shipped in v2.0:**
+- Agent-agnostic SourceAdapter architecture (ClaudeCodeAdapter, extensible registry)
+- 9 curated card themes (Catppuccin, Dracula, Tokyo Night, Nord, Gruvbox, Solarized Dark/Light, One Dark, Monokai)
+- BYOT custom colors for PRO users with WCAG 3:1 contrast validation
+- Stripe subscriptions ($2/mo or $20/yr) with D1 strong consistency
+- GitHub OAuth checkout flow (no Bearer tokens in browser)
+- PRO badge on SVG cards, custom URL slugs with saved configs
+- AI-powered weekly insights (peak hours, cost trends, streaks) via Workers AI
+- Polished Clack CLI with TTY-guarded interactive prompts
+- Dashboard theme configurator, billing UI, slug management, insights panel
 
 ## Requirements
 
@@ -53,30 +47,35 @@ Developers using Claude Code can see what they shipped and what it cost, and sha
 - ✓ Project Activity toggles — sort by messages, tokens, sessions, or cost — v1.1
 - ✓ Per-project stats in sync payload — tokens, sessions, cost per project per day — v1.1
 - ✓ Neutral direction indicators for % change (orange/blue, not red/green) — v1.1
+- ✓ 9 curated card themes with URL param selection — v2.0
+- ✓ BYOT custom colors with WCAG 3:1 contrast validation (PRO) — v2.0
+- ✓ Theme preview in dashboard card configurator — v2.0
+- ✓ Stripe PRO subscriptions ($2/mo, $20/yr) with D1 strong consistency — v2.0
+- ✓ Webhook lifecycle handling (create, update, cancel, payment failure) — v2.0
+- ✓ Customer Portal for subscription management — v2.0
+- ✓ Upgrade prompts at PRO feature touchpoints — v2.0
+- ✓ PRO badge on SVG cards — v2.0
+- ✓ Custom URL slugs with saved card configs (PRO) — v2.0
+- ✓ Instant cache refresh on PRO sync — v2.0
+- ✓ AI weekly insights (peak hours, cost trends, streaks) — v2.0
+- ✓ Insights pre-computed at sync time via Workers AI — v2.0
+- ✓ Clack CLI with TTY-guarded interactive prompts — v2.0
+- ✓ SourceAdapter interface with ClaudeCodeAdapter — v2.0
 
 ### Active
 
-**v2.0 — Themes + Monetization**
-
-- [ ] Curated card themes (8-10: Catppuccin, Dracula, Tokyo Night, Nord, Gruvbox, etc.)
-- [ ] BYOT (Bring Your Own Theme) — custom colors/fonts, paid perk
-- [ ] Stripe integration — $1/mo solo tier, linked to GitHub OAuth identity
-- [ ] Free vs paid gating — free gets curated themes, paid gets BYOT + extras
-- [ ] Custom card URL slugs — `/u/:username/:slug`, paid users get unlimited, free gets 1
-- [ ] AI coding insights — pre-computed weekly digest (peak hours, cost trends, top projects)
-- [ ] PRO badge on SVG card — social proof flex for paid users
-- [ ] Priority CDN — paid cards refresh instantly on sync, free refreshes in 1 hour
-- [ ] Clack CLI — `@clack/prompts` for beautiful interactive CLI experience
-- [ ] Agent-agnostic data model — prep architecture so future agents (Kiro, OpenCode, Pi) slot in clean
+(No active requirements — next milestone TBD)
 
 ### Deferred (future milestones)
 
+- BYOT saved presets (named theme configs stored per user)
 - Support Codex CLI JSONL format
 - Support Gemini CLI log format
 - Team dashboards with cost allocation (`/t/:team-slug/dashboard`, $5/mo)
 - Burn rate predictor (estimated cost remaining in billing window)
 - Natural language date parsing (--since yesterday)
 - Per-chart export buttons (PNG/JSON/SVG)
+- Weekly email digest of AI insights
 
 ### Out of Scope
 
@@ -86,23 +85,25 @@ Developers using Claude Code can see what they shipped and what it cost, and sha
 - Session replay or detailed tool-call timelines — too complex, low ROI
 - Mobile or native desktop app — web/terminal only
 - Multi-agent JSONL parsing — wait for community demand before investing
+- Monthly $1 pricing — Stripe fees destroy 33% margin
 
 ## Context
 
 - Claude Code JSONL files live at `~/.claude/projects/` — parser handles schema changes gracefully
 - ccusage (12K GitHub stars) validates demand for local Claude Code analytics
 - github-readme-stats (67K stars) validates embeddable card mechanic
-- Cloudflare Workers + KV eliminates rate-limit/cold-start problems that plague Vercel-based alternatives
+- Cloudflare Workers + KV + D1 eliminates rate-limit/cold-start problems that plague Vercel-based alternatives
 - Target users: solo devs on metered Claude plans ($100-300/mo) + vibe coders who want proof-of-shipping
 - Alpha success metric: 500 GitHub stars, 1K npm downloads, 200 cards generated in first month
 - Reddit (r/vibecoding, r/ClaudeCode, r/ClaudeAI) is the launch channel
 
 ## Constraints
 
-- **Tech stack**: Node.js/TypeScript for local tool, Cloudflare Worker + KV for cloud — matches existing expertise
+- **Tech stack**: Node.js/TypeScript for local tool, Cloudflare Worker + D1 + KV for cloud — matches existing expertise
 - **Distribution**: Must be npm-installable with copy-paste MCP config — friction kills adoption
 - **Privacy**: MIT licensed, local-first, opt-in cloud. Non-negotiable — biggest adoption blocker if violated
 - **Naming**: Package is `shipcard` (shiplog was taken on npm)
+- **Pricing**: $2/mo minimum — Stripe fees make $1/mo unsustainable
 
 ## Key Decisions
 
@@ -115,15 +116,18 @@ Developers using Claude Code can see what they shipped and what it cost, and sha
 | SVG renderer copied into Worker | No cross-package import complexity | ✓ Good — independent deploys |
 | Alpine.js + Chart.js for dashboard | No build step, CDN-loaded | ✓ Good — fast iteration |
 | Two-layer privacy validation | CLI strips + Worker rejects banned fields | ✓ Good — defense in depth |
-| Phase 1 then Phase 2 sequential | Local tool must work before card has data | ✓ Good — natural dependency |
 | v1.1 dashboard on feature branch | v2.0 reserved for monetized tier | ✓ Good — shipped and merged |
-| Chart update in-place (not destroy/recreate) | Canvas context breaks on destroy/recreate cycle | ✓ Good — all 4 sort metrics work |
-| Dashboard section reorder | Static sections first, range-reactive below | ✓ Good — better UX hierarchy |
-| GitHub OAuth + Stripe for payments | Keep single auth provider, link Stripe by GitHub user ID | — Pending |
-| $1/mo solo tier | Low barrier, high volume target | — Pending |
-| BYOT as paid differentiator | Free curated themes drive adoption, custom theming drives revenue | — Pending |
-| Clack for CLI UX | Premium interactive CLI feel, replaces raw commander output | — Pending |
-| Agent-agnostic data model | Prep for Kiro/OpenCode/Pi without building parsers yet | — Pending |
+| GitHub OAuth + Stripe for payments | Single auth provider, link Stripe by GitHub user ID | ✓ Good — stateless browser flow |
+| $2/mo solo tier ($20/yr) | $1/mo destroyed by Stripe fees | ✓ Good — sustainable margin |
+| BYOT as paid differentiator | Free curated themes drive adoption, custom theming drives revenue | ✓ Good — clear upgrade path |
+| D1 over KV for subscriptions | Strong consistency required for billing state | ✓ Good — no eventual-consistency billing bugs |
+| GET + GitHub OAuth redirect for billing | Dashboard is public, no Bearer tokens in browser | ✓ Good — works without client-side auth |
+| catppuccin as default theme | Best visual default for new users | ✓ Good — modern, appealing |
+| WCAG 3:1 for BYOT contrast | UI component standard (not body text 4.5:1) | ✓ Good — practical threshold |
+| Clack for CLI UX | Premium interactive CLI feel | ✓ Good — beautiful terminal output |
+| Agent-agnostic SourceAdapter | Prep for Kiro/OpenCode/Pi without building parsers yet | ✓ Good — clean extension point |
+| Insights at sync time (not cron) | Simpler, more immediate, no scheduled worker needed | ✓ Good — instant feedback |
+| Workers AI for narrative generation | Built-in CF binding, no external API keys | ✓ Good — zero config for users |
 
 ---
-*Last updated: 2026-03-28 after v2.0 milestone started*
+*Last updated: 2026-03-29 after v2.0 milestone completed*
