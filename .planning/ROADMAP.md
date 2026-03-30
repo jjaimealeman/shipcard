@@ -92,7 +92,7 @@ Plans:
 
 ---
 
-## v2.0 Themes + Monetization (Phases 16-21) — IN PROGRESS
+## v2.0 Themes + Monetization (Phases 16-21) — SHIPPED 2026-03-29
 
 **Milestone Goal:** Turn ShipCard into a sustainable business — curated themes make cards worth sharing, Stripe subscriptions create recurring revenue, PRO features justify the upgrade, and AI insights make the dashboard indispensable for power users.
 
@@ -206,9 +206,9 @@ Plans:
 **Plans:** 3 plans
 
 Plans:
-- [ ] 21-01-PLAN.md — Install @clack/prompts, create TTY guard module, add light framing to read-only commands
-- [ ] 21-02-PLAN.md — Full Clack walkthrough for login command
-- [ ] 21-03-PLAN.md — Clack spinners and confirm prompts for sync and slug commands
+- [x] 21-01-PLAN.md — Install @clack/prompts, create TTY guard module, add light framing to read-only commands
+- [x] 21-02-PLAN.md — Full Clack walkthrough for login command
+- [x] 21-03-PLAN.md — Clack spinners and confirm prompts for sync and slug commands
 
 ---
 
@@ -236,4 +236,4 @@ Plans:
 | 18. Stripe Subscriptions | v2.0 | 5/5 | Complete | 2026-03-29 |
 | 19. PRO Card Features | v2.0 | 5/5 | Complete | 2026-03-29 |
 | 20. AI Insights | v2.0 | 4/4 | Complete | 2026-03-29 |
-| 21. Clack CLI | v2.0 | 0/3 | Pending | — |
+| 21. Clack CLI | v2.0 | 3/3 | Complete | 2026-03-29 |

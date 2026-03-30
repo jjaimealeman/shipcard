@@ -40,9 +40,9 @@
 
 ### CLI
 
-- [ ] **CLI-01**: CLI uses `@clack/prompts` for interactive flows (login, sync, card config)
-- [ ] **CLI-02**: Clack output is gated behind `process.stdout.isTTY` — MCP/pipe mode falls back to plain text
-- [ ] **CLI-03**: Existing command interface unchanged (no breaking changes to `shipcard summary/costs/card`)
+- [x] **CLI-01**: CLI uses `@clack/prompts` for interactive flows (login, sync, card config)
+- [x] **CLI-02**: Clack output is gated behind `process.stdout.isTTY` — MCP/pipe mode falls back to plain text
+- [x] **CLI-03**: Existing command interface unchanged (no breaking changes to `shipcard summary/costs/card`)
 
 ### Architecture
 
@@ -100,9 +100,9 @@
 | INSIGHT-01 | Phase 20 | Complete |
 | INSIGHT-02 | Phase 20 | Complete |
 | INSIGHT-03 | Phase 20 | Complete |
-| CLI-01 | Phase 21 | Pending |
-| CLI-02 | Phase 21 | Pending |
-| CLI-03 | Phase 21 | Pending |
+| CLI-01 | Phase 21 | Complete |
+| CLI-02 | Phase 21 | Complete |
+| CLI-03 | Phase 21 | Complete |
 
 **Coverage:**
 - v2.0 requirements: 27 total
@@ -111,4 +111,4 @@
 
 ---
 *Requirements defined: 2026-03-28*
-*Last updated: 2026-03-29 — Phase 19 CARD-01 through CARD-06 marked Complete*
+*Last updated: 2026-03-29 — Phase 21 CLI-01 through CLI-03 marked Complete, all 27 requirements complete*
