@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 
 ## Current Position
 
-Phase: 20 — AI Insights (in progress)
-Plan: 03 of 4 — 3 plans complete (20-01, 20-02, and 20-03)
-Status: In progress
-Last activity: 2026-03-29 — Completed 20-03: sync pipeline insights + API endpoint
+Phase: 20 — AI Insights (complete)
+Plan: 04 of 4 — all 4 plans complete
+Status: Phase complete
+Last activity: 2026-03-29 — Completed 20-04: dashboard insights panel
 
-Progress: ███████████░ 96% (plans 20-01, 20-02, 20-03 complete, 20-04 remaining)
+Progress: ████████████ 100% (all v2.0 AI Insights plans complete: 20-01, 20-02, 20-03, 20-04)
 
 ## Performance Metrics
 
@@ -93,6 +93,8 @@ See PROJECT.md Key Decisions table for full history.
 | 20-03 | PRO narrative uses two-write pattern to KV (stats first, narrative after waitUntil) | CLI gets 200 immediately; dashboard shows partial data while AI generates |
 | 20-03 | Reused isPro variable already computed for slug pre-rendering | Avoids second D1 query in sync handler |
 | 20-03 | Insights API endpoint is public and CORS-enabled | Consistent access model with stats and timeseries endpoints |
+| 20-04 | insightsPanel() references server-injected username const directly | Avoids Alpine store timing dependency; username known at page generation time |
+| 20-04 | No upgrade banners inside insights panel | Per CONTEXT.md: /upgrade page is the single place for free-vs-PRO comparison; free users see real 14-day data |
 
 ### Pending Todos
 
@@ -109,6 +111,6 @@ See PROJECT.md Key Decisions table for full history.
 
 ## Session Continuity
 
-Last session: 2026-03-30T01:53:11Z
-Stopped at: Completed 20-03-PLAN.md (sync pipeline insights + API endpoint)
-Resume with: 20-04 (dashboard insights display)
+Last session: 2026-03-29T20:00:00Z
+Stopped at: Completed 20-04-PLAN.md (dashboard insights panel)
+Resume with: Phase 20 complete — ready for next phase or production deployment setup
