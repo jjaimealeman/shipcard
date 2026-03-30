@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 ## Current Position
 
 Phase: 20 — AI Insights (in progress)
-Plan: 02 of 4 — 2 plans complete (20-01 and 20-02)
+Plan: 03 of 4 — 3 plans complete (20-01, 20-02, and 20-03)
 Status: In progress
-Last activity: 2026-03-29 — Completed 20-02: hourly activity tracking pipeline
+Last activity: 2026-03-29 — Completed 20-03: sync pipeline insights + API endpoint
 
-Progress: ██████████░ 93% (plans 20-01 and 20-02 complete, 20-03/20-04 remaining)
+Progress: ███████████░ 96% (plans 20-01, 20-02, 20-03 complete, 20-04 remaining)
 
 ## Performance Metrics
 
@@ -90,6 +90,9 @@ See PROJECT.md Key Decisions table for full history.
 | 20-01 | BaseAiTextGenerationModels removed from ai.run() cast | Type doesn't exist; string literal satisfies keyof AiModels generic constraint directly |
 | 20-01 | hourlyActivity?: number[] added to SafeDailyStats | compute.ts requires the field; optional so old payloads still validate |
 | 20-01 | peakHours returns undefined when no hourlyActivity data | Cleaner than empty object; callers guard with if(insights.peakHours) |
+| 20-03 | PRO narrative uses two-write pattern to KV (stats first, narrative after waitUntil) | CLI gets 200 immediately; dashboard shows partial data while AI generates |
+| 20-03 | Reused isPro variable already computed for slug pre-rendering | Avoids second D1 query in sync handler |
+| 20-03 | Insights API endpoint is public and CORS-enabled | Consistent access model with stats and timeseries endpoints |
 
 ### Pending Todos
 
@@ -106,6 +109,6 @@ See PROJECT.md Key Decisions table for full history.
 
 ## Session Continuity
 
-Last session: 2026-03-30T01:47:00Z
-Stopped at: Completed 20-02-PLAN.md (hourly activity tracking pipeline)
-Resume with: 20-03 (Worker insight compute: computePeakHours + aggregateInsights) or 20-04 (dashboard display)
+Last session: 2026-03-30T01:53:11Z
+Stopped at: Completed 20-03-PLAN.md (sync pipeline insights + API endpoint)
+Resume with: 20-04 (dashboard insights display)
