@@ -71,20 +71,16 @@ Customize at [shipcard.dev/configure](https://shipcard.dev/configure) or pass qu
 
 ## MCP Config
 
-Ask Claude about your coding stats from inside Claude Code:
+Ask Claude about your coding stats from inside Claude Code. Paste this into any Claude Code conversation:
 
-```json
-{
-  "mcpServers": {
-    "shipcard": {
-      "command": "npx",
-      "args": ["-y", "-p", "@jjaimealeman/shipcard", "shipcard-mcp"]
-    }
-  }
-}
+```
+Add a ShipCard MCP server to my ~/.claude.json file under the mcpServers key:
+  name: "shipcard"
+  command: "npx"
+  args: ["-y", "-p", "@jjaimealeman/shipcard", "shipcard-mcp"]
 ```
 
-Add to `.claude/settings.json` (project) or `~/.claude/settings.json` (global). Then use tools `shipcard:summary`, `shipcard:costs`, and `shipcard:card` in any conversation.
+After restarting Claude Code, you'll have access to `shipcard:summary`, `shipcard:costs`, and `shipcard:card` tools in any conversation.
 
 **Example conversations:**
 
