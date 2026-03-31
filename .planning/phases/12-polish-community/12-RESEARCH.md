@@ -54,7 +54,7 @@ All libraries are already loaded from CDN in dashboard.ts. No new installs neede
 
 ### Recommended Project Structure
 ```
-shiplog-worker/src/
+shipcard-worker/src/
 ├── routes/
 │   ├── community.ts     NEW: GET /community — leaderboard HTML page
 │   ├── dashboard.ts     MODIFIED: add mobile CSS + empty state HTML
@@ -393,12 +393,12 @@ communityRoutes.get("/", async (c) => {
 ## Sources
 
 ### Primary (HIGH confidence)
-- Codebase: `shiplog-worker/src/routes/dashboard.ts` — Alpine store shape, chart builders, existing CSS variables
-- Codebase: `shiplog-worker/src/routes/card.ts` — SVG card serve pattern
-- Codebase: `shiplog-worker/src/svg/layouts/classic.ts`, `compact.ts`, `hero.ts` — footer rendering code
-- Codebase: `shiplog-worker/src/kv.ts` — KV key schema, existing helper functions
-- Codebase: `shiplog-worker/src/types.ts` — SafeStats, AppType
-- Codebase: `shiplog-worker/wrangler.jsonc` — available KV bindings
+- Codebase: `shipcard-worker/src/routes/dashboard.ts` — Alpine store shape, chart builders, existing CSS variables
+- Codebase: `shipcard-worker/src/routes/card.ts` — SVG card serve pattern
+- Codebase: `shipcard-worker/src/svg/layouts/classic.ts`, `compact.ts`, `hero.ts` — footer rendering code
+- Codebase: `shipcard-worker/src/kv.ts` — KV key schema, existing helper functions
+- Codebase: `shipcard-worker/src/types.ts` — SafeStats, AppType
+- Codebase: `shipcard-worker/wrangler.jsonc` — available KV bindings
 - [Chart.js responsive docs](https://www.chartjs.org/docs/latest/configuration/responsive.html) — verified: `responsive: true`, `maintainAspectRatio: false`, container height requirement
 - [Cloudflare KV list-keys docs](https://developers.cloudflare.com/kv/api/list-keys/) — verified: 1000 key limit, cursor pagination, metadata pattern
 

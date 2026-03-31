@@ -1,0 +1,36 @@
+{
+  "name": "@jjaimealeman/shipcard",
+  "version": "2.0.1",
+  "type": "module",
+  "description": "Analytics layer for agentic developers — reads Claude Code JSONL files and generates stats cards via shipcard",
+  "main": "./dist/index.js",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "bin": {
+    "shipcard": "./dist/cli/index.js",
+    "shipcard-mcp": "./dist/mcp/server.js"
+  },
+  "files": [
+    "dist/",
+    "data/"
+  ],
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc && chmod 755 dist/cli/index.js dist/mcp/server.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@clack/prompts": "^1.1.0",
+    "@modelcontextprotocol/sdk": "^1.28.0",
+    "@octokit/auth-oauth-device": "^7.1.5",
+    "zod": "^4.3.6"
+  }
+}

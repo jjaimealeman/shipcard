@@ -33,8 +33,8 @@ score: 8/8 must-haves verified
 
 | Artifact | Expected | Status | Details |
 |----------|----------|--------|---------|
-| `shiplog-worker/src/routes/landing.ts` | Landing page route handler with full HTML/CSS/JS | VERIFIED (807 lines, exports `landingRoutes`, no stubs, imported by index.ts) | Complete self-contained HTML page with embedded CSS (including 3 base64 @font-face rules), embedded JS with all configurator logic |
-| `shiplog-worker/src/index.ts` | Updated entry point routing / to landingRoutes | VERIFIED (38 lines, imports landingRoutes L19, routes L24) | Old JSON health check removed, JSDoc updated to show GET / serves landing page |
+| `shipcard-worker/src/routes/landing.ts` | Landing page route handler with full HTML/CSS/JS | VERIFIED (807 lines, exports `landingRoutes`, no stubs, imported by index.ts) | Complete self-contained HTML page with embedded CSS (including 3 base64 @font-face rules), embedded JS with all configurator logic |
+| `shipcard-worker/src/index.ts` | Updated entry point routing / to landingRoutes | VERIFIED (38 lines, imports landingRoutes L19, routes L24) | Old JSON health check removed, JSDoc updated to show GET / serves landing page |
 
 ### Key Link Verification
 

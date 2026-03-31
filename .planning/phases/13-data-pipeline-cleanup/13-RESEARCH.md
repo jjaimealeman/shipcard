@@ -23,12 +23,12 @@ No new libraries needed. This phase is pure TypeScript refactoring within the ex
 ### Core (already in use)
 | Component | Where | Purpose |
 |-----------|-------|---------|
-| `dailyAggregator.ts` | `shiplog/src/engine/` | Buckets ParsedMessages by UTC date — main target of Phase 13 |
-| `safestats.ts` | `shiplog/src/cli/` | Privacy boundary; `toSafeTimeSeries()` maps `DailyStats` → `SafeDailyStats` |
-| `types.ts` (worker) | `shiplog-worker/src/` | `SafeDailyStats`, `SafeTimeSeries`, `isValidSyncV2Body()` validator |
-| `dashboard.ts` (worker) | `shiplog-worker/src/routes/` | Alpine.js dashboard — target for CLEAN-01/CLEAN-02 |
-| `schema.ts` | `shiplog/src/parser/` | `UserEntry.timestamp` is available — enables userMessages fix |
-| `deduplicator.ts` | `shiplog/src/parser/` | Already counts userMessages per file; needs date-bucketing added |
+| `dailyAggregator.ts` | `shipcard/src/engine/` | Buckets ParsedMessages by UTC date — main target of Phase 13 |
+| `safestats.ts` | `shipcard/src/cli/` | Privacy boundary; `toSafeTimeSeries()` maps `DailyStats` → `SafeDailyStats` |
+| `types.ts` (worker) | `shipcard-worker/src/` | `SafeDailyStats`, `SafeTimeSeries`, `isValidSyncV2Body()` validator |
+| `dashboard.ts` (worker) | `shipcard-worker/src/routes/` | Alpine.js dashboard — target for CLEAN-01/CLEAN-02 |
+| `schema.ts` | `shipcard/src/parser/` | `UserEntry.timestamp` is available — enables userMessages fix |
+| `deduplicator.ts` | `shipcard/src/parser/` | Already counts userMessages per file; needs date-bucketing added |
 
 ### No new dependencies
 All work is type extension + logic refactoring within existing modules.
@@ -37,12 +37,12 @@ All work is type extension + logic refactoring within existing modules.
 
 ### Recommended File Touch Map
 ```
-shiplog/src/
+shipcard/src/
 ├── engine/
 │   └── dailyAggregator.ts     # Add per-project breakdown + fix userMessages
 ├── cli/
 │   └── safestats.ts           # Extend SafeDailyStats type + toSafeTimeSeries()
-shiplog-worker/src/
+shipcard-worker/src/
 ├── types.ts                   # Extend SafeDailyStats + update validator
 └── routes/
     └── dashboard.ts           # CLEAN-01 + CLEAN-02 (hero grid surgery)
@@ -194,7 +194,7 @@ The Worker stores the whole `timeSeries` blob via `putTimeSeries()` and returns 
 
 ### Pitfall 4: DailyStats Type Drift Between CLI and Worker
 
-**What goes wrong:** `SafeDailyStats` is defined in both `shiplog/src/cli/safestats.ts` (CLI side) and `shiplog-worker/src/types.ts` (Worker side). A comment in `safestats.ts` warns: "Note: SafeStats type mirrors shipcard-worker/src/types.ts — do NOT import from Worker." If only one side is updated, the types drift.
+**What goes wrong:** `SafeDailyStats` is defined in both `shipcard/src/cli/safestats.ts` (CLI side) and `shipcard-worker/src/types.ts` (Worker side). A comment in `safestats.ts` warns: "Note: SafeStats type mirrors shipcard-worker/src/types.ts — do NOT import from Worker." If only one side is updated, the types drift.
 
 **How to avoid:** Update `SafeDailyStats` in both files in the same task. The new `PerProjectDailyStats` type can be defined in both as an inline interface — no shared import.
 
@@ -219,7 +219,7 @@ if (projAcc === undefined) {
 
 ### userMessages Fix — processFile() Change
 ```typescript
-// Source: shiplog/src/parser/deduplicator.ts (modified)
+// Source: shipcard/src/parser/deduplicator.ts (modified)
 // Return type change: add userMessagesByDate
 
 export async function processFile(
@@ -248,7 +248,7 @@ export async function processFile(
 
 ### Merging userMessagesByDate in parseAllFiles()
 ```typescript
-// Source: shiplog/src/parser/deduplicator.ts (modified)
+// Source: shipcard/src/parser/deduplicator.ts (modified)
 const allUserMessagesByDate = new Map<string, number>(); // NEW
 
 for await (const filePath of discoverJsonlFiles(projectsDir)) {
@@ -266,7 +266,7 @@ for await (const filePath of discoverJsonlFiles(projectsDir)) {
 
 ### aggregateDaily() signature update
 ```typescript
-// Source: shiplog/src/engine/dailyAggregator.ts (modified)
+// Source: shipcard/src/engine/dailyAggregator.ts (modified)
 export function aggregateDaily(
   messages: ParsedMessage[],
   pricing: { map: PricingMap; version: string },
@@ -284,7 +284,7 @@ export function aggregateDaily(
 
 ### Per-Project Accumulator Inside DayAccumulator
 ```typescript
-// Source: shiplog/src/engine/dailyAggregator.ts (new structure)
+// Source: shipcard/src/engine/dailyAggregator.ts (new structure)
 interface ProjectDayAccumulator {
   sessions: Set<string>;
   messages: number;
@@ -328,7 +328,7 @@ projAcc.models[msg.model] = (projAcc.models[msg.model] ?? 0) + totalTok;
 
 ### Dashboard: Per-Project null-safe reads
 ```javascript
-// Source: shiplog-worker/src/routes/dashboard.ts (pattern for new code)
+// Source: shipcard-worker/src/routes/dashboard.ts (pattern for new code)
 // All per-project reads must be null-safe for backward compatibility:
 const projStats = day.byProject?.[projectName] ?? null;
 const projSessions = projStats?.sessions ?? 0;
@@ -364,14 +364,14 @@ const projCostCents = projStats?.costCents ?? 0;
 ## Sources
 
 ### Primary (HIGH confidence)
-- Direct source inspection — `shiplog/src/engine/dailyAggregator.ts` — full file read
-- Direct source inspection — `shiplog/src/cli/safestats.ts` — full file read
-- Direct source inspection — `shiplog-worker/src/types.ts` — full file read
-- Direct source inspection — `shiplog/src/parser/deduplicator.ts` — full file read
-- Direct source inspection — `shiplog/src/parser/schema.ts` — full file read
-- Direct source inspection — `shiplog-worker/src/kv.ts` — full file read
-- Direct source inspection — `shiplog-worker/src/routes/dashboard.ts` — read + grep
-- Direct source inspection — `shiplog-worker/src/routes/syncV2.ts` — full file read
+- Direct source inspection — `shipcard/src/engine/dailyAggregator.ts` — full file read
+- Direct source inspection — `shipcard/src/cli/safestats.ts` — full file read
+- Direct source inspection — `shipcard-worker/src/types.ts` — full file read
+- Direct source inspection — `shipcard/src/parser/deduplicator.ts` — full file read
+- Direct source inspection — `shipcard/src/parser/schema.ts` — full file read
+- Direct source inspection — `shipcard-worker/src/kv.ts` — full file read
+- Direct source inspection — `shipcard-worker/src/routes/dashboard.ts` — read + grep
+- Direct source inspection — `shipcard-worker/src/routes/syncV2.ts` — full file read
 - Grep verification — "Slowest Day" and "Most Messages" do not exist in current codebase
 
 ### Secondary (MEDIUM confidence)

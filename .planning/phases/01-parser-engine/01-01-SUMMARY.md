@@ -26,11 +26,11 @@ tech-stack:
 
 key-files:
   created:
-    - shiplog/package.json
-    - shiplog/tsconfig.json
-    - shiplog/src/parser/schema.ts
-    - shiplog/src/parser/reader.ts
-    - shiplog/src/parser/deduplicator.ts
+    - shipcard/package.json
+    - shipcard/tsconfig.json
+    - shipcard/src/parser/schema.ts
+    - shipcard/src/parser/reader.ts
+    - shipcard/src/parser/deduplicator.ts
   modified: []
 
 key-decisions:
@@ -82,11 +82,11 @@ Each task was committed atomically:
 
 ## Files Created/Modified
 
-- `shiplog/package.json` - Package manifest: ESM, Node 22+, zero runtime deps, TypeScript devDeps
-- `shiplog/tsconfig.json` - TypeScript config: ES2022 target, Node16 modules, strict, declaration output
-- `shiplog/src/parser/schema.ts` - All JSONL types + ParsedMessage/TokenCounts output types + isUserEntry/isAssistantEntry type guards
-- `shiplog/src/parser/reader.ts` - discoverJsonlFiles (glob async iterator) + streamJsonlFile (readline streaming)
-- `shiplog/src/parser/deduplicator.ts` - processFile (two-level dedup) + parseAllFiles (full orchestration) + ParseResult type
+- `shipcard/package.json` - Package manifest: ESM, Node 22+, zero runtime deps, TypeScript devDeps
+- `shipcard/tsconfig.json` - TypeScript config: ES2022 target, Node16 modules, strict, declaration output
+- `shipcard/src/parser/schema.ts` - All JSONL types + ParsedMessage/TokenCounts output types + isUserEntry/isAssistantEntry type guards
+- `shipcard/src/parser/reader.ts` - discoverJsonlFiles (glob async iterator) + streamJsonlFile (readline streaming)
+- `shipcard/src/parser/deduplicator.ts` - processFile (two-level dedup) + parseAllFiles (full orchestration) + ParseResult type
 
 ## Decisions Made
 

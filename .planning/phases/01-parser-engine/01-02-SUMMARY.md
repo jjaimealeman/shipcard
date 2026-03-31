@@ -28,10 +28,10 @@ tech-stack:
 
 key-files:
   created:
-    - shiplog/src/engine/types.ts
-    - shiplog/src/engine/cost.ts
-    - shiplog/src/engine/aggregator.ts
-    - shiplog/data/pricing-snapshot.json
+    - shipcard/src/engine/types.ts
+    - shipcard/src/engine/cost.ts
+    - shipcard/src/engine/aggregator.ts
+    - shipcard/data/pricing-snapshot.json
   modified: []
 
 key-decisions:
@@ -42,7 +42,7 @@ key-decisions:
   - "formatCost uses toLocaleString('en-US') for thousands separator on large amounts"
 
 patterns-established:
-  - "3-layer cache: module-level runtime var → ~/.shiplog/pricing.json (24h mtime) → fetch → bundled snapshot"
+  - "3-layer cache: module-level runtime var → ~/.shipcard/pricing.json (24h mtime) → fetch → bundled snapshot"
   - "Never throw on pricing failure — fall through to next layer, always return a usable map"
   - "Tiered pricing: calcTieredCost(tokens, baseRate, tieredRate?) handles undefined tieredRate gracefully"
   - "Single accumulator pass: initialize Map entries on first encounter, mutate in-place"
@@ -84,10 +84,10 @@ Each task was committed atomically:
 
 ## Files Created/Modified
 
-- `shiplog/src/engine/types.ts` — AnalyticsResult, ProjectStats, ModelStats, EngineOptions output shapes
-- `shiplog/src/engine/cost.ts` — getPricing() 3-layer cache, calcTieredCost, calculateCost, getModelPricing, formatCost
-- `shiplog/src/engine/aggregator.ts` — aggregate() single-pass over ParsedMessages into AnalyticsResult
-- `shiplog/data/pricing-snapshot.json` — bundled Claude model pricing fallback (19 models, 2026-03-25 snapshot)
+- `shipcard/src/engine/types.ts` — AnalyticsResult, ProjectStats, ModelStats, EngineOptions output shapes
+- `shipcard/src/engine/cost.ts` — getPricing() 3-layer cache, calcTieredCost, calculateCost, getModelPricing, formatCost
+- `shipcard/src/engine/aggregator.ts` — aggregate() single-pass over ParsedMessages into AnalyticsResult
+- `shipcard/data/pricing-snapshot.json` — bundled Claude model pricing fallback (19 models, 2026-03-25 snapshot)
 
 ## Decisions Made
 

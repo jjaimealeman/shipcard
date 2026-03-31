@@ -31,11 +31,11 @@ re_verification: false
 
 | Artifact                                      | Expected                                             | Status    | Details                                  |
 |-----------------------------------------------|------------------------------------------------------|-----------|------------------------------------------|
-| `shiplog-worker/src/types.ts`                 | SafeTimeSeries, SafeDailyStats, isValidSyncV2Body    | VERIFIED  | 281 lines, all three present             |
-| `shiplog-worker/src/kv.ts`                    | getTimeSeries, putTimeSeries, updated deleteAllUserData | VERIFIED | 194 lines, all three present             |
-| `shiplog-worker/src/routes/syncV2.ts`         | POST /sync/v2 route, exports syncV2Routes            | VERIFIED  | 107 lines, real implementation, exported |
-| `shiplog-worker/src/routes/api.ts`            | Public JSON API routes, exports apiRoutes            | VERIFIED  | 68 lines, real implementation, exported  |
-| `shiplog-worker/src/index.ts`                 | apiRoutes + syncV2Routes mounted in correct order    | VERIFIED  | 50 lines, mount order confirmed          |
+| `shipcard-worker/src/types.ts`                 | SafeTimeSeries, SafeDailyStats, isValidSyncV2Body    | VERIFIED  | 281 lines, all three present             |
+| `shipcard-worker/src/kv.ts`                    | getTimeSeries, putTimeSeries, updated deleteAllUserData | VERIFIED | 194 lines, all three present             |
+| `shipcard-worker/src/routes/syncV2.ts`         | POST /sync/v2 route, exports syncV2Routes            | VERIFIED  | 107 lines, real implementation, exported |
+| `shipcard-worker/src/routes/api.ts`            | Public JSON API routes, exports apiRoutes            | VERIFIED  | 68 lines, real implementation, exported  |
+| `shipcard-worker/src/index.ts`                 | apiRoutes + syncV2Routes mounted in correct order    | VERIFIED  | 50 lines, mount order confirmed          |
 
 ### Key Link Verification
 

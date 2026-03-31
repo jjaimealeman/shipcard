@@ -28,7 +28,7 @@ tech-stack:
 key-files:
   created: []
   modified:
-    - shiplog-worker/src/routes/dashboard.ts
+    - shipcard-worker/src/routes/dashboard.ts
 
 key-decisions:
   - "Scans timeseries.days (not filteredDays) — peak values are all-time records, immune to range selector"
@@ -75,7 +75,7 @@ Each task was committed atomically:
 
 ## Files Created/Modified
 
-- `shiplog-worker/src/routes/dashboard.ts` - Added peak day getters to Alpine store + CSS + HTML section
+- `shipcard-worker/src/routes/dashboard.ts` - Added peak day getters to Alpine store + CSS + HTML section
 
 ## Decisions Made
 

@@ -14,7 +14,7 @@ The core technical challenge is not parsing itself (readline handles that native
 
 Cost estimation uses the LiteLLM community pricing JSON (`model_prices_and_context_window.json`) as the upstream source. The `claude-opus-4-6` and `claude-sonnet-4-6` model names in JSONL match LiteLLM keys **directly** — no prefix normalization needed for current Claude Code models. LiteLLM provides all four cache token cost fields needed for accurate estimation. Date filtering (ISO dates + relative shortcuts) can be implemented with a hand-rolled parser since the patterns are finite and well-defined.
 
-**Primary recommendation:** Stream JSONL line-by-line via Node.js `readline`, deduplicate entries by `uuid`, take the final per-message entry by message `id` (highest output_tokens), use `node:fs/promises` glob for file discovery, and implement LiteLLM pricing fetch with a 3-layer cache (runtime → `~/.shiplog/pricing.json` → bundled snapshot).
+**Primary recommendation:** Stream JSONL line-by-line via Node.js `readline`, deduplicate entries by `uuid`, take the final per-message entry by message `id` (highest output_tokens), use `node:fs/promises` glob for file discovery, and implement LiteLLM pricing fetch with a 3-layer cache (runtime → `~/.shipcard/pricing.json` → bundled snapshot).
 
 ---
 
@@ -28,7 +28,7 @@ The constraint is zero external dependencies beyond the MCP SDK. All solutions m
 | `node:readline` | Built-in | Line-by-line JSONL streaming | Zero-dep, handles backpressure, standard pattern |
 | `node:fs/promises` | Built-in | File I/O, glob for JSONL discovery | Node 22+ has stable `glob()` async iterator |
 | `node:path` | Built-in | Path manipulation, cwd parsing | Cross-platform path handling |
-| `node:os` | Built-in | Resolve `~/.claude/projects/` and `~/.shiplog/` | `os.homedir()` works on Linux/macOS/Windows |
+| `node:os` | Built-in | Resolve `~/.claude/projects/` and `~/.shipcard/` | `os.homedir()` works on Linux/macOS/Windows |
 | TypeScript | 5.x | Type safety on parsed data | Required per PRD |
 
 ### Supporting (for pricing cache)
@@ -58,7 +58,7 @@ npm install typescript @types/node --save-dev
 
 ### Recommended Project Structure
 ```
-shiplog/
+shipcard/
 ├── src/
 │   ├── parser/
 │   │   ├── reader.ts          # File discovery (glob) + readline streaming
@@ -158,7 +158,7 @@ for await (const entry of streamJsonlFile(filePath)) {
 
 ```typescript
 // Layer 1: Runtime in-memory cache (already fetched this run)
-// Layer 2: ~/.shiplog/pricing.json with mtime check (24h TTL)
+// Layer 2: ~/.shipcard/pricing.json with mtime check (24h TTL)
 // Layer 3: Bundled data/pricing-snapshot.json (always works)
 
 const LITELLM_URL = 'https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json';

@@ -26,9 +26,9 @@ tech-stack:
 key-files:
   created: []
   modified:
-    - shiplog-worker/src/kv.ts
-    - shiplog-worker/src/routes/card.ts
-    - shiplog-worker/src/routes/sync.ts
+    - shipcard-worker/src/kv.ts
+    - shipcard-worker/src/routes/card.ts
+    - shipcard-worker/src/routes/sync.ts
 
 key-decisions:
   - "Cache key format: card:{user}:{theme}:{layout}:{style}:hide={sorted,keys} — appended only when non-empty"
@@ -72,9 +72,9 @@ Each task was committed atomically:
 **Plan metadata:** (see final docs commit)
 
 ## Files Created/Modified
-- `shiplog-worker/src/kv.ts` - cardKey() / getCardCache() / putCardCache() updated with optional hide param
-- `shiplog-worker/src/routes/card.ts` - Parses ?hide= via queries(), threads through to renderCard and cache
-- `shiplog-worker/src/routes/sync.ts` - Imports renderRedactedCard; DELETE handler stores redacted SVG after delete
+- `shipcard-worker/src/kv.ts` - cardKey() / getCardCache() / putCardCache() updated with optional hide param
+- `shipcard-worker/src/routes/card.ts` - Parses ?hide= via queries(), threads through to renderCard and cache
+- `shipcard-worker/src/routes/sync.ts` - Imports renderRedactedCard; DELETE handler stores redacted SVG after delete
 
 ## Decisions Made
 - Cache key format uses `:hide=sorted,keys` suffix appended only when hide is non-empty — avoids polluting existing keys and keeps invalidation via prefix listing intact

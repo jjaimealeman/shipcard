@@ -29,12 +29,12 @@ tech-stack:
 
 key-files:
   created:
-    - shiplog/src/card/git.ts
-    - shiplog/src/card/preview.ts
+    - shipcard/src/card/git.ts
+    - shipcard/src/card/preview.ts
   modified:
-    - shiplog/src/cli/args.ts
-    - shiplog/src/cli/commands/card.ts
-    - shiplog/src/cli/index.ts
+    - shipcard/src/cli/args.ts
+    - shipcard/src/cli/commands/card.ts
+    - shipcard/src/cli/index.ts
 
 key-decisions:
   - "Cast CLI string flags to LayoutName/StyleName/ThemeName at renderCard() call site — no runtime validation, invalid values fall through to renderer defaults"
@@ -82,11 +82,11 @@ Each task was committed atomically:
 
 ## Files Created/Modified
 
-- `shiplog/src/card/git.ts` - findGitRoot() via spawnSync with cwd fallback
-- `shiplog/src/card/preview.ts` - openInBrowser() cross-platform darwin/win32/linux, fire-and-forget
-- `shiplog/src/cli/args.ts` - ParsedCliArgs.flags extended with 7 new card flags, heroStat mapped from hero-stat
-- `shiplog/src/cli/commands/card.ts` - Upgraded runCard() with SVG generation path, --json backward compat, --preview
-- `shiplog/src/cli/index.ts` - Card command description updated, Card flags section + examples added
+- `shipcard/src/card/git.ts` - findGitRoot() via spawnSync with cwd fallback
+- `shipcard/src/card/preview.ts` - openInBrowser() cross-platform darwin/win32/linux, fire-and-forget
+- `shipcard/src/cli/args.ts` - ParsedCliArgs.flags extended with 7 new card flags, heroStat mapped from hero-stat
+- `shipcard/src/cli/commands/card.ts` - Upgraded runCard() with SVG generation path, --json backward compat, --preview
+- `shipcard/src/cli/index.ts` - Card command description updated, Card flags section + examples added
 
 ## Decisions Made
 
@@ -103,7 +103,7 @@ Each task was committed atomically:
 - **Found during:** Task 2 (card command upgrade)
 - **Issue:** Used `Parameters<typeof renderCard>[1]["layout"]` to derive the cast type, but TypeScript resolved the second parameter as `CardOptions | undefined` (due to default parameter) and couldn't index into it.
 - **Fix:** Added `import type { LayoutName, StyleName, ThemeName } from "../../card/index.js"` and cast directly to `LayoutName | undefined` etc.
-- **Files modified:** shiplog/src/cli/commands/card.ts
+- **Files modified:** shipcard/src/cli/commands/card.ts
 - **Verification:** `npx tsc --noEmit` passed with zero errors
 - **Committed in:** `933bfcf` (Task 2 commit)
 

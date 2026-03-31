@@ -29,13 +29,13 @@ score: 4/4 must-haves verified
 
 | Artifact | Expected | Status | Details |
 |----------|----------|--------|---------|
-| `shiplog-worker/src/routes/dashboard.ts` | Mobile-responsive dashboard | VERIFIED | 1851 lines; three CSS breakpoints; mobile dropdown filter; heatmap day cap at 640px |
-| `shiplog-worker/src/routes/community.ts` | Full /community leaderboard | VERIFIED | 424 lines; Alpine.js sorting by 4 categories; server-side KV data hydration via `window.__USERS__`; empty state |
-| `shiplog-worker/src/routes/landing.ts` | Homepage with community teaser + counter | VERIFIED | 1030 lines; imports `listUsers` + `getCardsServedCount`; placeholder injection pattern; 10-row teaser table |
-| `shiplog-worker/src/svg/layouts/classic.ts` | Footer text in classic layout | VERIFIED | 118 lines; `<text>` element with `data.footer` at footerY |
-| `shiplog-worker/src/svg/layouts/compact.ts` | Footer text in compact layout | VERIFIED | 114 lines; `<text>` element with `data.footer` at footerY |
-| `shiplog-worker/src/svg/layouts/hero.ts` | Footer text in hero layout | VERIFIED | 155 lines; `<text>` element with `data.footer` at footerY |
-| `shiplog-worker/src/index.ts` | /community route mounted | VERIFIED | `communityRoutes` imported and mounted at `/community` (line 36) |
+| `shipcard-worker/src/routes/dashboard.ts` | Mobile-responsive dashboard | VERIFIED | 1851 lines; three CSS breakpoints; mobile dropdown filter; heatmap day cap at 640px |
+| `shipcard-worker/src/routes/community.ts` | Full /community leaderboard | VERIFIED | 424 lines; Alpine.js sorting by 4 categories; server-side KV data hydration via `window.__USERS__`; empty state |
+| `shipcard-worker/src/routes/landing.ts` | Homepage with community teaser + counter | VERIFIED | 1030 lines; imports `listUsers` + `getCardsServedCount`; placeholder injection pattern; 10-row teaser table |
+| `shipcard-worker/src/svg/layouts/classic.ts` | Footer text in classic layout | VERIFIED | 118 lines; `<text>` element with `data.footer` at footerY |
+| `shipcard-worker/src/svg/layouts/compact.ts` | Footer text in compact layout | VERIFIED | 114 lines; `<text>` element with `data.footer` at footerY |
+| `shipcard-worker/src/svg/layouts/hero.ts` | Footer text in hero layout | VERIFIED | 155 lines; `<text>` element with `data.footer` at footerY |
+| `shipcard-worker/src/index.ts` | /community route mounted | VERIFIED | `communityRoutes` imported and mounted at `/community` (line 36) |
 
 ### Key Link Verification
 

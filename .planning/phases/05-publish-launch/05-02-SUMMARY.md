@@ -9,7 +9,7 @@ requires:
   - phase: 05-01
     provides: package rename to shipcard, bin entries, files field with dist/ and data/
 provides:
-  - MIT LICENSE file at project root and shiplog/ package directory
+  - MIT LICENSE file at project root and shipcard/ package directory
   - "license: MIT" field in package.json
   - Verified clean TypeScript build with zero errors post-rename
   - Confirmed npm tarball contents: dist/, data/pricing-snapshot.json, LICENSE
@@ -24,12 +24,12 @@ tech-stack:
 key-files:
   created:
     - LICENSE
-    - shiplog/LICENSE
+    - shipcard/LICENSE
   modified:
-    - shiplog/package.json
+    - shipcard/package.json
 
 key-decisions:
-  - "LICENSE placed in both repo root and shiplog/ — npm auto-includes LICENSE from package root, so shiplog/LICENSE is what ends up in the published tarball"
+  - "LICENSE placed in both repo root and shipcard/ — npm auto-includes LICENSE from package root, so shipcard/LICENSE is what ends up in the published tarball"
   - "license: MIT added to package.json to satisfy npm registry metadata requirement"
 
 patterns-established: []
@@ -53,8 +53,8 @@ completed: 2026-03-26
 
 ## Accomplishments
 
-- Created MIT LICENSE (Copyright 2025 Jaime Aleman) at repo root and copied to shiplog/ package directory
-- Added `"license": "MIT"` to shiplog/package.json
+- Created MIT LICENSE (Copyright 2025 Jaime Aleman) at repo root and copied to shipcard/ package directory
+- Added `"license": "MIT"` to shipcard/package.json
 - Ran `npm run build` — zero TypeScript errors, confirming the 05-01 rename was complete and consistent
 - Verified dist/cli/index.js and dist/mcp/server.js have `#!/usr/bin/env node` shebangs and `-rwxr-xr-x` executable bits
 - npm pack dry run confirmed all required files present (155 total), no source or dev artifacts
@@ -70,23 +70,23 @@ Each task was committed atomically:
 ## Files Created/Modified
 
 - `LICENSE` - MIT License, Copyright 2025 Jaime Aleman
-- `shiplog/LICENSE` - Copy for npm package root (auto-included by npm pack)
-- `shiplog/package.json` - Added `"license": "MIT"` field
+- `shipcard/LICENSE` - Copy for npm package root (auto-included by npm pack)
+- `shipcard/package.json` - Added `"license": "MIT"` field
 
 ## Decisions Made
 
-- LICENSE placed in both repo root and `shiplog/` — npm only auto-includes LICENSE files at the package root (where package.json lives), which is `shiplog/`. The repo-root LICENSE serves git/GitHub display purposes.
+- LICENSE placed in both repo root and `shipcard/` — npm only auto-includes LICENSE files at the package root (where package.json lives), which is `shipcard/`. The repo-root LICENSE serves git/GitHub display purposes.
 - `"license": "MIT"` added to package.json to satisfy npm registry metadata and OSI identifier standard.
 
 ## Deviations from Plan
 
 ### Auto-fixed Issues
 
-**1. [Rule 3 - Blocking] LICENSE added to shiplog/ package directory, not just repo root**
+**1. [Rule 3 - Blocking] LICENSE added to shipcard/ package directory, not just repo root**
 - **Found during:** Task 1 (tarball inspection)
-- **Issue:** Plan said "Create LICENSE at project root" but npm pack runs from `shiplog/` — the LICENSE would not appear in the tarball if only placed at the repo root
-- **Fix:** Copied LICENSE to `shiplog/LICENSE` after creating it at repo root
-- **Files modified:** `shiplog/LICENSE`
+- **Issue:** Plan said "Create LICENSE at project root" but npm pack runs from `shipcard/` — the LICENSE would not appear in the tarball if only placed at the repo root
+- **Fix:** Copied LICENSE to `shipcard/LICENSE` after creating it at repo root
+- **Files modified:** `shipcard/LICENSE`
 - **Verification:** `npm pack --dry-run` output shows `1.1kB LICENSE` in tarball contents
 - **Committed in:** d0f33f7 (Task 1 commit)
 

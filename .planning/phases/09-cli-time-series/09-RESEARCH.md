@@ -374,16 +374,16 @@ try {
 ## Sources
 
 ### Primary (HIGH confidence — direct source inspection)
-- `/home/jaime/www/_github/SaaS/shiplog/src/parser/deduplicator.ts` — Full parser, UserEntry skip, ThinkingBlock skip confirmed
-- `/home/jaime/www/_github/SaaS/shiplog/src/parser/schema.ts` — ParsedMessage fields, ContentBlock types, ThinkingBlock type confirmed
-- `/home/jaime/www/_github/SaaS/shiplog/src/engine/aggregator.ts` — Aggregation pattern, cost accumulation, projectNameFromCwd
-- `/home/jaime/www/_github/SaaS/shiplog/src/engine/cost.ts` — calculateCost(), formatCost(), getModelPricing() signatures confirmed
-- `/home/jaime/www/_github/SaaS/shiplog/src/engine/filter.ts` — parseFilterDate() date format handling confirmed
-- `/home/jaime/www/_github/SaaS/shiplog/src/cli/safestats.ts` — toSafeStats() pattern, SafeStats interface, privacy boundary approach confirmed
-- `/home/jaime/www/_github/SaaS/shiplog/src/cli/commands/sync.ts` — HTTP fetch pattern, SyncFlags, auth header, fallback structure
-- `/home/jaime/www/_github/SaaS/shiplog/src/cli/args.ts` — parseArgs usage, flag registration pattern, ParsedCliArgs interface
-- `/home/jaime/www/_github/SaaS/shiplog/src/cli/index.ts` — Command dispatch, mergedFlags flow to runSync confirmed
-- `/home/jaime/www/_github/SaaS/shiplog/src/index.ts` — runEngine() orchestration, ParseResult flow confirmed
+- `/home/jaime/www/_github/SaaS/shipcard/src/parser/deduplicator.ts` — Full parser, UserEntry skip, ThinkingBlock skip confirmed
+- `/home/jaime/www/_github/SaaS/shipcard/src/parser/schema.ts` — ParsedMessage fields, ContentBlock types, ThinkingBlock type confirmed
+- `/home/jaime/www/_github/SaaS/shipcard/src/engine/aggregator.ts` — Aggregation pattern, cost accumulation, projectNameFromCwd
+- `/home/jaime/www/_github/SaaS/shipcard/src/engine/cost.ts` — calculateCost(), formatCost(), getModelPricing() signatures confirmed
+- `/home/jaime/www/_github/SaaS/shipcard/src/engine/filter.ts` — parseFilterDate() date format handling confirmed
+- `/home/jaime/www/_github/SaaS/shipcard/src/cli/safestats.ts` — toSafeStats() pattern, SafeStats interface, privacy boundary approach confirmed
+- `/home/jaime/www/_github/SaaS/shipcard/src/cli/commands/sync.ts` — HTTP fetch pattern, SyncFlags, auth header, fallback structure
+- `/home/jaime/www/_github/SaaS/shipcard/src/cli/args.ts` — parseArgs usage, flag registration pattern, ParsedCliArgs interface
+- `/home/jaime/www/_github/SaaS/shipcard/src/cli/index.ts` — Command dispatch, mergedFlags flow to runSync confirmed
+- `/home/jaime/www/_github/SaaS/shipcard/src/index.ts` — runEngine() orchestration, ParseResult flow confirmed
 
 ## Metadata
 

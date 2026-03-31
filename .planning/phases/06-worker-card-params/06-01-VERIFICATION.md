@@ -31,9 +31,9 @@ re_verification: false
 
 | Artifact | Expected | Status | Details |
 |----------|----------|--------|---------|
-| `shiplog-worker/src/routes/card.ts` | Card route with hide param parsing | VERIFIED | 85 lines, substantive; `c.req.queries("hide")` on line 61; `hide` threaded to `renderCard` and both cache functions |
-| `shiplog-worker/src/routes/sync.ts` | Sync delete route that renders redacted card | VERIFIED | 109 lines, substantive; `renderRedactedCard` in import (line 24) and DELETE handler (line 105) |
-| `shiplog-worker/src/kv.ts` | Cache key function with hide params | VERIFIED | 169 lines, substantive; `cardKey()` accepts `hide: string[] = []`, deterministic sort applied |
+| `shipcard-worker/src/routes/card.ts` | Card route with hide param parsing | VERIFIED | 85 lines, substantive; `c.req.queries("hide")` on line 61; `hide` threaded to `renderCard` and both cache functions |
+| `shipcard-worker/src/routes/sync.ts` | Sync delete route that renders redacted card | VERIFIED | 109 lines, substantive; `renderRedactedCard` in import (line 24) and DELETE handler (line 105) |
+| `shipcard-worker/src/kv.ts` | Cache key function with hide params | VERIFIED | 169 lines, substantive; `cardKey()` accepts `hide: string[] = []`, deterministic sort applied |
 
 ### Key Link Verification
 
@@ -56,7 +56,7 @@ None. No TODOs, FIXMEs, placeholders, or stub patterns in any of the three modif
 
 ### TypeScript Compilation
 
-`npx tsc --noEmit` in `shiplog-worker/` exits with zero errors — all three files pass type checking.
+`npx tsc --noEmit` in `shipcard-worker/` exits with zero errors — all three files pass type checking.
 
 ### Human Verification Required
 

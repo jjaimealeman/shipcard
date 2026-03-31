@@ -41,19 +41,19 @@ human_verification:
 
 | Artifact | Expected | Status | Details |
 |----------|----------|--------|---------|
-| `shiplog-worker/src/index.ts` | Hono app, all routes registered | VERIFIED | 39 lines; imports and registers card, auth, sync, configure routes |
-| `shiplog-worker/src/types.ts` | SafeStats type + isValidSafeStats() | VERIFIED | 200 lines; BANNED_FIELDS set (10 fields), containsPrivacyViolation(), full structural validator |
-| `shiplog-worker/src/kv.ts` | Typed KV helpers | VERIFIED | 159 lines; getCardCache, putCardCache, invalidateCardVariants, getUserData, putUserData, getTokenUsername, putToken, deleteToken |
-| `shiplog-worker/src/auth.ts` | Bearer token middleware | VERIFIED | 41 lines; reads Authorization header, KV lookup, c.set('username') |
-| `shiplog-worker/src/routes/card.ts` | GET /card/:username with caching | VERIFIED | 82 lines; cache-first pattern, svgResponse() anti-camo headers, placeholder on miss |
-| `shiplog-worker/src/routes/sync.ts` | POST /sync with validation | VERIFIED | 103 lines; auth + validate + username check + store + invalidate + re-render |
-| `shiplog-worker/src/routes/auth.ts` | POST /auth/exchange | VERIFIED | 93 lines; GitHub API verify + UUID token + KV store with 1yr TTL |
-| `shiplog-worker/src/routes/configure.ts` | GET /configure HTML page | VERIFIED | 521 lines; self-contained HTML + inline JS; base64 hash fragment decode; live SVG preview |
-| `shiplog-worker/src/svg/index.ts` | renderCard(SafeStats), renderPlaceholderCard() | VERIFIED | 229 lines; accepts SafeStats (not AnalyticsResult); buildStats() maps SafeStats fields |
-| `shiplog/src/cli/safestats.ts` | toSafeStats() privacy boundary | VERIFIED | 86 lines; strips projectsTouched to count, drops byProject, drops meta fields |
-| `shiplog/src/cli/commands/login.ts` | GitHub device flow + token exchange | VERIFIED | 182 lines; createOAuthDeviceAuth → GitHub user fetch → POST /auth/exchange → saveAuthConfig |
-| `shiplog/src/cli/commands/sync.ts` | Preview + confirm + delete modes | VERIFIED | 223 lines; three modes wired; preview output shows all safe fields with "(names hidden)" for projects |
-| `shiplog/src/cli/config.ts` | Auth config persistence | VERIFIED | 115 lines; loadAuthConfig/saveAuthConfig at ~/.shiplog/config.json, getWorkerUrl() |
+| `shipcard-worker/src/index.ts` | Hono app, all routes registered | VERIFIED | 39 lines; imports and registers card, auth, sync, configure routes |
+| `shipcard-worker/src/types.ts` | SafeStats type + isValidSafeStats() | VERIFIED | 200 lines; BANNED_FIELDS set (10 fields), containsPrivacyViolation(), full structural validator |
+| `shipcard-worker/src/kv.ts` | Typed KV helpers | VERIFIED | 159 lines; getCardCache, putCardCache, invalidateCardVariants, getUserData, putUserData, getTokenUsername, putToken, deleteToken |
+| `shipcard-worker/src/auth.ts` | Bearer token middleware | VERIFIED | 41 lines; reads Authorization header, KV lookup, c.set('username') |
+| `shipcard-worker/src/routes/card.ts` | GET /card/:username with caching | VERIFIED | 82 lines; cache-first pattern, svgResponse() anti-camo headers, placeholder on miss |
+| `shipcard-worker/src/routes/sync.ts` | POST /sync with validation | VERIFIED | 103 lines; auth + validate + username check + store + invalidate + re-render |
+| `shipcard-worker/src/routes/auth.ts` | POST /auth/exchange | VERIFIED | 93 lines; GitHub API verify + UUID token + KV store with 1yr TTL |
+| `shipcard-worker/src/routes/configure.ts` | GET /configure HTML page | VERIFIED | 521 lines; self-contained HTML + inline JS; base64 hash fragment decode; live SVG preview |
+| `shipcard-worker/src/svg/index.ts` | renderCard(SafeStats), renderPlaceholderCard() | VERIFIED | 229 lines; accepts SafeStats (not AnalyticsResult); buildStats() maps SafeStats fields |
+| `shipcard/src/cli/safestats.ts` | toSafeStats() privacy boundary | VERIFIED | 86 lines; strips projectsTouched to count, drops byProject, drops meta fields |
+| `shipcard/src/cli/commands/login.ts` | GitHub device flow + token exchange | VERIFIED | 182 lines; createOAuthDeviceAuth → GitHub user fetch → POST /auth/exchange → saveAuthConfig |
+| `shipcard/src/cli/commands/sync.ts` | Preview + confirm + delete modes | VERIFIED | 223 lines; three modes wired; preview output shows all safe fields with "(names hidden)" for projects |
+| `shipcard/src/cli/config.ts` | Auth config persistence | VERIFIED | 115 lines; loadAuthConfig/saveAuthConfig at ~/.shipcard/config.json, getWorkerUrl() |
 
 ### Key Link Verification
 
@@ -85,8 +85,8 @@ human_verification:
 
 | File | Line | Pattern | Severity | Impact |
 |------|------|---------|----------|--------|
-| `shiplog/src/cli/commands/login.ts` | 30 | `SHIPLOG_GITHUB_CLIENT_ID = "YOUR_GITHUB_OAUTH_APP_CLIENT_ID"` | Warning | Expected placeholder — documented in JSDoc, requires user setup before deploy. Does not block local build or type-check. |
-| `shiplog-worker/wrangler.jsonc` | 12, 18 | `<REPLACE_WITH_CARDS_KV_NAMESPACE_ID>` / `<REPLACE_WITH_USER_DATA_KV_NAMESPACE_ID>` | Warning | Expected placeholder — documented in SUMMARY user setup steps. Blocks deployment only, not compilation. |
+| `shipcard/src/cli/commands/login.ts` | 30 | `SHIPLOG_GITHUB_CLIENT_ID = "YOUR_GITHUB_OAUTH_APP_CLIENT_ID"` | Warning | Expected placeholder — documented in JSDoc, requires user setup before deploy. Does not block local build or type-check. |
+| `shipcard-worker/wrangler.jsonc` | 12, 18 | `<REPLACE_WITH_CARDS_KV_NAMESPACE_ID>` / `<REPLACE_WITH_USER_DATA_KV_NAMESPACE_ID>` | Warning | Expected placeholder — documented in SUMMARY user setup steps. Blocks deployment only, not compilation. |
 
 No blocker anti-patterns. Both warnings are intentional "user must fill in before deploy" placeholders, not implementation stubs.
 

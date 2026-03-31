@@ -22,43 +22,43 @@ tech-stack:
 key-files:
   created: []
   modified:
-    - shiplog/package.json
-    - shiplog/src/cli/config.ts
-    - shiplog/src/cli/index.ts
-    - shiplog/src/cli/commands/login.ts
-    - shiplog/src/cli/commands/sync.ts
-    - shiplog/src/cli/commands/card.ts
-    - shiplog/src/cli/commands/summary.ts
-    - shiplog/src/cli/commands/costs.ts
-    - shiplog/src/cli/safestats.ts
-    - shiplog/src/engine/cost.ts
-    - shiplog/src/engine/types.ts
-    - shiplog/src/engine/filter.ts
-    - shiplog/src/index.ts
-    - shiplog/src/cli/format.ts
-    - shiplog/src/cli/args.ts
-    - shiplog/src/card/index.ts
-    - shiplog/src/card/renderer.ts
-    - shiplog/src/card/git.ts
-    - shiplog/src/card/preview.ts
-    - shiplog/src/card/themes/branded.ts
-    - shiplog/src/mcp/server.ts
-    - shiplog/src/mcp/tools/summary.ts
-    - shiplog/src/mcp/tools/costs.ts
-    - shiplog/src/mcp/tools/card.ts
-    - shiplog-worker/package.json
-    - shiplog-worker/wrangler.jsonc
-    - shiplog-worker/src/index.ts
-    - shiplog-worker/src/kv.ts
-    - shiplog-worker/src/routes/auth.ts
-    - shiplog-worker/src/routes/card.ts
-    - shiplog-worker/src/routes/configure.ts
-    - shiplog-worker/src/routes/sync.ts
-    - shiplog-worker/src/svg/index.ts
-    - shiplog-worker/src/svg/renderer.ts
-    - shiplog-worker/src/svg/themes/branded.ts
-    - shiplog-worker/src/auth.ts
-    - shiplog-worker/src/types.ts
+    - shipcard/package.json
+    - shipcard/src/cli/config.ts
+    - shipcard/src/cli/index.ts
+    - shipcard/src/cli/commands/login.ts
+    - shipcard/src/cli/commands/sync.ts
+    - shipcard/src/cli/commands/card.ts
+    - shipcard/src/cli/commands/summary.ts
+    - shipcard/src/cli/commands/costs.ts
+    - shipcard/src/cli/safestats.ts
+    - shipcard/src/engine/cost.ts
+    - shipcard/src/engine/types.ts
+    - shipcard/src/engine/filter.ts
+    - shipcard/src/index.ts
+    - shipcard/src/cli/format.ts
+    - shipcard/src/cli/args.ts
+    - shipcard/src/card/index.ts
+    - shipcard/src/card/renderer.ts
+    - shipcard/src/card/git.ts
+    - shipcard/src/card/preview.ts
+    - shipcard/src/card/themes/branded.ts
+    - shipcard/src/mcp/server.ts
+    - shipcard/src/mcp/tools/summary.ts
+    - shipcard/src/mcp/tools/costs.ts
+    - shipcard/src/mcp/tools/card.ts
+    - shipcard-worker/package.json
+    - shipcard-worker/wrangler.jsonc
+    - shipcard-worker/src/index.ts
+    - shipcard-worker/src/kv.ts
+    - shipcard-worker/src/routes/auth.ts
+    - shipcard-worker/src/routes/card.ts
+    - shipcard-worker/src/routes/configure.ts
+    - shipcard-worker/src/routes/sync.ts
+    - shipcard-worker/src/svg/index.ts
+    - shipcard-worker/src/svg/renderer.ts
+    - shipcard-worker/src/svg/themes/branded.ts
+    - shipcard-worker/src/auth.ts
+    - shipcard-worker/src/types.ts
 decisions:
   - "[05-01]: npm package name is shipcard — shiplog was taken"
   - "[05-01]: Card URL path is /u/:username — shorter and cleaner than /card/:username"
@@ -112,7 +112,7 @@ Two concurrent changes: rename + route prefix change from `/card` to `/u`:
 | Config dir `~/.shipcard/` | Consistent with new product name, separates from any prior installs |
 | MCP prefix `shipcard:` | Distinguishes tools from other MCP servers in Claude config |
 | Worker name `shipcard` | Matches npm package name for consistency |
-| Directory names unchanged | `shiplog/` and `shiplog-worker/` dirs kept — only npm name matters for publish |
+| Directory names unchanged | `shipcard/` and `shipcard-worker/` dirs kept — only npm name matters for publish |
 
 ## Deviations from Plan
 
@@ -123,7 +123,7 @@ Two concurrent changes: rename + route prefix change from `/card` to `/u`:
 - **Found during:** Task 1 verification grep
 - **Issue:** Plan listed 14 specific files, but grep revealed additional files with shiplog references: `engine/types.ts`, `engine/filter.ts`, `index.ts`, `cli/format.ts`, `cli/args.ts`, `card/index.ts`, `card/renderer.ts`, `card/git.ts`, `card/preview.ts`, `card/themes/branded.ts`
 - **Fix:** Updated all additional files to achieve the must_have criterion of zero occurrences
-- **Files modified:** 10 additional files in shiplog/src/ beyond plan's list
+- **Files modified:** 10 additional files in shipcard/src/ beyond plan's list
 - **Commit:** 5ff8ee9
 
 **2. [Rule 3 - Blocking] Extended Worker rename to additional files**
@@ -131,17 +131,17 @@ Two concurrent changes: rename + route prefix change from `/card` to `/u`:
 - **Found during:** Task 2 verification grep
 - **Issue:** Worker had shiplog references in `svg/renderer.ts`, `svg/themes/branded.ts`, `svg/index.ts` (partial), `routes/sync.ts`, `auth.ts`, `types.ts` beyond plan's listed files
 - **Fix:** Updated all additional files
-- **Files modified:** 6 additional files in shiplog-worker/src/
+- **Files modified:** 6 additional files in shipcard-worker/src/
 - **Commit:** b67bc72
 
 ## Verification Results
 
 All must_have criteria confirmed:
-- `grep -ri "shiplog" shiplog/src/ shiplog/package.json shiplog-worker/src/ shiplog-worker/wrangler.jsonc shiplog-worker/package.json` returns empty
-- `grep -c "shipcard" shiplog/package.json` returns 4 (name + description + 2 bin entries)
-- `grep 'route.*"/u"' shiplog-worker/src/index.ts` returns `app.route("/u", cardRoutes)`
-- `grep "custom_domain" shiplog-worker/wrangler.jsonc` returns `"custom_domain": true`
-- `grep "shipcard.dev" shiplog-worker/wrangler.jsonc` returns the pattern entry
+- `grep -ri "shiplog" shipcard/src/ shipcard/package.json shipcard-worker/src/ shipcard-worker/wrangler.jsonc shipcard-worker/package.json` returns empty
+- `grep -c "shipcard" shipcard/package.json` returns 4 (name + description + 2 bin entries)
+- `grep 'route.*"/u"' shipcard-worker/src/index.ts` returns `app.route("/u", cardRoutes)`
+- `grep "custom_domain" shipcard-worker/wrangler.jsonc` returns `"custom_domain": true`
+- `grep "shipcard.dev" shipcard-worker/wrangler.jsonc` returns the pattern entry
 
 ## Next Phase Readiness
 

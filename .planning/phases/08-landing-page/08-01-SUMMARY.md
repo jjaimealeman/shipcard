@@ -12,9 +12,9 @@ tech-stack:
   patterns: [self-hosted-base64-fonts, single-file-html-route, xhr-card-fetch]
 key-files:
   created:
-    - shiplog-worker/src/routes/landing.ts
+    - shipcard-worker/src/routes/landing.ts
   modified:
-    - shiplog-worker/src/index.ts
+    - shipcard-worker/src/index.ts
 decisions:
   - Self-hosted fonts via base64 @font-face (Poppins 600/700 + Lora 400, ~43 KB total)
   - XHR for card fetch instead of fetch() for broader compatibility
@@ -34,12 +34,12 @@ Self-contained HTML landing page at GET / with Anthropic brand palette, live car
 | # | Task | Commit | Key Files |
 |---|------|--------|-----------|
 | 1 | Download and base64-encode self-hosted fonts | d89e7e9 | (embedded in landing.ts) |
-| 2 | Create landing page route with full HTML/CSS/JS | d89e7e9 | shiplog-worker/src/routes/landing.ts |
-| 3 | Wire landing route into Worker entry point | ea84a18 | shiplog-worker/src/index.ts |
+| 2 | Create landing page route with full HTML/CSS/JS | d89e7e9 | shipcard-worker/src/routes/landing.ts |
+| 3 | Wire landing route into Worker entry point | ea84a18 | shipcard-worker/src/index.ts |
 
 ## What Was Built
 
-### Landing Page (shiplog-worker/src/routes/landing.ts)
+### Landing Page (shipcard-worker/src/routes/landing.ts)
 
 - **Hero section:** "See what you shipped with Claude Code" headline with Poppins 700, sub-text in Lora 400
 - **Card configurator:** Username text input (debounced 400ms), theme/layout/style button groups, hide-stat checkboxes, live SVG preview via XHR to /u/:username, reset button
@@ -50,7 +50,7 @@ Self-contained HTML landing page at GET / with Anthropic brand palette, live car
 - **Palette:** Anthropic brand colors as CSS custom properties (--bg, --fg, --orange, --blue, --green, etc.)
 - **Responsive:** Mobile-first with grid collapse at 768px
 
-### Entry Point Update (shiplog-worker/src/index.ts)
+### Entry Point Update (shipcard-worker/src/index.ts)
 
 - Replaced JSON health check `{ name: "shipcard", status: "ok" }` with `app.route("/", landingRoutes)`
 - Added import for landingRoutes

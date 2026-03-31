@@ -53,7 +53,7 @@ The `--preview` flag needs a cross-platform "open file in default browser" mecha
 ### Recommended File Structure for Phase 3
 
 ```
-shiplog/src/
+shipcard/src/
 ├── cli/
 │   ├── args.ts              - Add: --layout, --style, --theme, --hide, --hero-stat, --preview, -o/--output
 │   └── commands/

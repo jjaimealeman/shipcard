@@ -33,7 +33,7 @@ PRD.md              # Product Requirements Document
 
 ## Versioning
 
-- All packages (shiplog/, shiplog-worker/) share the same version number
+- All packages (shipcard/, shipcard-worker/) share the same version number
 - Bump both package.json files together on every release
 - Version reflects the project milestone (v1.0 = 1.0.0, v2.0 = 2.0.0)
 

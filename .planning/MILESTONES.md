@@ -1,30 +1,29 @@
 # Project Milestones: ShipCard
 
-## v1.1 Dashboard Enhancement (Shipped: 2026-03-28)
+## v2.0 Themes + Monetization (Shipped: 2026-03-29)
 
-**Delivered:** Enriched dashboard with Today's Activity hero, Peak Day records, and per-project sort toggles — making the dashboard the reason to adopt ShipCard.
+**Delivered:** Sustainable business layer — 9 curated card themes, Stripe PRO subscriptions ($2/mo), custom URL slugs, AI-powered weekly insights, and polished Clack CLI.
 
-**Phases completed:** 13-15 (5 plans total)
+**Phases completed:** 16-21 (22 plans total)
 
 **Key accomplishments:**
-
-- Enriched data pipeline with per-project stats (tokens, sessions, cost, messages) flowing from JSONL to Worker KV
-- Fixed userMessages bug (was hardcoded 0, now from real UserEntry timestamps)
-- Today's Activity hero with 4 metrics and individual % change vs yesterday
-- Peak Days cards showing 4 per-metric all-time records with date and project name
-- Project Activity sort toggle slicing by messages, tokens, sessions, or cost
-- Dashboard section reorder (static sections first, range-reactive below)
+- Agent-agnostic SourceAdapter architecture for future multi-agent support
+- 9 curated card themes with WCAG contrast validation and BYOT custom colors for PRO
+- Stripe subscription billing with D1 strong consistency and GitHub OAuth checkout flow
+- PRO card features: SVG badge, custom URL slugs with saved configs, instant cache refresh
+- AI-powered weekly coding insights (peak hours, cost trends, streaks) via Workers AI
+- Polished Clack CLI with TTY-guarded interactive prompts across all 6 commands
 
 **Stats:**
+- 358 files created/modified
+- ~19,714 lines of TypeScript/HTML/JSON
+- 6 phases, 22 plans
+- 2 days from start to ship (2026-03-28 → 2026-03-29)
+- 91 commits
 
-- 57 files changed (4,672 insertions, 93 deletions)
-- ~14,396 lines of TypeScript/HTML/JSON (total project)
-- 3 phases, 5 plans, 11 tasks
-- 1 day (2026-03-27)
+**Git range:** `docs(16): capture phase context` → `docs(21): complete Clack CLI phase`
 
-**Git range:** `feat(13-01)` → `feat(15-01)`
-
-**What's next:** v2.0 — AI-powered queries, custom cards, paid tier
+**What's next:** Production deploy (Stripe setup, D1 migration, wrangler deploy), then user acquisition
 
 ---
 

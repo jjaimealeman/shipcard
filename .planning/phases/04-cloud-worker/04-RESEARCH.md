@@ -12,7 +12,7 @@ Phase 4 builds a Cloudflare Worker that serves cached SVG stats cards at the edg
 
 The Cloudflare side is well-documented and low-risk. The current standard is a TypeScript Worker using Hono for routing (officially endorsed by Cloudflare), KV bindings for caching, and `wrangler secret put` for secrets. The Worker deploys to a `workers.dev` subdomain by default — no custom domain needed for alpha. Hono adds ~14KB to the bundle and gives clean route syntax with middleware support, which is the right tradeoff for a Worker with 4+ routes.
 
-GitHub OAuth device flow is implemented cleanly using `@octokit/auth-oauth-device`. The library handles polling, code expiry, and interval backoff. After the OAuth token is obtained, the CLI calls the GitHub API to retrieve the username, then exchanges both for a Worker-issued bearer token stored in `~/.shiplog/config.json`. The Worker issues its own short tokens and stores them in KV — it does not store GitHub OAuth tokens.
+GitHub OAuth device flow is implemented cleanly using `@octokit/auth-oauth-device`. The library handles polling, code expiry, and interval backoff. After the OAuth token is obtained, the CLI calls the GitHub API to retrieve the username, then exchanges both for a Worker-issued bearer token stored in `~/.shipcard/config.json`. The Worker issues its own short tokens and stores them in KV — it does not store GitHub OAuth tokens.
 
 The most important research finding is about GitHub's camo proxy caching SVGs for multi-day periods, which is exactly what ShipLog is designed to avoid. The fix is to send `Cache-Control: no-cache, no-store, must-revalidate` and `Pragma: no-cache` from the Worker endpoint. GitHub's camo will respect no-store and re-fetch on each page load. This is verified behavior used by the readme-stats ecosystem. ShipLog's design (cache-until-sync, per-variant KV keys) works cleanly: the Worker always returns current KV content, and the no-store headers ensure camo doesn't create a secondary layer.
 
@@ -58,7 +58,7 @@ npm install hono
 npx wrangler types
 ```
 
-CLI additions (in existing `shiplog/` package):
+CLI additions (in existing `shipcard/` package):
 ```bash
 npm install @octokit/auth-oauth-device
 ```
@@ -70,7 +70,7 @@ npm install @octokit/auth-oauth-device
 ### Recommended Project Structure
 
 ```
-shiplog-worker/
+shipcard-worker/
 ├── src/
 │   ├── index.ts          # Hono app entry, route registration
 │   ├── routes/
@@ -88,7 +88,7 @@ shiplog-worker/
 └── package.json
 ```
 
-The existing `shiplog/src/card/` renderer should be copied (not imported) into the Worker — the Worker has no dependency on the npm package at runtime.
+The existing `shipcard/src/card/` renderer should be copied (not imported) into the Worker — the Worker has no dependency on the npm package at runtime.
 
 ### Pattern 1: Hono App Entry
 
@@ -301,7 +301,7 @@ Store tokens as: key=`token:{token_value}:username`, value=`{username}`. This al
 
 **How to avoid:** The client secret lives only in the Worker (as a Wrangler secret). The CLI only needs the public `clientId`. The Worker has a token exchange endpoint that uses the secret.
 
-**Warning signs:** Any code path in `shiplog/src/` that reads `GITHUB_CLIENT_SECRET`.
+**Warning signs:** Any code path in `shipcard/src/` that reads `GITHUB_CLIENT_SECRET`.
 
 ### Pitfall 5: KV List Pagination Ignored
 
@@ -435,7 +435,7 @@ async function login(): Promise<void> {
 
   // Get GitHub username
   const res = await fetch('https://api.github.com/user', {
-    headers: { Authorization: `Bearer ${githubToken}`, 'User-Agent': 'shiplog/1.0' }
+    headers: { Authorization: `Bearer ${githubToken}`, 'User-Agent': 'shipcard/1.0' }
   })
   const { login: username } = await res.json()
 
@@ -447,7 +447,7 @@ async function login(): Promise<void> {
   })
   const { token: shiplogToken } = await tokenRes.json()
 
-  // Persist to ~/.shiplog/config.json
+  // Persist to ~/.shipcard/config.json
   await saveConfig({ username, token: shiplogToken })
   console.log(`Logged in as ${username}`)
 }

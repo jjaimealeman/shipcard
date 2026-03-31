@@ -25,11 +25,11 @@ tech-stack:
 key-files:
   created: []
   modified:
-    - shiplog/src/cli/safestats.ts
-    - shiplog/src/cli/args.ts
-    - shiplog/src/cli/commands/sync.ts
-    - shiplog/src/cli/index.ts
-    - shiplog/src/index.ts
+    - shipcard/src/cli/safestats.ts
+    - shipcard/src/cli/args.ts
+    - shipcard/src/cli/commands/sync.ts
+    - shipcard/src/cli/index.ts
+    - shipcard/src/index.ts
 
 decisions:
   - id: privacy-by-default
@@ -61,26 +61,26 @@ metrics:
 
 ### Task 1: SafeTimeSeries type + toSafeTimeSeries + --show-projects flag
 
-`shiplog/src/cli/safestats.ts` extended with three new exports (existing SafeStats and toSafeStats untouched):
+`shipcard/src/cli/safestats.ts` extended with three new exports (existing SafeStats and toSafeStats untouched):
 
 - `SafeDailyStats` — mirrors DailyStats but with `projects?: string[]` (optional, omitted by default)
 - `SafeTimeSeries` — wraps `SafeDailyStats[]` with `username`, `version: 2`, and `generatedAt: string`
 - `toSafeTimeSeries(days, username, showProjects)` — converts DailyStats[] → SafeTimeSeries, stripping project names unless `showProjects=true`
 
-`shiplog/src/cli/args.ts` updated with:
+`shipcard/src/cli/args.ts` updated with:
 - `showProjects: boolean` added to `ParsedCliArgs.flags` interface
 - `"show-projects": { type: "boolean", default: false }` in parseArgs options
 - `showProjects: (flags["show-projects"] as boolean | undefined) ?? false` in the flags return object
 
 ### Task 2: runEngineFull + v2 sync with 404 fallback
 
-`shiplog/src/index.ts` refactored:
+`shipcard/src/index.ts` refactored:
 - New `EngineFullResult` interface: `{ result: AnalyticsResult; messages: ParsedMessage[] }`
 - New `runEngineFull(options?)` — identical implementation to old `runEngine` but returns both result and filtered messages
 - `runEngine` simplified to delegate to `runEngineFull` and return just `result`
 - `ParsedMessage` added to re-exports (was missing)
 
-`shiplog/src/cli/commands/sync.ts` upgraded:
+`shipcard/src/cli/commands/sync.ts` upgraded:
 - `SyncFlags` interface gains `showProjects: boolean`
 - Import changed from `runEngine` to `runEngineFull`
 - After engine run, `aggregateDaily(messages, pricing)` + `toSafeTimeSeries(...)` builds the v2 payload
@@ -90,7 +90,7 @@ metrics:
   - Non-404 error → exits with error message (no fallback)
   - Network failure → exits with error message (no fallback)
 
-`shiplog/src/cli/index.ts` updated with `--show-projects` in the Sync flags help section.
+`shipcard/src/cli/index.ts` updated with `--show-projects` in the Sync flags help section.
 
 ## Decisions Made
 

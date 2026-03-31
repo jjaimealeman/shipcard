@@ -19,7 +19,7 @@ re_verification: false
 
 | # | Truth | Status | Evidence |
 |---|-------|--------|----------|
-| 1 | npm package name is 'shipcard' (unscoped) in package.json | VERIFIED | `shiplog/package.json` line 2: `"name": "shipcard"` |
+| 1 | npm package name is 'shipcard' (unscoped) in package.json | VERIFIED | `shipcard/package.json` line 2: `"name": "shipcard"` |
 | 2 | All docs reference 'shipcard' not '@jjaimealeman/shipcard' | VERIFIED | grep across all active .md/.json (excluding .planning history) returns zero @jjaimealeman hits |
 | 3 | npx shipcard summary works without -p flag (after publish) | VERIFIED | README.md line 25: `npx shipcard summary` under "Or without installing:" block |
 | 4 | MCP config docs still use -p shipcard for shipcard-mcp binary | VERIFIED | README.md:61, USAGE.md:159, mcp-config.md:14,29 all show `["-y", "-p", "shipcard", "shipcard-mcp"]` |
@@ -31,23 +31,23 @@ re_verification: false
 
 | Artifact | Expected | Status | Details |
 |----------|----------|--------|---------|
-| `shiplog/package.json` | `"name": "shipcard"` (unscoped) | VERIFIED | Line 2 confirmed; bin entries: `shipcard` → `./dist/cli/index.js`, `shipcard-mcp` → `./dist/mcp/server.js` |
+| `shipcard/package.json` | `"name": "shipcard"` (unscoped) | VERIFIED | Line 2 confirmed; bin entries: `shipcard` → `./dist/cli/index.js`, `shipcard-mcp` → `./dist/mcp/server.js` |
 | `README.md` | `npx shipcard summary` present | VERIFIED | Line 25: direct npx command; Line 61: MCP block with `-p shipcard` |
 | `USAGE.md` | MCP config with `-p shipcard` | VERIFIED | Line 159: `["-y", "-p", "shipcard", "shipcard-mcp"]` |
-| `shiplog/docs/mcp-config.md` | All references updated to `shipcard` | VERIFIED | Lines 14 and 29: both Claude Code and Cursor blocks use `-p shipcard` |
-| `shiplog/src/cli/commands/login.ts` | Full device flow implementation | VERIFIED | 182 lines; device_authorization, user_code display, Worker /auth/exchange, saveAuthConfig write — not a stub |
-| `shiplog-worker/src/types.ts` | `looksLikeFilePath` uses `~/` not `~` | VERIFIED | Line 92: `value.startsWith("/") \|\| value.startsWith("~/")` — cost strings like `~$3,414` no longer rejected |
-| `shiplog/dist/cli/index.js` | Build output present | VERIFIED | File exists at expected path |
-| `shiplog/dist/mcp/server.js` | Build output present | VERIFIED | File exists at expected path |
+| `shipcard/docs/mcp-config.md` | All references updated to `shipcard` | VERIFIED | Lines 14 and 29: both Claude Code and Cursor blocks use `-p shipcard` |
+| `shipcard/src/cli/commands/login.ts` | Full device flow implementation | VERIFIED | 182 lines; device_authorization, user_code display, Worker /auth/exchange, saveAuthConfig write — not a stub |
+| `shipcard-worker/src/types.ts` | `looksLikeFilePath` uses `~/` not `~` | VERIFIED | Line 92: `value.startsWith("/") \|\| value.startsWith("~/")` — cost strings like `~$3,414` no longer rejected |
+| `shipcard/dist/cli/index.js` | Build output present | VERIFIED | File exists at expected path |
+| `shipcard/dist/mcp/server.js` | Build output present | VERIFIED | File exists at expected path |
 
 ### Key Link Verification
 
 | From | To | Via | Status | Details |
 |------|----|-----|--------|---------|
-| README.md Quick Start | shiplog/package.json | package name consistency | WIRED | Line 14: `npm install -g shipcard`; Line 25: `npx shipcard summary` — both match unscoped name |
-| README.md MCP Config | shiplog/package.json bin entries | `npx -p shipcard shipcard-mcp` | WIRED | Line 61: `["-y", "-p", "shipcard", "shipcard-mcp"]` — `-p` required because binary name differs from package name |
-| USAGE.md MCP Setup | shiplog/package.json bin entries | `npx -p shipcard shipcard-mcp` | WIRED | Line 159: same pattern confirmed |
-| mcp-config.md | shiplog/package.json bin entries | `-p shipcard` | WIRED | Lines 14+29: Claude Code and Cursor blocks both correct |
+| README.md Quick Start | shipcard/package.json | package name consistency | WIRED | Line 14: `npm install -g shipcard`; Line 25: `npx shipcard summary` — both match unscoped name |
+| README.md MCP Config | shipcard/package.json bin entries | `npx -p shipcard shipcard-mcp` | WIRED | Line 61: `["-y", "-p", "shipcard", "shipcard-mcp"]` — `-p` required because binary name differs from package name |
+| USAGE.md MCP Setup | shipcard/package.json bin entries | `npx -p shipcard shipcard-mcp` | WIRED | Line 159: same pattern confirmed |
+| mcp-config.md | shipcard/package.json bin entries | `-p shipcard` | WIRED | Lines 14+29: Claude Code and Cursor blocks both correct |
 | login.ts | Worker /auth/exchange | fetch POST with GitHub token | WIRED | Line 149: `fetch(\`${workerUrl}/auth/exchange\`, ...)` with real token exchange and error handling |
 
 ### Requirements Coverage

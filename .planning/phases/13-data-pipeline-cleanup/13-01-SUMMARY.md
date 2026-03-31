@@ -27,10 +27,10 @@ tech-stack:
 key-files:
   created: []
   modified:
-    - shiplog/src/parser/deduplicator.ts
-    - shiplog/src/engine/dailyAggregator.ts
-    - shiplog/src/index.ts
-    - shiplog/src/cli/commands/sync.ts
+    - shipcard/src/parser/deduplicator.ts
+    - shipcard/src/engine/dailyAggregator.ts
+    - shipcard/src/index.ts
+    - shipcard/src/cli/commands/sync.ts
 
 key-decisions:
   - "byProject is optional on DailyStats so all existing consumers (SafeTimeSeries, card render) continue without change"
@@ -72,10 +72,10 @@ completed: 2026-03-27
 
 ## Files Created/Modified
 
-- `shiplog/src/parser/deduplicator.ts` - Added `userMessagesByDate` Map to `processFile` return type and `ParseResult` interface; increment per-date count in UserEntry branch; merge per-file maps in `parseAllFiles`
-- `shiplog/src/engine/dailyAggregator.ts` - Added `PerProjectDailyStats` exported interface; added optional `byProject` to `DailyStats`; added `ProjectDayAccumulator` internal type; per-project accumulation in message loop; `userMessagesByDate` optional param; removed hardcoded-0 TODO
-- `shiplog/src/index.ts` - Added `userMessagesByDate` to `EngineFullResult`; filter map by date range in filtered path; return from `runEngineFull`
-- `shiplog/src/cli/commands/sync.ts` - Destructure `userMessagesByDate` from `runEngineFull`; pass as third arg to `aggregateDaily`
+- `shipcard/src/parser/deduplicator.ts` - Added `userMessagesByDate` Map to `processFile` return type and `ParseResult` interface; increment per-date count in UserEntry branch; merge per-file maps in `parseAllFiles`
+- `shipcard/src/engine/dailyAggregator.ts` - Added `PerProjectDailyStats` exported interface; added optional `byProject` to `DailyStats`; added `ProjectDayAccumulator` internal type; per-project accumulation in message loop; `userMessagesByDate` optional param; removed hardcoded-0 TODO
+- `shipcard/src/index.ts` - Added `userMessagesByDate` to `EngineFullResult`; filter map by date range in filtered path; return from `runEngineFull`
+- `shipcard/src/cli/commands/sync.ts` - Destructure `userMessagesByDate` from `runEngineFull`; pass as third arg to `aggregateDaily`
 
 ## Decisions Made
 
@@ -92,7 +92,7 @@ completed: 2026-03-27
 - **Found during:** Task 1 (TypeScript check after deduplicator changes)
 - **Issue:** `index.ts` manually constructs a `ParseResult` in the date-filtered code path; adding `userMessagesByDate` to the interface made that construction fail type-checking
 - **Fix:** Added filtered `userMessagesByDate` map construction (filter by since/until range) and included it in the filtered `ParseResult` literal — this is the correct Task 3 behavior, applied early to unblock Task 1 verification
-- **Files modified:** `shiplog/src/index.ts`
+- **Files modified:** `shipcard/src/index.ts`
 - **Verification:** `npx tsc --noEmit` passed clean after fix
 - **Committed in:** `87c876d` (Task 1 commit)
 
@@ -114,7 +114,7 @@ None - no external service configuration required.
 - `DailyStats.byProject` is populated and ready for Phase 14 dashboard UI consumption
 - `DailyStats.userMessages` is now accurate — Phase 14 can safely display user messages per day
 - Phase 15 (Project Activity) can query `byProject` per day and sort/filter by any metric
-- Both `shiplog/` and `shiplog-worker/` compile clean
+- Both `shipcard/` and `shipcard-worker/` compile clean
 
 ---
 *Phase: 13-data-pipeline-cleanup*

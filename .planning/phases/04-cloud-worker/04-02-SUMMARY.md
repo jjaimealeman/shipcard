@@ -32,12 +32,12 @@ tech-stack:
 
 key-files:
   created:
-    - shiplog-worker/src/auth.ts
-    - shiplog-worker/src/routes/auth.ts
-    - shiplog-worker/src/routes/sync.ts
+    - shipcard-worker/src/auth.ts
+    - shipcard-worker/src/routes/auth.ts
+    - shipcard-worker/src/routes/sync.ts
   modified:
-    - shiplog-worker/src/types.ts
-    - shiplog-worker/src/index.ts
+    - shipcard-worker/src/types.ts
+    - shipcard-worker/src/index.ts
 
 key-decisions:
   - "AppType Variables: { username: string } — auth middleware sets username on Hono context for downstream handlers"
@@ -68,7 +68,7 @@ completed: 2026-03-26
 
 - Auth middleware (`src/auth.ts`) validates `Authorization: Bearer <token>` by KV lookup, sets `username` on Hono context via `c.set('username', ...)`
 - `AppType` updated with `Variables: { username: string }` so all sub-apps have typed access to the authenticated user
-- `POST /auth/exchange` verifies GitHub token against `api.github.com/user` (User-Agent: shiplog-worker/1.0 per GitHub requirement), confirms `login` matches claimed username, issues `crypto.randomUUID()` Worker token stored with 1-year TTL — GitHub token never stored
+- `POST /auth/exchange` verifies GitHub token against `api.github.com/user` (User-Agent: shipcard-worker/1.0 per GitHub requirement), confirms `login` matches claimed username, issues `crypto.randomUUID()` Worker token stored with 1-year TTL — GitHub token never stored
 - `isValidSafeStats()` type guard in `types.ts` enforces CLOUD-04: structural validation + recursive banned field name scan + string value file-path detection (rejects `/` or `~` prefixes)
 - `POST /sync` authenticates, validates, checks username matches token owner, stores SafeStats in KV, invalidates all card cache variants, synchronously re-renders default variant (dark/classic/github) to defeat Cloudflare KV eventual consistency
 - `DELETE /sync` removes user data and card variants; auth token preserved for future re-sync
@@ -83,11 +83,11 @@ Each task was committed atomically:
 
 ## Files Created/Modified
 
-- `shiplog-worker/src/auth.ts` — `authMiddleware: MiddlewareHandler<AppType>`, rejects missing/invalid tokens with 401
-- `shiplog-worker/src/routes/auth.ts` — `POST /exchange`: GitHub API verification + opaque token issuance
-- `shiplog-worker/src/routes/sync.ts` — `POST /`: validated sync with cache invalidation + re-render; `DELETE /`: data wipe
-- `shiplog-worker/src/types.ts` — Added `Variables` to AppType; added `isValidSafeStats()` with banned-field + file-path checks
-- `shiplog-worker/src/index.ts` — Registered `/auth` and `/sync` routes
+- `shipcard-worker/src/auth.ts` — `authMiddleware: MiddlewareHandler<AppType>`, rejects missing/invalid tokens with 401
+- `shipcard-worker/src/routes/auth.ts` — `POST /exchange`: GitHub API verification + opaque token issuance
+- `shipcard-worker/src/routes/sync.ts` — `POST /`: validated sync with cache invalidation + re-render; `DELETE /`: data wipe
+- `shipcard-worker/src/types.ts` — Added `Variables` to AppType; added `isValidSafeStats()` with banned-field + file-path checks
+- `shipcard-worker/src/index.ts` — Registered `/auth` and `/sync` routes
 
 ## Decisions Made
 

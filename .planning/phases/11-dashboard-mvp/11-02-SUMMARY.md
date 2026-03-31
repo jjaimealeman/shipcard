@@ -30,7 +30,7 @@ tech-stack:
 key-files:
   created: []
   modified:
-    - shiplog-worker/src/routes/dashboard.ts
+    - shipcard-worker/src/routes/dashboard.ts
 
 key-decisions:
   - "Alpine.effect() drives chart updates — runs when filteredDays changes (range switch triggers it)"
@@ -79,7 +79,7 @@ completed: 2026-03-27
 
 ## Files Created/Modified
 
-- `shiplog-worker/src/routes/dashboard.ts` - Added ~515 lines of chart initialization code, helpers, and Alpine reactivity wiring to existing script block
+- `shipcard-worker/src/routes/dashboard.ts` - Added ~515 lines of chart initialization code, helpers, and Alpine reactivity wiring to existing script block
 
 ## Decisions Made
 

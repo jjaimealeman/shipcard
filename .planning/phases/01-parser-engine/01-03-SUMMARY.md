@@ -31,11 +31,11 @@ tech-stack:
 
 key-files:
   created:
-    - shiplog/src/engine/filter.ts
-    - shiplog/src/engine/index.ts
-    - shiplog/src/parser/index.ts
-    - shiplog/src/index.ts
-    - shiplog/.gitignore
+    - shipcard/src/engine/filter.ts
+    - shipcard/src/engine/index.ts
+    - shipcard/src/parser/index.ts
+    - shipcard/src/index.ts
+    - shipcard/.gitignore
   modified: []
 
 key-decisions:
@@ -84,11 +84,11 @@ Each task was committed atomically:
 
 ## Files Created/Modified
 
-- `shiplog/src/engine/filter.ts` - `parseFilterDate()` and `filterByDateRange()` with ISO/relative/today support
-- `shiplog/src/parser/index.ts` - Barrel re-export for parser subsystem (parseAllFiles, ParsedMessage, TokenCounts, reader)
-- `shiplog/src/engine/index.ts` - Barrel re-export for engine subsystem (aggregate, cost functions, filter, types)
-- `shiplog/src/index.ts` - `runEngine(options?)` public API: parse → filter → aggregate → return JSON-serializable result
-- `shiplog/.gitignore` - Ignores `dist/` and `node_modules/`
+- `shipcard/src/engine/filter.ts` - `parseFilterDate()` and `filterByDateRange()` with ISO/relative/today support
+- `shipcard/src/parser/index.ts` - Barrel re-export for parser subsystem (parseAllFiles, ParsedMessage, TokenCounts, reader)
+- `shipcard/src/engine/index.ts` - Barrel re-export for engine subsystem (aggregate, cost functions, filter, types)
+- `shipcard/src/index.ts` - `runEngine(options?)` public API: parse → filter → aggregate → return JSON-serializable result
+- `shipcard/.gitignore` - Ignores `dist/` and `node_modules/`
 
 ## Decisions Made
 
@@ -117,7 +117,7 @@ Phase 1 (Parser + Engine) is complete. All 13 requirements satisfied:
 - PARSE-01..07: JSONL discovery, streaming, deduplication (uuid + message.id), schema validation, session tracking, stats
 - ANLYT-01..06: aggregation by project/model, LiteLLM pricing with 3-layer cache, cost calculation, date filtering, JSON output, `runEngine()` entry point
 
-Phase 2 (CLI + MCP) can now import `runEngine` from `shiplog/src/index.ts` (or `dist/index.js` after build) and build the user-facing interface on top of it.
+Phase 2 (CLI + MCP) can now import `runEngine` from `shipcard/src/index.ts` (or `dist/index.js` after build) and build the user-facing interface on top of it.
 
 ---
 *Phase: 01-parser-engine*

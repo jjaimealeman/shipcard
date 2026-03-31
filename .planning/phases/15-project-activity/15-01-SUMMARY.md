@@ -27,7 +27,7 @@ tech-stack:
 key-files:
   created: []
   modified:
-    - shiplog-worker/src/routes/dashboard.ts
+    - shipcard-worker/src/routes/dashboard.ts
 
 key-decisions:
   - "Sort toggle visible on mobile via .panel-header .btn-group override (global .btn-group display:none bypassed)"
@@ -79,7 +79,7 @@ Each task was committed atomically:
 
 ## Files Created/Modified
 
-- `shiplog-worker/src/routes/dashboard.ts` - Sort toggle HTML, CSS override, _projectTotal getter, METRIC_MAP, reactive sortMetric dependency, datalabels, tooltip callbacks
+- `shipcard-worker/src/routes/dashboard.ts` - Sort toggle HTML, CSS override, _projectTotal getter, METRIC_MAP, reactive sortMetric dependency, datalabels, tooltip callbacks
 
 ## Decisions Made
 

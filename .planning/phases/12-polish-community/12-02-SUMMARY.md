@@ -26,7 +26,7 @@ tech-stack:
 key-files:
   created: []
   modified:
-    - shiplog-worker/src/routes/dashboard.ts
+    - shipcard-worker/src/routes/dashboard.ts
 
 key-decisions:
   - "min-width media queries (mobile-first) replace existing max-width queries — no separate breakpoint for hero grid needed since 2-col is default"
@@ -73,7 +73,7 @@ Each task was committed atomically:
 
 ## Files Created/Modified
 
-- `shiplog-worker/src/routes/dashboard.ts` - Mobile-first CSS, mobile-range-select HTML, buildHeatmap() day cap
+- `shipcard-worker/src/routes/dashboard.ts` - Mobile-first CSS, mobile-range-select HTML, buildHeatmap() day cap
 
 ## Decisions Made
 

@@ -6,7 +6,7 @@
 
 ## Summary
 
-Phase 06 closes two integration gaps in the Worker that were identified during the v1 audit: (1) the `?hide=` query param is parsed in the local CLI card but silently dropped by the Worker's `GET /u/:username` route, and (2) `renderRedactedCard()` exists as a fully implemented function in `shiplog-worker/src/svg/index.ts` but is never called — `DELETE /sync` returns a JSON response instead of storing a redacted SVG card.
+Phase 06 closes two integration gaps in the Worker that were identified during the v1 audit: (1) the `?hide=` query param is parsed in the local CLI card but silently dropped by the Worker's `GET /u/:username` route, and (2) `renderRedactedCard()` exists as a fully implemented function in `shipcard-worker/src/svg/index.ts` but is never called — `DELETE /sync` returns a JSON response instead of storing a redacted SVG card.
 
 This phase is entirely internal to `shiplog-worker`. No new libraries, no new dependencies, no schema changes, no KV namespace changes. The work is wiring two missing call sites. The `renderCard()` function already accepts a `hide?: string[]` option via `CardOptions`. The `renderRedactedCard(username)` function is already fully implemented. The planner's job is to write tasks that connect these existing pieces to their missing call sites.
 
@@ -33,7 +33,7 @@ No new libraries required for this phase. Everything is already in place.
 
 ### Existing File Map (what gets modified)
 ```
-shiplog-worker/src/
+shipcard-worker/src/
 ├── routes/
 │   ├── card.ts        # MODIFY: parse ?hide= param, pass to renderCard(), update cache key
 │   └── sync.ts        # MODIFY: DELETE handler — call renderRedactedCard(), store in KV
@@ -151,7 +151,7 @@ Verified patterns from the existing codebase:
 
 ### Parsing hide param in card.ts (current state)
 ```typescript
-// Source: shiplog-worker/src/routes/card.ts (current — missing hide)
+// Source: shipcard-worker/src/routes/card.ts (current — missing hide)
 const theme = (c.req.query("theme") ?? "dark") as ThemeName;
 const layout = (c.req.query("layout") ?? "classic") as LayoutName;
 const style = (c.req.query("style") ?? "github") as StyleName;
@@ -166,7 +166,7 @@ const hide = c.req.queries("hide") ?? [];
 
 ### Passing hide to renderCard (current state)
 ```typescript
-// Source: shiplog-worker/src/routes/card.ts line 76
+// Source: shipcard-worker/src/routes/card.ts line 76
 const svg = renderCard(userData, { theme, layout, style });
 // hide not passed — the gap being fixed
 ```
@@ -178,13 +178,13 @@ const svg = renderCard(userData, { theme, layout, style, hide });
 
 ### renderRedactedCard signature (already correct)
 ```typescript
-// Source: shiplog-worker/src/svg/index.ts line 183
+// Source: shipcard-worker/src/svg/index.ts line 183
 export function renderRedactedCard(username: string): string { ... }
 ```
 
 ### DELETE /sync current state (the gap)
 ```typescript
-// Source: shiplog-worker/src/routes/sync.ts lines 92-103
+// Source: shipcard-worker/src/routes/sync.ts lines 92-103
 syncRoutes.delete("/", authMiddleware, async (c) => {
   const username = c.get("username");
   const env = c.env;
@@ -197,7 +197,7 @@ syncRoutes.delete("/", authMiddleware, async (c) => {
 
 ### cardKey helper (kv.ts current state)
 ```typescript
-// Source: shiplog-worker/src/kv.ts lines 22-29
+// Source: shipcard-worker/src/kv.ts lines 22-29
 function cardKey(username: string, theme: string, layout: string, style: string): string {
   return `card:${username}:${theme}:${layout}:${style}`;
 }
@@ -229,10 +229,10 @@ function cardKey(username: string, theme: string, layout: string, style: string)
 ## Sources
 
 ### Primary (HIGH confidence)
-- Direct codebase read: `shiplog-worker/src/routes/card.ts` — current param parsing and renderCard call
-- Direct codebase read: `shiplog-worker/src/routes/sync.ts` — DELETE handler missing renderRedactedCard call
-- Direct codebase read: `shiplog-worker/src/svg/index.ts` — renderRedactedCard fully implemented, renderCard accepts hide
-- Direct codebase read: `shiplog-worker/src/kv.ts` — cardKey(), getCardCache(), putCardCache() signatures
+- Direct codebase read: `shipcard-worker/src/routes/card.ts` — current param parsing and renderCard call
+- Direct codebase read: `shipcard-worker/src/routes/sync.ts` — DELETE handler missing renderRedactedCard call
+- Direct codebase read: `shipcard-worker/src/svg/index.ts` — renderRedactedCard fully implemented, renderCard accepts hide
+- Direct codebase read: `shipcard-worker/src/kv.ts` — cardKey(), getCardCache(), putCardCache() signatures
 
 ### Secondary (MEDIUM confidence)
 - Hono docs: `c.req.queries()` (plural) for multi-value query params — standard Hono API, consistent with framework conventions

@@ -16,9 +16,9 @@ tech-stack:
 key-files:
   created: []
   modified:
-    - shiplog/src/cli/safestats.ts
-    - shiplog-worker/src/types.ts
-    - shiplog-worker/src/routes/dashboard.ts
+    - shipcard/src/cli/safestats.ts
+    - shipcard-worker/src/types.ts
+    - shipcard-worker/src/routes/dashboard.ts
 
 decisions:
   - id: "mirror-not-import"
@@ -49,12 +49,12 @@ metrics:
 
 ### Task 1: SafeDailyStats byProject Extension (CLI + Worker)
 
-**shiplog/src/cli/safestats.ts:**
+**shipcard/src/cli/safestats.ts:**
 - Imported `PerProjectDailyStats` from `dailyAggregator.js`
 - Added optional `byProject?: Record<string, PerProjectDailyStats>` to `SafeDailyStats`
 - `toSafeTimeSeries()` now includes `byProject` inside the `if (showProjects)` block when `day.byProject` exists
 
-**shiplog-worker/src/types.ts:**
+**shipcard-worker/src/types.ts:**
 - Added `PerProjectDailyStats` interface as a Worker-local copy (mirrors CLI shape exactly)
 - Added optional `byProject?: Record<string, PerProjectDailyStats>` to Worker's `SafeDailyStats`
 - `isValidSyncV2Body()` unchanged -- optional field passes through the envelope validator silently
@@ -62,7 +62,7 @@ metrics:
 
 ### Task 2: Dashboard Project Chart Metrics + Cleanup
 
-**shiplog-worker/src/routes/dashboard.ts:**
+**shipcard-worker/src/routes/dashboard.ts:**
 
 CLEAN-01 (Slowest Day): Confirmed absent -- never existed in codebase. No removal needed.
 

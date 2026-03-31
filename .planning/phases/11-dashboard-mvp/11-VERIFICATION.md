@@ -35,8 +35,8 @@ re_verification: false
 
 | Artifact | Expected | Exists | Substantive | Wired | Status |
 |----------|----------|--------|-------------|-------|--------|
-| `shiplog-worker/src/routes/dashboard.ts` | Main dashboard route + HTML template + Alpine store + all chart functions | Yes (1746 lines) | Yes — full implementation, no stub patterns | Yes — imported and mounted in index.ts | VERIFIED |
-| `shiplog-worker/src/index.ts` | Route wiring: dashboardRoutes before apiRoutes | Yes | Yes | Yes — line 36: `app.route("/u", dashboardRoutes)` before apiRoutes at line 40 | VERIFIED |
+| `shipcard-worker/src/routes/dashboard.ts` | Main dashboard route + HTML template + Alpine store + all chart functions | Yes (1746 lines) | Yes — full implementation, no stub patterns | Yes — imported and mounted in index.ts | VERIFIED |
+| `shipcard-worker/src/index.ts` | Route wiring: dashboardRoutes before apiRoutes | Yes | Yes | Yes — line 36: `app.route("/u", dashboardRoutes)` before apiRoutes at line 40 | VERIFIED |
 
 ---
 
@@ -136,7 +136,7 @@ The following cannot be verified programmatically and require a browser test aga
 
 ## Summary
 
-Phase 11 goal is fully achieved. The single implementation file (`shiplog-worker/src/routes/dashboard.ts`, 1746 lines) contains a complete, non-stub analytics dashboard:
+Phase 11 goal is fully achieved. The single implementation file (`shipcard-worker/src/routes/dashboard.ts`, 1746 lines) contains a complete, non-stub analytics dashboard:
 
 - Route handler wired in index.ts before competing routes
 - Alpine.js global store with reactive `filteredDays`, `hasProjects`, and all hero stat getters

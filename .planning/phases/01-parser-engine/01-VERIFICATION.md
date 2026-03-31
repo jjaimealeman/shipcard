@@ -32,15 +32,15 @@ score: 5/5 must-haves verified
 
 | Artifact | Expected | Status | Details |
 | -------- | -------- | ------ | ------- |
-| `shiplog/src/parser/schema.ts` | Types + type guards | VERIFIED | 141 lines. Exports `TokenCounts`, `ParsedMessage`, `isUserEntry`, `isAssistantEntry`. Defensive guards check every nested field. |
-| `shiplog/src/parser/reader.ts` | File discovery + streaming | VERIFIED | 54 lines. `discoverJsonlFiles` uses Node 22 `glob`. `streamJsonlFile` streams line-by-line, skips blank lines, increments `linesSkipped` on parse failure. |
-| `shiplog/src/parser/deduplicator.ts` | Two-level dedup | VERIFIED | 178 lines. Level 1: uuid Set shared across files. Level 2: `bestByMessageId` keeps highest `output_tokens` per `message.id`. `parseAllFiles` builds sessions map. |
-| `shiplog/src/engine/types.ts` | Output shapes | VERIFIED | 99 lines. Exports `AnalyticsResult`, `ProjectStats`, `ModelStats`, `EngineOptions`. All cost fields typed as `string` (formatted `~$X.XX`). `pricingVersion` field present. |
-| `shiplog/src/engine/cost.ts` | Pricing with 3-layer cache | VERIFIED | 372 lines. Layer 1: module-level `runtimeCache`. Layer 2: `~/.shiplog/pricing.json` with 24h mtime check. Layer 3: LiteLLM network fetch with disk write. Fallback: bundled snapshot. `formatCost` always prepends `~$`. |
-| `shiplog/src/engine/aggregator.ts` | Single-pass aggregation | VERIFIED | 273 lines. Single `for` loop over messages. Accumulates project tokens/sessions/models/toolCalls/cost, model tokens/cost, and model×project breakdown. Calls `formatCost` on all outputs. |
-| `shiplog/src/engine/filter.ts` | Date filtering | VERIFIED | 98 lines. `parseFilterDate` handles ISO (`2026-03-01`), relative (`7d`, `30d`), and keyword (`today`). `filterByDateRange` applies since (inclusive) and until (exclusive). |
-| `shiplog/src/index.ts` | Public API entry point | VERIFIED | 127 lines. `runEngine` orchestrates all 7 steps. Wires parser → filter → pricing → aggregator. Attaches `meta.dateRange` when filtering applied. Re-exports all consumer types. |
-| `shiplog/data/pricing-snapshot.json` | Bundled fallback | VERIFIED | Exists. 20 model entries including `claude-sonnet-4-6`. `_meta.snapshot_date` = `"2026-03-25"`. Used as Layer 4 fallback when network unavailable. |
+| `shipcard/src/parser/schema.ts` | Types + type guards | VERIFIED | 141 lines. Exports `TokenCounts`, `ParsedMessage`, `isUserEntry`, `isAssistantEntry`. Defensive guards check every nested field. |
+| `shipcard/src/parser/reader.ts` | File discovery + streaming | VERIFIED | 54 lines. `discoverJsonlFiles` uses Node 22 `glob`. `streamJsonlFile` streams line-by-line, skips blank lines, increments `linesSkipped` on parse failure. |
+| `shipcard/src/parser/deduplicator.ts` | Two-level dedup | VERIFIED | 178 lines. Level 1: uuid Set shared across files. Level 2: `bestByMessageId` keeps highest `output_tokens` per `message.id`. `parseAllFiles` builds sessions map. |
+| `shipcard/src/engine/types.ts` | Output shapes | VERIFIED | 99 lines. Exports `AnalyticsResult`, `ProjectStats`, `ModelStats`, `EngineOptions`. All cost fields typed as `string` (formatted `~$X.XX`). `pricingVersion` field present. |
+| `shipcard/src/engine/cost.ts` | Pricing with 3-layer cache | VERIFIED | 372 lines. Layer 1: module-level `runtimeCache`. Layer 2: `~/.shipcard/pricing.json` with 24h mtime check. Layer 3: LiteLLM network fetch with disk write. Fallback: bundled snapshot. `formatCost` always prepends `~$`. |
+| `shipcard/src/engine/aggregator.ts` | Single-pass aggregation | VERIFIED | 273 lines. Single `for` loop over messages. Accumulates project tokens/sessions/models/toolCalls/cost, model tokens/cost, and model×project breakdown. Calls `formatCost` on all outputs. |
+| `shipcard/src/engine/filter.ts` | Date filtering | VERIFIED | 98 lines. `parseFilterDate` handles ISO (`2026-03-01`), relative (`7d`, `30d`), and keyword (`today`). `filterByDateRange` applies since (inclusive) and until (exclusive). |
+| `shipcard/src/index.ts` | Public API entry point | VERIFIED | 127 lines. `runEngine` orchestrates all 7 steps. Wires parser → filter → pricing → aggregator. Attaches `meta.dateRange` when filtering applied. Re-exports all consumer types. |
+| `shipcard/data/pricing-snapshot.json` | Bundled fallback | VERIFIED | Exists. 20 model entries including `claude-sonnet-4-6`. `_meta.snapshot_date` = `"2026-03-25"`. Used as Layer 4 fallback when network unavailable. |
 
 ---
 

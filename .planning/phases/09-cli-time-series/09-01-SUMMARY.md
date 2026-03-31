@@ -22,10 +22,10 @@ tech-stack:
 
 key-files:
   created:
-    - shiplog/src/engine/dailyAggregator.ts
+    - shipcard/src/engine/dailyAggregator.ts
   modified:
-    - shiplog/src/parser/schema.ts
-    - shiplog/src/parser/deduplicator.ts
+    - shipcard/src/parser/schema.ts
+    - shipcard/src/parser/deduplicator.ts
 
 decisions:
   - id: thinking-blocks-count
@@ -60,7 +60,7 @@ metrics:
 
 ### Task 2: Daily aggregation engine (dailyAggregator.ts)
 
-New standalone file `shiplog/src/engine/dailyAggregator.ts` exports:
+New standalone file `shipcard/src/engine/dailyAggregator.ts` exports:
 - `DailyStats` interface — per-day analytics bucket
 - `aggregateDaily(messages, pricing)` — groups messages by UTC date, returns `DailyStats[]` sorted ascending
 

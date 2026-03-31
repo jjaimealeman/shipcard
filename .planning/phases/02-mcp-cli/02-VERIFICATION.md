@@ -30,22 +30,22 @@ score: 5/5 must-haves verified
 
 | Artifact                                  | Expected                                        | Status      | Details                                                    |
 | ----------------------------------------- | ----------------------------------------------- | ----------- | ---------------------------------------------------------- |
-| `shiplog/src/cli/args.ts`                 | Typed flag parser with --json/--since/--until   | ✓ VERIFIED  | 65 lines; exports `parseCliArgs()`; all three flags defined with correct types |
-| `shiplog/src/cli/config.ts`               | Config loader with safe defaults                | ✓ VERIFIED  | 45 lines; exports `loadConfig()`; returns `{}` on missing/invalid |
-| `shiplog/src/cli/format.ts`               | UTF-8 box-drawing table renderer                | ✓ VERIFIED  | 271 lines; exports `renderTable()`, `formatSummary()`, `formatCosts()` |
-| `shiplog/src/cli/commands/summary.ts`     | summary command calling runEngine + formatSummary | ✓ VERIFIED | 87 lines; wired to `runEngine()` and `formatSummary()` with json/since/until |
-| `shiplog/src/cli/commands/costs.ts`       | costs command calling runEngine + formatCosts   | ✓ VERIFIED  | 92 lines; wired to `runEngine()` and `formatCosts()` with json/since/until |
-| `shiplog/src/cli/commands/card.ts`        | card command outputting JSON in Phase 2         | ✓ VERIFIED  | 92 lines; outputs raw JSON; SVG deferred to Phase 3 per scope |
-| `shiplog/src/cli/index.ts`                | Shebang entry point with subcommand dispatch    | ✓ VERIFIED  | 100 lines; shebang present; dispatches summary/costs/card; help text |
-| `shiplog/src/mcp/server.ts`               | MCP server with stdio transport                 | ✓ VERIFIED  | 31 lines; shebang; McpServer + StdioServerTransport; registers all 3 tools |
-| `shiplog/src/mcp/tools/summary.ts`        | shiplog:summary tool registration               | ✓ VERIFIED  | 57 lines; registers `shiplog:summary`; calls `runEngine()`; returns JSON |
-| `shiplog/src/mcp/tools/costs.ts`          | shiplog:costs tool registration                 | ✓ VERIFIED  | 60 lines; registers `shiplog:costs`; returns byProject+byModel JSON |
-| `shiplog/src/mcp/tools/card.ts`           | shiplog:card tool registration                  | ✓ VERIFIED  | 56 lines; registers `shiplog:card`; returns full AnalyticsResult JSON |
-| `shiplog/package.json` (bin field)        | Dual bin entries shiplog + shiplog-mcp          | ✓ VERIFIED  | `bin.shiplog = "./dist/cli/index.js"`, `bin.shiplog-mcp = "./dist/mcp/server.js"` |
-| `shiplog/package.json` (build script)     | tsc + chmod 755 on both entry points            | ✓ VERIFIED  | `"build": "tsc && chmod 755 dist/cli/index.js dist/mcp/server.js"` |
-| `shiplog/docs/mcp-config.md`              | Copy-paste MCP config for Claude Code + Cursor  | ✓ VERIFIED  | 69 lines; JSON snippets for Claude Code, Cursor, global install; npx -y documented |
-| `shiplog/dist/cli/index.js`               | Compiled CLI entry point, executable            | ✓ VERIFIED  | Exists, shebang present, permissions -rwxr-xr-x (755) |
-| `shiplog/dist/mcp/server.js`              | Compiled MCP entry point, executable            | ✓ VERIFIED  | Exists, shebang present, permissions -rwxr-xr-x (755) |
+| `shipcard/src/cli/args.ts`                 | Typed flag parser with --json/--since/--until   | ✓ VERIFIED  | 65 lines; exports `parseCliArgs()`; all three flags defined with correct types |
+| `shipcard/src/cli/config.ts`               | Config loader with safe defaults                | ✓ VERIFIED  | 45 lines; exports `loadConfig()`; returns `{}` on missing/invalid |
+| `shipcard/src/cli/format.ts`               | UTF-8 box-drawing table renderer                | ✓ VERIFIED  | 271 lines; exports `renderTable()`, `formatSummary()`, `formatCosts()` |
+| `shipcard/src/cli/commands/summary.ts`     | summary command calling runEngine + formatSummary | ✓ VERIFIED | 87 lines; wired to `runEngine()` and `formatSummary()` with json/since/until |
+| `shipcard/src/cli/commands/costs.ts`       | costs command calling runEngine + formatCosts   | ✓ VERIFIED  | 92 lines; wired to `runEngine()` and `formatCosts()` with json/since/until |
+| `shipcard/src/cli/commands/card.ts`        | card command outputting JSON in Phase 2         | ✓ VERIFIED  | 92 lines; outputs raw JSON; SVG deferred to Phase 3 per scope |
+| `shipcard/src/cli/index.ts`                | Shebang entry point with subcommand dispatch    | ✓ VERIFIED  | 100 lines; shebang present; dispatches summary/costs/card; help text |
+| `shipcard/src/mcp/server.ts`               | MCP server with stdio transport                 | ✓ VERIFIED  | 31 lines; shebang; McpServer + StdioServerTransport; registers all 3 tools |
+| `shipcard/src/mcp/tools/summary.ts`        | shiplog:summary tool registration               | ✓ VERIFIED  | 57 lines; registers `shiplog:summary`; calls `runEngine()`; returns JSON |
+| `shipcard/src/mcp/tools/costs.ts`          | shiplog:costs tool registration                 | ✓ VERIFIED  | 60 lines; registers `shiplog:costs`; returns byProject+byModel JSON |
+| `shipcard/src/mcp/tools/card.ts`           | shiplog:card tool registration                  | ✓ VERIFIED  | 56 lines; registers `shiplog:card`; returns full AnalyticsResult JSON |
+| `shipcard/package.json` (bin field)        | Dual bin entries shiplog + shiplog-mcp          | ✓ VERIFIED  | `bin.shiplog = "./dist/cli/index.js"`, `bin.shiplog-mcp = "./dist/mcp/server.js"` |
+| `shipcard/package.json` (build script)     | tsc + chmod 755 on both entry points            | ✓ VERIFIED  | `"build": "tsc && chmod 755 dist/cli/index.js dist/mcp/server.js"` |
+| `shipcard/docs/mcp-config.md`              | Copy-paste MCP config for Claude Code + Cursor  | ✓ VERIFIED  | 69 lines; JSON snippets for Claude Code, Cursor, global install; npx -y documented |
+| `shipcard/dist/cli/index.js`               | Compiled CLI entry point, executable            | ✓ VERIFIED  | Exists, shebang present, permissions -rwxr-xr-x (755) |
+| `shipcard/dist/mcp/server.js`              | Compiled MCP entry point, executable            | ✓ VERIFIED  | Exists, shebang present, permissions -rwxr-xr-x (755) |
 
 ### Key Link Verification
 

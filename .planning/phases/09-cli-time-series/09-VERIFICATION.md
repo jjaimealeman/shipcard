@@ -36,14 +36,14 @@ re_verification: false
 
 | Artifact                                      | Expected                                             | Status    | Details                                                   |
 |-----------------------------------------------|------------------------------------------------------|-----------|-----------------------------------------------------------|
-| `shiplog/src/engine/dailyAggregator.ts`       | Groups ParsedMessages into DailyStats by date        | VERIFIED  | 174 lines, exports `DailyStats` interface + `aggregateDaily()` |
-| `shiplog/src/parser/schema.ts`                | ParsedMessage includes `thinkingBlocks: number`      | VERIFIED  | Field present at line 97; `ThinkingBlock` type defined at line 29 |
-| `shiplog/src/parser/deduplicator.ts`          | userMessages counted, thinkingBlocks computed        | VERIFIED  | `userMessageCount` incremented at line 87; thinking filter at lines 110-112 |
-| `shiplog/src/cli/safestats.ts`                | SafeDailyStats + SafeTimeSeries + toSafeTimeSeries   | VERIFIED  | All three exported; privacy logic at lines 152-170 |
-| `shiplog/src/cli/args.ts`                     | `showProjects` flag in ParsedCliArgs.flags           | VERIFIED  | Interface field at line 35; `"show-projects"` option at line 71; mapped at line 101 |
-| `shiplog/src/cli/commands/sync.ts`            | v2 POST with fallback; aggregateDaily called         | VERIFIED  | 279 lines; `aggregateDaily` imported and called; 404 fallback fully implemented |
-| `shiplog/src/index.ts`                        | `runEngineFull()` returning both result + messages   | VERIFIED  | `EngineFullResult` interface at line 44; `runEngineFull` at line 69; `ParsedMessage` re-exported at line 30 |
-| `shiplog/src/cli/index.ts`                    | `--show-projects` documented; sync command wired     | VERIFIED  | Help text at line 58; `runSync(mergedFlags)` at line 130 (mergedFlags spreads all flags including showProjects) |
+| `shipcard/src/engine/dailyAggregator.ts`       | Groups ParsedMessages into DailyStats by date        | VERIFIED  | 174 lines, exports `DailyStats` interface + `aggregateDaily()` |
+| `shipcard/src/parser/schema.ts`                | ParsedMessage includes `thinkingBlocks: number`      | VERIFIED  | Field present at line 97; `ThinkingBlock` type defined at line 29 |
+| `shipcard/src/parser/deduplicator.ts`          | userMessages counted, thinkingBlocks computed        | VERIFIED  | `userMessageCount` incremented at line 87; thinking filter at lines 110-112 |
+| `shipcard/src/cli/safestats.ts`                | SafeDailyStats + SafeTimeSeries + toSafeTimeSeries   | VERIFIED  | All three exported; privacy logic at lines 152-170 |
+| `shipcard/src/cli/args.ts`                     | `showProjects` flag in ParsedCliArgs.flags           | VERIFIED  | Interface field at line 35; `"show-projects"` option at line 71; mapped at line 101 |
+| `shipcard/src/cli/commands/sync.ts`            | v2 POST with fallback; aggregateDaily called         | VERIFIED  | 279 lines; `aggregateDaily` imported and called; 404 fallback fully implemented |
+| `shipcard/src/index.ts`                        | `runEngineFull()` returning both result + messages   | VERIFIED  | `EngineFullResult` interface at line 44; `runEngineFull` at line 69; `ParsedMessage` re-exported at line 30 |
+| `shipcard/src/cli/index.ts`                    | `--show-projects` documented; sync command wired     | VERIFIED  | Help text at line 58; `runSync(mergedFlags)` at line 130 (mergedFlags spreads all flags including showProjects) |
 
 ---
 

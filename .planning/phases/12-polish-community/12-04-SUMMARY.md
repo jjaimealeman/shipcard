@@ -25,10 +25,10 @@ tech-stack:
 
 key-files:
   created:
-    - shiplog-worker/src/routes/community.ts
+    - shipcard-worker/src/routes/community.ts
   modified:
-    - shiplog-worker/src/routes/landing.ts
-    - shiplog-worker/src/index.ts
+    - shipcard-worker/src/routes/landing.ts
+    - shipcard-worker/src/index.ts
 
 key-decisions:
   - "Placeholder injection for landing page: LANDING_HTML is a static template literal evaluated at module load; dynamic content injected via .replace() on <!--PLACEHOLDER--> comments in async handler — avoids restructuring the large template"
@@ -74,9 +74,9 @@ completed: 2026-03-27
 
 ## Files Created/Modified
 
-- `shiplog-worker/src/routes/landing.ts` - Added imports, async handler with KV reads, CSS, placeholder injection, community teaser builder, cards-served counter
-- `shiplog-worker/src/routes/community.ts` — New full leaderboard page with Alpine.js sorting
-- `shiplog-worker/src/index.ts` — Added communityRoutes import and mount at /community
+- `shipcard-worker/src/routes/landing.ts` - Added imports, async handler with KV reads, CSS, placeholder injection, community teaser builder, cards-served counter
+- `shipcard-worker/src/routes/community.ts` — New full leaderboard page with Alpine.js sorting
+- `shipcard-worker/src/index.ts` — Added communityRoutes import and mount at /community
 
 ## Decisions Made
 
