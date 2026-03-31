@@ -1,28 +1,46 @@
-# shipcard
+<p align="center">
+  <img src="logo-wordmark.svg" alt="ShipCard" height="48" />
+</p>
 
-<img src="https://shipcard.dev/u/jjaimealeman" alt="ShipCard Stats" width="495" />
+<p align="center">
+  <strong>Your Claude Code stats, in one card.</strong>
+</p>
 
-See what you shipped. Share the proof.
+<p align="center">
+  <a href="https://www.npmjs.com/package/@jjaimealeman/shipcard"><img src="https://img.shields.io/npm/v/@jjaimealeman/shipcard?color=00d4aa&label=npm" alt="npm version" /></a>
+  <a href="https://github.com/jjaimealeman/shipcard/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-00d4aa" alt="MIT License" /></a>
+  <a href="https://shipcard.dev"><img src="https://img.shields.io/badge/shipcard.dev-live-00d4aa" alt="Live" /></a>
+</p>
 
-Reads your Claude Code JSONL files, calculates sessions, tokens, cost, and models used — then generates an embeddable SVG stats card for your README.
+<p align="center">
+  <img src="https://shipcard.dev/u/jjaimealeman?theme=catppuccin" alt="ShipCard Stats" width="495" />
+</p>
 
 ---
+
+One command parses your Claude Code sessions and generates an embeddable SVG stats card. Embed it in your README, portfolio, or dotfiles.
+
+<p align="center">
+  <img src=".github/screenshots/sc-dashboard.png" alt="Dashboard" width="800" />
+</p>
 
 ## Quick Start
 
 ```sh
-npm install -g shipcard
-
-shipcard summary          # terminal overview
-shipcard card --local     # generate SVG card
-shipcard login            # authenticate with GitHub
-shipcard sync             # push stats to shipcard.dev
+npx @jjaimealeman/shipcard summary
 ```
 
-Or without installing:
+Or install globally:
 
 ```sh
-npx shipcard summary
+npm install -g @jjaimealeman/shipcard
+
+shipcard summary          # terminal overview
+shipcard costs            # cost breakdown by project and model
+shipcard card --local     # generate SVG card
+shipcard login            # authenticate with GitHub
+shipcard sync --confirm   # push stats to shipcard.dev
+shipcard slug create      # custom card URLs (PRO)
 ```
 
 ---
@@ -35,16 +53,18 @@ After syncing, add this to your README:
 ![ShipCard](https://shipcard.dev/u/YOUR_USERNAME)
 ```
 
-Or with HTML for consistent width:
+With a theme:
 
-```html
-<img src="https://shipcard.dev/u/YOUR_USERNAME" alt="ShipCard" width="495" />
+```markdown
+![ShipCard](https://shipcard.dev/u/YOUR_USERNAME?theme=catppuccin)
 ```
 
-Customize layout, theme, and style at [shipcard.dev](https://shipcard.dev) — or pass query params directly:
+**9 curated themes:** catppuccin, dracula, tokyo-night, nord, gruvbox, solarized-dark, solarized-light, one-dark, monokai
+
+Customize at [shipcard.dev/configure](https://shipcard.dev/configure) or pass query params directly:
 
 ```
-https://shipcard.dev/u/YOUR_USERNAME?layout=hero&theme=light&style=minimal
+?theme=dracula&layout=hero&style=branded
 ```
 
 ---
@@ -58,7 +78,7 @@ Ask Claude about your coding stats from inside Claude Code:
   "mcpServers": {
     "shipcard": {
       "command": "npx",
-      "args": ["-y", "-p", "shipcard", "shipcard-mcp"]
+      "args": ["-y", "-p", "@jjaimealeman/shipcard", "shipcard-mcp"]
     }
   }
 }
@@ -70,24 +90,50 @@ Add to `.claude/settings.json` (project) or `~/.claude/settings.json` (global). 
 
 ## CLI
 
-| Command            | What it does                                     |
-| ------------------ | ------------------------------------------------ |
+| Command | What it does |
+|---------|-------------|
 | `shipcard summary` | Sessions, tokens, cost, models, tool call counts |
-| `shipcard costs`   | Cost breakdown by project and model              |
-| `shipcard card`    | Generate SVG card (`--local`) or preview JSON    |
-| `shipcard login`   | Authenticate via GitHub device flow              |
-| `shipcard sync`    | Push stats to cloud, get embeddable URL          |
+| `shipcard costs` | Cost breakdown by project and model |
+| `shipcard card` | Generate SVG card (`--local`) or preview JSON |
+| `shipcard login` | Authenticate via GitHub device flow |
+| `shipcard sync` | Push stats to cloud, get embeddable URL |
+| `shipcard slug` | Manage custom card URL slugs (PRO) |
 
 See [USAGE.md](USAGE.md) for full flag reference.
 
 ---
 
-## Card Styles
+## Features
 
-3 layouts × 3 styles × 2 themes = 18 combinations.
+**Free:**
+- Local CLI + MCP server
+- 9 curated themes, 3 layouts, 3 styles
+- Cloud sync with embeddable card URL
+- Analytics dashboard with 9 chart panels
+- Community leaderboard
 
-See [STYLES.md](STYLES.md) for the full gallery.
+**PRO ($2/mo):**
+- Custom colors (BYOT — bring your own theme)
+- Custom URL slugs (`/u/you/dark-minimal`)
+- PRO badge on card
+- AI coding insights (peak hours, cost trends, streaks)
+- Priority cache refresh
 
 ---
 
-MIT License
+## Data Availability
+
+ShipCard parses Claude Code JSONL files from approximately **January 2026 onward**. Earlier sessions used a different schema that lacks the fields ShipCard needs.
+
+---
+
+## Links
+
+- [shipcard.dev](https://shipcard.dev) — landing page
+- [shipcard.dev/community](https://shipcard.dev/community) — leaderboard
+- [shipcard.dev/configure](https://shipcard.dev/configure) — card configurator
+- [USAGE.md](USAGE.md) — full CLI + MCP reference
+
+---
+
+MIT License · Built on Cloudflare · Made in El Paso
