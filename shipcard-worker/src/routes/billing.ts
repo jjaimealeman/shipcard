@@ -201,7 +201,7 @@ billingRoutes.get("/checkout/callback", async (c) => {
       mode: "subscription",
       line_items: [{ price: priceId, quantity: 1 }],
       subscription_data: { metadata: { username } },
-      customer: existingSub?.stripe_customer_id || undefined,
+      customer: existingSub?.stripe_customer_id?.startsWith("cus_") ? existingSub.stripe_customer_id : undefined,
       success_url: `${origin}/billing/welcome?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/u/${username}/dashboard`,
     });
@@ -211,7 +211,8 @@ billingRoutes.get("/checkout/callback", async (c) => {
     }
 
     return c.redirect(session.url, 302);
-  } catch {
+  } catch (err) {
+    console.error("Checkout failed:", err);
     return c.redirect(`/u/${username}/dashboard?error=checkout_failed`, 302);
   }
 });
