@@ -86,6 +86,30 @@ Ask Claude about your coding stats from inside Claude Code:
 
 Add to `.claude/settings.json` (project) or `~/.claude/settings.json` (global). Then use tools `shipcard:summary`, `shipcard:costs`, and `shipcard:card` in any conversation.
 
+**Example conversations:**
+
+```
+❯ how many sessions have I had this month?
+
+● 226 sessions this month, ~$1,977.81 in estimated cost.
+  That's a busy March.
+```
+
+```
+❯ compare march to february?
+
+● ┌──────────┬────────────┬────────────┐
+  │          │  February  │   March    │
+  ├──────────┼────────────┼────────────┤
+  │ Sessions │ 264        │ 226        │
+  ├──────────┼────────────┼────────────┤
+  │ Cost     │ ~$1,519.69 │ ~$1,977.81 │
+  └──────────┴────────────┴────────────┘
+
+  Fewer sessions in March but $458 more expensive —
+  heavier models (Opus) this month.
+```
+
 ---
 
 ## CLI
