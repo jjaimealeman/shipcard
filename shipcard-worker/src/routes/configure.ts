@@ -170,8 +170,9 @@ tailwind.config = {
   <div class="flex items-center gap-2">
     <a href="/" class="flex items-center gap-2">
       <div class="w-6 h-6 text-primary">
-        <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-          <path d="M8.578 8.578C5.528 11.628 3.451 15.514 2.609 19.745c-.841 4.23-.41 8.616 1.241 12.601 1.65 3.985 4.446 7.391 8.032 9.788 3.587 2.396 7.804 3.675 12.118 3.675 4.314 0 8.53-1.279 12.117-3.675 3.586-2.397 6.382-5.803 8.032-9.788 1.651-3.985 2.083-8.371 1.241-12.601-.842-4.231-2.919-8.117-5.969-11.167L24 24 8.578 8.578z" fill="currentColor"></path>
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7 6H25V18L16 26L7 18V6Z" fill="currentColor"/>
+          <rect x="11" y="11" width="10" height="3" fill="#0a0a0f"/>
         </svg>
       </div>
       <span class="font-headline text-xl font-bold tracking-tight text-on-surface">ShipCard</span>

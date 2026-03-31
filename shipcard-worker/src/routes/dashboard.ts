@@ -26,1474 +26,165 @@ export const dashboardRoutes = new Hono<AppType>();
 
 /* eslint-disable no-secrets/no-secrets */
 const DASHBOARD_HTML = `<!DOCTYPE html>
-<html lang="en">
+<html class="dark" lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>__USERNAME__ | ShipCard Analytics</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Lora:wght@400;500&display=swap" rel="stylesheet">
-<!-- heatmap styles (custom SVG, no external dep) -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@700&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script>
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "surface-dim": "#131318",
+        "primary": "#00d4aa",
+        "on-primary": "#00382b",
+        "surface-container-high": "#2a292f",
+        "surface-container-lowest": "#0e0e13",
+        "surface": "#0a0a0f",
+        "on-surface-variant": "#8888a0",
+        "surface-container-highest": "#35343a",
+        "secondary": "#f0a030",
+        "outline-variant": "#2a2a35",
+        "background": "#0a0a0f",
+        "surface-container-low": "#141419",
+        "on-surface": "#e8e8ed",
+        "surface-container": "#1f1f25",
+      },
+      fontFamily: {
+        "headline": ["Instrument Sans", "sans-serif"],
+        "body": ["IBM Plex Mono", "monospace"],
+        "label": ["IBM Plex Mono", "monospace"]
+      },
+      borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+    },
+  },
+}
+</script>
 <style>
-  :root {
-    --bg: #141413;
-    --fg: #faf9f5;
-    --mid: #b0aea5;
-    --light: #e8e6dc;
-    --orange: #d97757;
-    --blue: #6a9bcc;
-    --green: #788c5d;
-    --surface: #1e1e1c;
-    --border: #2a2a28;
-    --radius: 8px;
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Lora', Georgia, serif;
-    font-size: 14px;
-    line-height: 1.6;
-    background: var(--bg);
-    color: var(--fg);
-    min-height: 100vh;
-  }
-  h1, h2, h3, h4, .heading {
-    font-family: 'Poppins', system-ui, sans-serif;
-  }
-
-  /* -------------------------------------------------------------------------
-   * Skeleton shimmer animation
-   * ---------------------------------------------------------------------- */
+  /* Skeleton shimmer animation */
   @keyframes shimmer {
     0%   { background-position: -400px 0; }
     100% { background-position: 400px 0; }
   }
   .skeleton {
-    background: linear-gradient(90deg, var(--surface) 25%, #2a2a27 50%, var(--surface) 75%);
+    background: linear-gradient(90deg, #1f1f25 25%, #2a292f 50%, #1f1f25 75%);
     background-size: 800px 100%;
     animation: shimmer 1.6s infinite linear;
     border-radius: 4px;
   }
 
-  /* -------------------------------------------------------------------------
-   * Navigation / filter bar
-   * ---------------------------------------------------------------------- */
-  .filter-bar {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: var(--bg);
-    border-bottom: 1px solid var(--border);
-    padding: 12px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .filter-bar-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .brand-link {
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--fg);
-    text-decoration: none;
-    letter-spacing: -0.02em;
-  }
-  .username-title {
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--mid);
-  }
-  .username-title span {
-    color: var(--fg);
-  }
-  .divider {
-    color: var(--border);
-    font-size: 18px;
-    line-height: 1;
-  }
-
-  /* Segmented control — matches configurator pill style */
-  .btn-group {
-    display: flex;
-    gap: 0;
-    border-radius: 6px;
-    overflow: hidden;
-    border: 1px solid var(--border);
-  }
-  .btn-group button {
-    flex: 1;
-    padding: 6px 14px;
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 12px;
-    font-weight: 600;
-    background: var(--bg);
-    color: var(--mid);
-    border: none;
-    cursor: pointer;
-    transition: background 0.15s, color 0.15s;
-    white-space: nowrap;
-  }
-  .btn-group button + button { border-left: 1px solid var(--border); }
-  .btn-group button.active {
-    background: var(--orange);
-    color: var(--bg);
-  }
-  .btn-group button:hover:not(.active) {
-    background: var(--surface);
-    color: var(--fg);
-  }
-
-  /* -------------------------------------------------------------------------
-   * Page layout
-   * ---------------------------------------------------------------------- */
-  .page {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 24px 12px 48px;
-  }
-  @media (min-width: 640px) {
-    .page { padding: 32px 24px 64px; }
-  }
-
-  /* -------------------------------------------------------------------------
-   * Hero stats section
-   * ---------------------------------------------------------------------- */
-  .stat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    transition: border-color 0.15s;
-  }
-  .stat-card:hover { border-color: #3a3a37; }
-  .stat-label {
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--mid);
-  }
-  .stat-value {
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--fg);
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-  }
-  .stat-sub {
-    font-size: 12px;
-    color: var(--mid);
-  }
-  .stat-sub strong {
-    color: var(--light);
-  }
-  .sparkline-wrap {
-    margin-top: 4px;
-    height: 36px;
-  }
-  .sparkline-wrap svg {
-    width: 100%;
-    height: 36px;
-    overflow: visible;
-  }
-  .sparkline-wrap polyline {
-    fill: none;
-    stroke-width: 1.5;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-  .sparkline-area {
-    opacity: 0.15;
-  }
-
-  /* Skeleton placeholders for hero cards */
-  .stat-card.loading .stat-value {
-    display: none;
-  }
-  .stat-card.loading .stat-sub {
-    display: none;
-  }
-  .stat-card.loading .sparkline-wrap {
-    display: none;
-  }
-  .skel-value {
-    height: 32px;
-    width: 70%;
-  }
-  .skel-sub {
-    height: 14px;
-    width: 50%;
-    margin-top: 2px;
-  }
-  .skel-sparkline {
-    height: 36px;
-    width: 100%;
-    margin-top: 8px;
-    border-radius: 4px;
-  }
-
-  /* -------------------------------------------------------------------------
-   * Section headings
-   * ---------------------------------------------------------------------- */
-  .section-title {
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--mid);
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .section-title::after {
-    content: "";
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
-
-  /* -------------------------------------------------------------------------
-   * Chart panel grid (bento-style layout) — mobile-first
-   * Default = single column (mobile 375px+)
-   * 640px  = hero stats 2-col, filter bar shows dropdown -> button group
-   * 1024px = full desktop multi-column layout
-   * ---------------------------------------------------------------------- */
-  .panels-overview {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 16px;
-    margin-bottom: 16px;
-  }
-  .panels-row {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 16px;
-    margin-bottom: 16px;
-  }
-  .panels-wide {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 16px;
-    margin-bottom: 16px;
-  }
-
-  /* Hero grid: 2-col on mobile (4 stat cards in 2x2) */
-  .hero-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-    margin-bottom: 32px;
-  }
-
-  /* Mobile filter bar dropdown (shown by default, hidden on 640px+) */
-  .mobile-range-select {
-    display: block;
-    appearance: none;
-    -webkit-appearance: none;
-    background: var(--bg);
-    color: var(--fg);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 6px 28px 6px 10px;
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23b0aea5'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 8px center;
-  }
-  .mobile-range-select option {
-    background: var(--surface);
-    color: var(--fg);
-  }
-  /* Button group hidden on mobile, shown on 640px+ */
-  .btn-group {
-    display: none;
-  }
-  /* Panel header sort toggle always visible (overrides global hide) */
-  .panel-header .btn-group { display: flex; font-size: 11px; }
-  .panel-header .btn-group button { padding: 4px 8px; }
-
-  /* Panel body — explicit height prevents Chart.js 0-height collapse */
-  .panel-body {
-    flex: 1;
-    position: relative;
-    display: flex;
-    align-items: stretch;
-    height: 220px;
-  }
-
-  /* 640px+: filter swaps to button group */
-  @media (min-width: 640px) {
-    .mobile-range-select { display: none; }
-    .btn-group { display: flex; }
-    .hero-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-
-  /* 1024px+: full desktop multi-column layout */
-  @media (min-width: 1024px) {
-    .hero-grid {
-      grid-template-columns: repeat(4, 1fr);
-    }
-    .panels-overview {
-      grid-template-columns: 1fr 1fr;
-    }
-    .panels-row {
-      grid-template-columns: 1fr 1fr 1fr;
-    }
-    .panel-body {
-      height: 280px;
-    }
-  }
-
-  /* -------------------------------------------------------------------------
-   * Calendar heatmap container
-   * ---------------------------------------------------------------------- */
-  #panel-calendar-chart {
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding-bottom: 4px;
-  }
-  #heatmap-container {
-    /* min-width removed — SVG width adapts to day count (mobile caps to 30 days) */
-  }
-  /* custom heatmap styles */
-  #heatmap-container { overflow-x: auto; }
-  #heatmap-container svg { display: block; }
-  .hm-label { fill: var(--mid); font-family: 'Poppins', system-ui, sans-serif; font-size: 10px; }
-  .hm-cell { rx: 2; ry: 2; }
-  .hm-tooltip {
-    position: absolute; background: var(--bg); border: 1px solid var(--border);
-    border-radius: 4px; padding: 4px 8px; font-size: 11px; color: var(--fg);
-    pointer-events: none; white-space: nowrap; z-index: 200; display: none;
-  }
-  .panel {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
-    min-height: 260px;
-    display: flex;
-    flex-direction: column;
-  }
-  .panel.panel-wide {
-    min-height: 200px;
-  }
-  #panel-projects .panel-body {
-    height: auto;
-  }
-  .panel.panel-tall {
-    min-height: 340px;
-  }
-  .panel-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
-    flex-shrink: 0;
-  }
-  .panel-title {
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--light);
-  }
-  .panel-badge {
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--mid);
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 2px 8px;
-  }
+  /* Chart.js canvas sizing */
   .panel-body canvas {
     width: 100% !important;
     height: 100% !important;
     min-height: 180px;
   }
 
-  /* Skeleton for panels */
-  .panel-skel {
-    flex: 1;
-    border-radius: 4px;
-    min-height: 180px;
+  /* Heatmap tooltip positioning */
+  .hm-tooltip {
+    position: absolute; background: #0a0a0f; border: 1px solid #2a2a35;
+    border-radius: 4px; padding: 4px 8px; font-size: 11px; color: #e8e8ed;
+    pointer-events: none; white-space: nowrap; z-index: 200; display: none;
   }
 
-  /* -------------------------------------------------------------------------
-   * Empty & error states
-   * ---------------------------------------------------------------------- */
-  .empty-state {
-    text-align: center;
-    padding: 64px 24px;
-  }
-  .empty-state h2 {
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--fg);
-    margin-bottom: 8px;
-  }
-  .empty-state p {
-    color: var(--mid);
-    max-width: 420px;
-    margin: 0 auto 24px;
-  }
-  .empty-state code {
-    font-size: 13px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 2px 8px;
-    color: var(--orange);
-  }
-  .error-bar {
-    background: #2a1a18;
-    border: 1px solid #5a2a20;
-    border-radius: var(--radius);
-    padding: 12px 16px;
-    margin-bottom: 24px;
-    color: #e07060;
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 13px;
-  }
+  /* Heatmap cell styles */
+  .hm-cell { rx: 2; ry: 2; }
+  .hm-label { fill: #8888a0; font-family: 'IBM Plex Mono', monospace; font-size: 10px; }
 
-  /* -------------------------------------------------------------------------
-   * Footer
-   * ---------------------------------------------------------------------- */
-  .footer {
-    border-top: 1px solid var(--border);
-    padding: 16px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 12px;
-    color: var(--mid);
-  }
-  .footer a {
-    color: var(--mid);
-    text-decoration: none;
-    font-weight: 600;
-    transition: color 0.15s;
-  }
-  .footer a:hover { color: var(--fg); }
-  .footer-right { display: flex; align-items: center; gap: 16px; }
-  .synced-dot {
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--green);
-    margin-right: 4px;
-    vertical-align: middle;
-  }
+  /* Heatmap container scrolling */
+  #panel-calendar-chart { overflow-x: auto; overflow-y: hidden; padding-bottom: 4px; }
+  #heatmap-container { overflow-x: auto; }
+  #heatmap-container svg { display: block; }
 
-  /* -------------------------------------------------------------------------
-   * Today's Activity section
-   * ---------------------------------------------------------------------- */
-  .today-section {
-    margin-bottom: 32px;
-  }
-  .today-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-  }
-  @media (min-width: 1024px) {
-    .today-grid {
-      grid-template-columns: repeat(4, 1fr);
-    }
-  }
-  .today-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px 20px 0 20px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
-  .today-value {
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--fg);
-    line-height: 1.2;
-    margin-bottom: 4px;
-  }
-  .today-arrow-label {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    margin-bottom: 12px;
-  }
-  .dir-arrow {
-    font-size: 12px;
-    line-height: 1;
-  }
-  .dir-arrow.dir-up {
-    color: var(--orange);
-  }
-  .dir-arrow.dir-down {
-    color: var(--blue);
-  }
-  .today-label {
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--mid);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
-  .today-yesterday {
-    margin-top: auto;
-    padding: 6px 20px;
-    margin-left: -20px;
-    margin-right: -20px;
-    background: rgba(255, 255, 255, 0.03);
-    border-top: 1px solid var(--border);
-    font-size: 11px;
-    color: var(--mid);
-    font-family: 'Poppins', system-ui, sans-serif;
-  }
-  .today-yesterday strong {
-    color: var(--light);
-  }
-  /* Skeleton placeholders inside today cards */
-  .today-card .skel-today-value {
-    height: 34px;
-    width: 60%;
-    margin-bottom: 8px;
-  }
-  .today-card .skel-today-label {
-    height: 12px;
-    width: 40%;
-    margin-bottom: 16px;
-  }
-  .today-card .skel-today-bar {
-    height: 28px;
-    margin-left: -20px;
-    margin-right: -20px;
-    border-radius: 0;
-  }
+  /* No-scrollbar utility */
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-  /* -------------------------------------------------------------------------
-   * Peak Days section
-   * ---------------------------------------------------------------------- */
-  .peak-section {
-    margin-bottom: 32px;
-  }
-  .peak-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
-  @media (min-width: 640px) {
-    .peak-grid {
-      grid-template-columns: repeat(4, 1fr);
-    }
-  }
-  .peak-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 12px 16px;
-  }
-  .peak-value {
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--fg);
-    line-height: 1.2;
-  }
-  .peak-meta {
-    font-size: 11px;
-    color: var(--mid);
-    margin-top: 2px;
-    min-height: 15px;
-  }
-  .peak-label {
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--mid);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-top: 4px;
-  }
-  /* Skeleton placeholders inside peak cards */
-  .peak-card .skel-peak-value {
-    height: 24px;
-    width: 55%;
-    margin-bottom: 6px;
-  }
-  .peak-card .skel-peak-meta {
-    height: 12px;
-    width: 75%;
-    margin-bottom: 6px;
-  }
-  .peak-card .skel-peak-label {
-    height: 10px;
-    width: 40%;
-    margin-top: 4px;
-  }
+  /* Sparkline SVG styles */
+  .sparkline-wrap svg { width: 100%; height: 36px; overflow: visible; }
+  .sparkline-wrap polyline { fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .sparkline-area { opacity: 0.15; }
 
-  /* -------------------------------------------------------------------------
-   * Theme Configurator section
-   * ---------------------------------------------------------------------- */
-  .theme-configurator {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
-    margin-bottom: 32px;
-  }
-  .theme-configurator-body {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
-  @media (min-width: 1024px) {
-    .theme-configurator-body {
-      grid-template-columns: auto 1fr;
-      gap: 32px;
-    }
-  }
-  /* Left column: swatches + BYOT */
-  .theme-controls {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    min-width: 0;
-  }
-  /* Swatch grid */
-  .theme-swatches {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-  }
-  .theme-swatch {
-    cursor: pointer;
-    border-radius: 6px;
-    border: 2px solid transparent;
-    padding: 0;
-    background: none;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    transition: border-color 0.15s;
-  }
-  .theme-swatch:hover .swatch-box {
-    opacity: 0.85;
-  }
-  .theme-swatch.active {
-    border-color: var(--orange);
-  }
-  .swatch-box {
-    width: 80px;
-    height: 60px;
-    border-radius: 4px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 3px;
-    border: 1px solid rgba(255,255,255,0.08);
-    transition: opacity 0.15s;
-  }
-  .swatch-aa {
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    line-height: 1;
-  }
-  .swatch-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-  }
-  .swatch-label {
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 10px;
-    font-weight: 600;
-    color: var(--mid);
-    text-align: center;
-    white-space: nowrap;
-  }
-  /* BYOT section */
-  .byot-section {
-    position: relative;
-  }
-  .byot-title {
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--mid);
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .byot-badge-pro {
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--orange);
-    background: rgba(217,119,87,0.12);
-    border: 1px solid rgba(217,119,87,0.3);
-    border-radius: 4px;
-    padding: 1px 5px;
-  }
-  .byot-fields {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-  }
-  @media (min-width: 1024px) {
-    .byot-fields {
-      grid-template-columns: 1fr;
-    }
-  }
-  .byot-field {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-  }
-  .byot-field label {
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 10px;
-    font-weight: 600;
-    color: var(--mid);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-  .byot-field input {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 6px 8px;
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 12px;
-    color: var(--fg);
-    width: 100%;
-    transition: border-color 0.15s;
-    outline: none;
-  }
-  .byot-field input:focus {
-    border-color: var(--orange);
-  }
-  .byot-field input.invalid {
-    border-color: #cc4444;
-  }
-  .byot-field-error {
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 10px;
-    color: #e07060;
-    min-height: 14px;
-  }
-  /* PRO lock overlay */
-  .byot-locked {
-    position: absolute;
-    inset: -8px;
-    background: rgba(20,20,19,0.82);
-    border-radius: 6px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    backdrop-filter: blur(2px);
-    z-index: 10;
-  }
-  .byot-locked a {
-    text-decoration: none;
-  }
-  .byot-lock-icon {
-    font-size: 20px;
-    line-height: 1;
-  }
-  .byot-lock-msg {
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--mid);
-    text-align: center;
-  }
-  .byot-upgrade-btn {
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--bg);
-    background: var(--orange);
-    border: none;
-    border-radius: 4px;
-    padding: 5px 12px;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    transition: opacity 0.15s;
-  }
-  .byot-upgrade-btn:hover { opacity: 0.85; }
-  /* Right column: preview */
-  .preview-section {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    min-width: 0;
-  }
-  .preview-controls {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-  .preview-label {
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--mid);
-  }
-  .preview-img-wrap {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 16px;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    min-height: 120px;
-  }
-  .preview-img-wrap img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-  }
-  .embed-code-wrap {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .embed-code-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .embed-code-label {
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--mid);
-  }
-  .copy-btn {
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--mid);
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 3px 10px;
-    cursor: pointer;
-    transition: color 0.15s, border-color 0.15s;
-  }
-  .copy-btn:hover {
-    color: var(--fg);
-    border-color: var(--mid);
-  }
-  .copy-btn.copied {
-    color: var(--green);
-    border-color: var(--green);
-  }
-  .embed-code-textarea {
-    width: 100%;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 10px 12px;
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 12px;
-    color: var(--fg);
-    resize: vertical;
-    min-height: 60px;
-    outline: none;
-  }
-  .embed-code-textarea:focus {
-    border-color: var(--border);
-  }
+  /* Insight bar fill transition */
+  .insight-bar-fill { transition: width 0.3s ease; }
 
-  /* -------------------------------------------------------------------------
-   * Billing UI — PRO badge, payment banner, upgrade card, billing section
-   * ---------------------------------------------------------------------- */
-  .pro-badge {
-    background: var(--orange);
-    color: #fff;
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 0.7rem;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 12px;
-    margin-left: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+  /* Material Symbols settings */
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
   }
-  .payment-banner {
-    background: #3d1f1f;
-    border: 1px solid #7c3030;
-    padding: 12px 16px;
-    border-radius: var(--radius);
-    margin: 12px 24px 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    color: var(--fg);
-    font-size: 0.9rem;
-  }
-  .banner-btn {
-    background: var(--orange);
-    color: #fff;
-    border: none;
-    padding: 4px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    white-space: nowrap;
-    font-size: 0.85rem;
-  }
-  .upgrade-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 20px;
-    border-radius: var(--radius);
-    text-align: center;
-  }
-  .upgrade-card h4 {
-    font-family: 'Poppins', system-ui, sans-serif;
-    color: var(--fg);
-    margin-bottom: 12px;
-    font-size: 1.1rem;
-  }
-  .upgrade-card ul {
-    list-style: none;
-    padding: 0;
-    margin-bottom: 16px;
-    color: var(--mid);
-    font-size: 0.9rem;
-  }
-  .upgrade-card li {
-    padding: 4px 0;
-  }
-  .upgrade-card li::before {
-    content: '✓ ';
-    color: var(--green);
-  }
-  .upgrade-pricing {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .upgrade-btn {
-    display: block;
-    background: var(--orange);
-    color: #fff;
-    border: none;
-    padding: 8px 20px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
-    font-family: 'Poppins', system-ui, sans-serif;
-    width: 100%;
-    text-decoration: none;
-    text-align: center;
-    font-size: 0.95rem;
-  }
-  .upgrade-annual {
-    background: transparent;
-    border: 1px solid var(--orange);
-    color: var(--orange);
-  }
-  .save-tag {
-    font-size: 0.7rem;
-    background: var(--green);
-    color: #fff;
-    padding: 1px 6px;
-    border-radius: 4px;
-    margin-left: 4px;
-  }
-  .billing-info {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px;
-  }
-  .billing-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .billing-row:last-child {
-    border-bottom: none;
-  }
-  .billing-label {
-    color: var(--mid);
-  }
-  .billing-value {
-    color: var(--fg);
-    font-weight: 600;
-  }
-  .billing-link {
-    color: var(--orange);
-    text-decoration: none;
-  }
-  .billing-link:hover {
-    text-decoration: underline;
-  }
-  .billing-actions {
-    padding-top: 12px;
-  }
-  .pro-badge-sm {
-    font-size: 0.65rem;
-    background: var(--green);
-    color: #fff;
-    padding: 1px 6px;
-    border-radius: 4px;
-    font-family: 'Poppins', system-ui, sans-serif;
-  }
-  .billing-upgrade-hint {
-    color: var(--mid);
-    font-size: 0.9rem;
-    margin-top: 12px;
-  }
-
-  /* -------------------------------------------------------------------------
-   * Slug Management section
-   * ---------------------------------------------------------------------- */
-  .slug-section {
-    margin-top: 32px;
-  }
-  .slug-connect-form {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
-    margin-bottom: 16px;
-  }
-  .slug-connect-label {
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--mid);
-    margin-bottom: 8px;
-    display: block;
-  }
-  .slug-connect-row {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-  .slug-token-input {
-    flex: 1;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 7px 10px;
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 12px;
-    color: var(--fg);
-    outline: none;
-    transition: border-color 0.15s;
-  }
-  .slug-token-input:focus { border-color: var(--orange); }
-  .slug-connect-btn {
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 12px;
-    font-weight: 700;
-    background: var(--orange);
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 7px 16px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: opacity 0.15s;
-  }
-  .slug-connect-btn:hover { opacity: 0.85; }
-  .slug-connect-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-  .slug-connect-hint {
-    font-size: 11px;
-    color: var(--mid);
-    margin-top: 6px;
-  }
-  .slug-connect-hint code {
-    font-size: 11px;
-    color: var(--orange);
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    padding: 1px 5px;
-  }
-  .slug-error {
-    background: #2a1a18;
-    border: 1px solid #5a2a20;
-    border-radius: 4px;
-    padding: 8px 12px;
-    color: #e07060;
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 12px;
-    margin-top: 8px;
-  }
-  .slug-list {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-    margin-bottom: 16px;
-  }
-  .slug-list-empty {
-    padding: 24px;
-    text-align: center;
-    color: var(--mid);
-    font-size: 13px;
-    font-family: 'Poppins', system-ui, sans-serif;
-  }
-  .slug-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--border);
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-  .slug-item:last-child { border-bottom: none; }
-  .slug-item-info {
-    flex: 1;
-    min-width: 0;
-  }
-  .slug-item-name {
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--fg);
-    margin-bottom: 2px;
-  }
-  .slug-item-meta {
-    font-size: 11px;
-    color: var(--mid);
-    margin-bottom: 4px;
-  }
-  .slug-item-url {
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 11px;
-    color: var(--orange);
-    font-weight: 600;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 300px;
-  }
-  .slug-item-actions {
-    display: flex;
-    gap: 6px;
-    flex-shrink: 0;
-  }
-  .slug-copy-btn, .slug-delete-btn {
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    border-radius: 4px;
-    padding: 4px 10px;
-    cursor: pointer;
-    border: 1px solid var(--border);
-    transition: color 0.15s, border-color 0.15s, background 0.15s;
-  }
-  .slug-copy-btn {
-    background: var(--bg);
-    color: var(--mid);
-  }
-  .slug-copy-btn:hover { color: var(--fg); border-color: var(--mid); }
-  .slug-copy-btn.copied { color: var(--green); border-color: var(--green); }
-  .slug-delete-btn {
-    background: var(--bg);
-    color: #e07060;
-    border-color: #5a2a20;
-  }
-  .slug-delete-btn:hover { background: #2a1a18; }
-  .slug-create-form {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
-  }
-  .slug-create-title {
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--light);
-    margin-bottom: 16px;
-  }
-  .slug-form-fields {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 12px;
-    margin-bottom: 16px;
-  }
-  @media (min-width: 640px) {
-    .slug-form-fields {
-      grid-template-columns: 1fr auto auto;
-      align-items: start;
-    }
-  }
-  .slug-field {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .slug-field label {
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--mid);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-  .slug-field input, .slug-field select {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 7px 10px;
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 12px;
-    color: var(--fg);
-    outline: none;
-    transition: border-color 0.15s;
-  }
-  .slug-field input:focus, .slug-field select:focus { border-color: var(--orange); }
-  .slug-field input.invalid { border-color: #cc4444; }
-  .slug-field-error {
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 10px;
-    color: #e07060;
-    min-height: 14px;
-  }
-  .slug-field select option { background: var(--surface); color: var(--fg); }
-  .slug-create-btn {
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    background: var(--orange);
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: 8px 20px;
-    cursor: pointer;
-    transition: opacity 0.15s;
-  }
-  .slug-create-btn:hover:not(:disabled) { opacity: 0.85; }
-  .slug-create-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-  .slug-upgrade-block {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
-    text-align: center;
-  }
-  .slug-upgrade-block h4 {
-    font-family: 'Poppins', system-ui, sans-serif;
-    color: var(--fg);
-    margin-bottom: 8px;
-    font-size: 1rem;
-  }
-  .slug-upgrade-block p {
-    color: var(--mid);
-    font-size: 0.9rem;
-    margin-bottom: 6px;
-  }
-  .slug-upgrade-block .upgrade-btn {
-    margin-top: 12px;
-  }
-
-  /* -------------------------------------------------------------------------
-   * Insights section
-   * ---------------------------------------------------------------------- */
-  .insights-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-  .insight-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
-  }
-  .insight-card h4 {
-    font-size: 13px;
-    color: var(--mid);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 12px;
-  }
-  .insight-value {
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--fg);
-    line-height: 1.2;
-  }
-  .insight-sub {
-    font-size: 12px;
-    color: var(--mid);
-    margin-top: 4px;
-  }
-  .insight-detail {
-    margin-top: 12px;
-    font-size: 13px;
-    color: var(--light);
-  }
-  .insight-bar {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 4px 0;
-  }
-  .insight-bar-label {
-    width: 40px;
-    font-size: 12px;
-    color: var(--mid);
-    text-align: right;
-  }
-  .insight-bar-track {
-    flex: 1;
-    height: 6px;
-    background: var(--border);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-  .insight-bar-fill {
-    height: 100%;
-    background: var(--orange);
-    border-radius: 3px;
-    transition: width 0.3s ease;
-  }
-  .narrative-card {
-    background: linear-gradient(135deg, var(--surface), #1a1f2e);
-    border: 1px solid var(--blue);
-    border-radius: var(--radius);
-    padding: 20px;
-    margin-bottom: 16px;
-  }
-  .narrative-card .narrative-label {
-    font-size: 11px;
-    color: var(--blue);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 8px;
-  }
-  .narrative-card .narrative-text {
-    font-size: 14px;
-    color: var(--light);
-    line-height: 1.7;
-  }
-  .stale-badge {
-    display: inline-block;
-    font-size: 11px;
-    color: var(--mid);
-    background: var(--border);
-    border-radius: 4px;
-    padding: 2px 8px;
-    margin-left: 8px;
-  }
-  .trend-up { color: var(--orange); }
-  .trend-down { color: var(--blue); }
-  .trend-flat { color: var(--mid); }
-  .streak-flame { color: var(--orange); }
 </style>
 </head>
-<body x-data x-init="$store.dashboard.load('__USERNAME__')">
+<body class="bg-background text-on-surface font-body selection:bg-primary selection:text-on-primary" x-data x-init="$store.dashboard.load('__USERNAME__')">
 
 <!-- =========================================================================
-     STICKY FILTER BAR
+     NAVIGATION BAR + RANGE TOGGLE
      ====================================================================== -->
-<div class="filter-bar">
-  <div class="filter-bar-left">
-    <a href="/" class="brand-link">ShipCard</a>
-    <span class="divider">|</span>
-    <span class="username-title"><span>__USERNAME__</span>&nbsp;Analytics</span>
-    <span x-data x-show="$store.dashboard.isPro" class="pro-badge" style="display:none">PRO</span>
+<nav class="sticky top-0 z-50 w-full border-b border-outline-variant/10 bg-background/80 backdrop-blur-md">
+<div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+  <div class="flex items-center gap-2">
+    <a href="/" class="flex items-center gap-2">
+      <div class="w-6 h-6 text-primary">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7 6H25V18L16 26L7 18V6Z" fill="currentColor"/>
+          <rect x="11" y="11" width="10" height="3" fill="#0a0a0f"/>
+        </svg>
+      </div>
+      <span class="font-headline text-xl font-bold tracking-tight text-on-surface">ShipCard</span>
+    </a>
+    <span x-data x-show="$store.dashboard.isPro" class="bg-secondary/20 text-secondary text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 ml-2" style="display:none">PRO</span>
   </div>
-  <!-- Mobile dropdown (visible below 640px, hidden above via CSS) -->
-  <select class="mobile-range-select" x-model="$store.dashboard.range">
-    <option value="7d">Last 7 days</option>
-    <option value="30d">Last 30 days</option>
-    <option value="all">All time</option>
-  </select>
-  <!-- Desktop segmented control (hidden below 640px, shown above via CSS) -->
-  <div class="btn-group" x-data>
-    <button
-      :class="{ active: $store.dashboard.range === '7d' }"
-      @click="$store.dashboard.range = '7d'">7d</button>
-    <button
-      :class="{ active: $store.dashboard.range === '30d' }"
-      @click="$store.dashboard.range = '30d'">30d</button>
-    <button
-      :class="{ active: $store.dashboard.range === 'all' }"
-      @click="$store.dashboard.range = 'all'">All</button>
+  <div class="flex items-center gap-6">
+    <div class="hidden md:flex items-center gap-8 text-on-surface-variant text-sm font-medium">
+      <a class="hover:text-on-surface transition-colors" href="/community">Community</a>
+      <a class="hover:text-on-surface transition-colors" href="/configure">Configurator</a>
+      <a class="hover:text-on-surface transition-colors" href="https://www.npmjs.com/package/@jjaimealeman/shipcard" target="_blank" rel="noopener">npm</a>
+      <a class="hover:text-on-surface transition-colors" href="https://github.com/jjaimealeman/shipcard" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <!-- Range toggle buttons -->
+    <div class="flex border border-outline-variant overflow-hidden" x-data>
+      <button class="px-3 py-1.5 text-xs font-bold font-headline bg-background text-on-surface-variant border-r border-outline-variant cursor-pointer transition-colors whitespace-nowrap"
+        :class="$store.dashboard.range === '7d' ? '!bg-primary !text-on-primary' : 'hover:bg-surface-container hover:text-on-surface'"
+        @click="$store.dashboard.range = '7d'">7d</button>
+      <button class="px-3 py-1.5 text-xs font-bold font-headline bg-background text-on-surface-variant border-r border-outline-variant cursor-pointer transition-colors whitespace-nowrap"
+        :class="$store.dashboard.range === '30d' ? '!bg-primary !text-on-primary' : 'hover:bg-surface-container hover:text-on-surface'"
+        @click="$store.dashboard.range = '30d'">30d</button>
+      <button class="px-3 py-1.5 text-xs font-bold font-headline bg-background text-on-surface-variant cursor-pointer transition-colors whitespace-nowrap"
+        :class="$store.dashboard.range === 'all' ? '!bg-primary !text-on-primary' : 'hover:bg-surface-container hover:text-on-surface'"
+        @click="$store.dashboard.range = 'all'">All</button>
+    </div>
   </div>
 </div>
+</nav>
 
 <!-- =========================================================================
      PAYMENT FAILED BANNER
      ====================================================================== -->
-<div x-data x-show="$store.dashboard.paymentFailed" class="payment-banner" style="display:none">
-  <span>Payment failed. Please update your payment method to keep PRO features.</span>
-  <a href="/billing/portal" class="banner-btn">Update Payment</a>
+<div x-data x-show="$store.dashboard.paymentFailed" class="bg-red-900/20 border-b border-red-500/30 px-6 py-3 flex justify-between items-center" style="display:none">
+  <span class="text-red-400 text-sm">Payment failed. Please update your payment method to keep PRO features.</span>
+  <a href="/billing/portal" class="bg-primary text-on-primary px-4 py-1 text-sm font-bold no-underline whitespace-nowrap">Update Payment</a>
 </div>
 
 <!-- =========================================================================
      MAIN PAGE CONTENT
      ====================================================================== -->
-<div class="page">
+<div class="max-w-7xl mx-auto px-6 py-8">
 
   <!-- Error bar -->
-  <div class="error-bar" x-show="$store.dashboard.error" x-text="$store.dashboard.error" style="display:none"></div>
+  <div class="bg-red-900/20 border border-red-500/30 text-red-400 px-6 py-3 text-sm mb-6" x-show="$store.dashboard.error" x-text="$store.dashboard.error" style="display:none"></div>
 
   <!-- Empty state (user not found or no data) -->
-  <div class="empty-state" x-show="!$store.dashboard.loading && $store.dashboard.notFound" style="display:none">
-    <h2>No data yet</h2>
-    <p>
-      <strong>__USERNAME__</strong> hasn't synced any stats yet. If this is you,
+  <div class="text-center py-20 text-on-surface-variant" x-show="!$store.dashboard.loading && $store.dashboard.notFound" style="display:none">
+    <h2 class="font-headline text-xl font-bold text-on-surface mb-2">No data yet</h2>
+    <p class="max-w-md mx-auto mb-6">
+      <strong class="text-on-surface">__USERNAME__</strong> hasn't synced any stats yet. If this is you,
       sync your data with the ShipCard CLI:
     </p>
-    <p><code>shipcard sync</code></p>
+    <p><code class="text-sm bg-surface-container border border-outline-variant px-2 py-0.5 text-primary">shipcard sync</code></p>
   </div>
 
   <!-- Dashboard content — visible when loaded and no empty/error state -->
@@ -1502,94 +193,94 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
     <!-- -------------------------------------------------------------------
          TODAY'S ACTIVITY
          ---------------------------------------------------------------- -->
-    <div class="section-title">Today's Activity</div>
-    <div class="today-section">
-      <div class="today-grid">
+    <div class="font-headline text-sm font-bold uppercase tracking-[0.2em] text-on-surface-variant mb-6 mt-12">Today's Activity</div>
+    <div class="mb-8">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
 
         <!-- Messages -->
-        <div class="today-card">
-          <div class="skel-today-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-          <div class="skel-today-label skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="bg-surface-container-low border border-outline-variant p-5 flex flex-col overflow-hidden">
+          <div class="h-[34px] w-[60%] mb-2 skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="h-3 w-[40%] mb-4 skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
           <div x-show="!$store.dashboard.loading" style="display:none">
-            <div class="today-value" x-text="$store.dashboard.todayMessages"></div>
-            <div class="today-arrow-label">
-              <span class="dir-arrow"
+            <div class="text-3xl font-headline font-bold text-on-surface mb-1" x-text="$store.dashboard.todayMessages"></div>
+            <div class="flex items-center gap-1.5 mb-3">
+              <span class="text-xs leading-none"
                     x-show="$store.dashboard.dirMessages !== 0"
-                    :class="$store.dashboard.dirMessages > 0 ? 'dir-up' : 'dir-down'"
+                    :class="$store.dashboard.dirMessages > 0 ? 'text-primary' : 'text-secondary'"
                     x-text="$store.dashboard.dirMessages > 0 ? '\u25B2' : '\u25BC'"></span>
-              <span class="today-label">Messages</span>
+              <span class="text-xs uppercase tracking-widest text-on-surface-variant">Messages</span>
             </div>
           </div>
-          <div class="today-yesterday">
+          <div class="mt-auto text-xs text-on-surface-variant pt-2 border-t border-outline-variant/30 -mx-5 px-5">
             <span x-show="$store.dashboard.loading" class="skeleton" style="display:none;height:14px;width:80%;border-radius:3px"></span>
             <span x-show="!$store.dashboard.loading" style="display:none">
-              Yesterday: <strong x-text="$store.dashboard.yesterdayMessages"></strong>
+              Yesterday: <strong class="text-on-surface" x-text="$store.dashboard.yesterdayMessages"></strong>
             </span>
           </div>
         </div>
 
         <!-- Sessions -->
-        <div class="today-card">
-          <div class="skel-today-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-          <div class="skel-today-label skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="bg-surface-container-low border border-outline-variant p-5 flex flex-col overflow-hidden">
+          <div class="h-[34px] w-[60%] mb-2 skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="h-3 w-[40%] mb-4 skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
           <div x-show="!$store.dashboard.loading" style="display:none">
-            <div class="today-value" x-text="$store.dashboard.todaySessions"></div>
-            <div class="today-arrow-label">
-              <span class="dir-arrow"
+            <div class="text-3xl font-headline font-bold text-on-surface mb-1" x-text="$store.dashboard.todaySessions"></div>
+            <div class="flex items-center gap-1.5 mb-3">
+              <span class="text-xs leading-none"
                     x-show="$store.dashboard.dirSessions !== 0"
-                    :class="$store.dashboard.dirSessions > 0 ? 'dir-up' : 'dir-down'"
+                    :class="$store.dashboard.dirSessions > 0 ? 'text-primary' : 'text-secondary'"
                     x-text="$store.dashboard.dirSessions > 0 ? '\u25B2' : '\u25BC'"></span>
-              <span class="today-label">Sessions</span>
+              <span class="text-xs uppercase tracking-widest text-on-surface-variant">Sessions</span>
             </div>
           </div>
-          <div class="today-yesterday">
+          <div class="mt-auto text-xs text-on-surface-variant pt-2 border-t border-outline-variant/30 -mx-5 px-5">
             <span x-show="$store.dashboard.loading" class="skeleton" style="display:none;height:14px;width:80%;border-radius:3px"></span>
             <span x-show="!$store.dashboard.loading" style="display:none">
-              Yesterday: <strong x-text="$store.dashboard.yesterdaySessions"></strong>
+              Yesterday: <strong class="text-on-surface" x-text="$store.dashboard.yesterdaySessions"></strong>
             </span>
           </div>
         </div>
 
         <!-- Tools -->
-        <div class="today-card">
-          <div class="skel-today-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-          <div class="skel-today-label skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="bg-surface-container-low border border-outline-variant p-5 flex flex-col overflow-hidden">
+          <div class="h-[34px] w-[60%] mb-2 skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="h-3 w-[40%] mb-4 skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
           <div x-show="!$store.dashboard.loading" style="display:none">
-            <div class="today-value" x-text="$store.dashboard.todayTools"></div>
-            <div class="today-arrow-label">
-              <span class="dir-arrow"
+            <div class="text-3xl font-headline font-bold text-on-surface mb-1" x-text="$store.dashboard.todayTools"></div>
+            <div class="flex items-center gap-1.5 mb-3">
+              <span class="text-xs leading-none"
                     x-show="$store.dashboard.dirTools !== 0"
-                    :class="$store.dashboard.dirTools > 0 ? 'dir-up' : 'dir-down'"
+                    :class="$store.dashboard.dirTools > 0 ? 'text-primary' : 'text-secondary'"
                     x-text="$store.dashboard.dirTools > 0 ? '\u25B2' : '\u25BC'"></span>
-              <span class="today-label">Tools</span>
+              <span class="text-xs uppercase tracking-widest text-on-surface-variant">Tools</span>
             </div>
           </div>
-          <div class="today-yesterday">
+          <div class="mt-auto text-xs text-on-surface-variant pt-2 border-t border-outline-variant/30 -mx-5 px-5">
             <span x-show="$store.dashboard.loading" class="skeleton" style="display:none;height:14px;width:80%;border-radius:3px"></span>
             <span x-show="!$store.dashboard.loading" style="display:none">
-              Yesterday: <strong x-text="$store.dashboard.yesterdayTools"></strong>
+              Yesterday: <strong class="text-on-surface" x-text="$store.dashboard.yesterdayTools"></strong>
             </span>
           </div>
         </div>
 
         <!-- Tokens -->
-        <div class="today-card">
-          <div class="skel-today-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-          <div class="skel-today-label skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="bg-surface-container-low border border-outline-variant p-5 flex flex-col overflow-hidden">
+          <div class="h-[34px] w-[60%] mb-2 skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="h-3 w-[40%] mb-4 skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
           <div x-show="!$store.dashboard.loading" style="display:none">
-            <div class="today-value" x-text="$store.dashboard.todayTokens"></div>
-            <div class="today-arrow-label">
-              <span class="dir-arrow"
+            <div class="text-3xl font-headline font-bold text-on-surface mb-1" x-text="$store.dashboard.todayTokens"></div>
+            <div class="flex items-center gap-1.5 mb-3">
+              <span class="text-xs leading-none"
                     x-show="$store.dashboard.dirTokens !== 0"
-                    :class="$store.dashboard.dirTokens > 0 ? 'dir-up' : 'dir-down'"
+                    :class="$store.dashboard.dirTokens > 0 ? 'text-primary' : 'text-secondary'"
                     x-text="$store.dashboard.dirTokens > 0 ? '\u25B2' : '\u25BC'"></span>
-              <span class="today-label">Tokens</span>
+              <span class="text-xs uppercase tracking-widest text-on-surface-variant">Tokens</span>
             </div>
           </div>
-          <div class="today-yesterday">
+          <div class="mt-auto text-xs text-on-surface-variant pt-2 border-t border-outline-variant/30 -mx-5 px-5">
             <span x-show="$store.dashboard.loading" class="skeleton" style="display:none;height:14px;width:80%;border-radius:3px"></span>
             <span x-show="!$store.dashboard.loading" style="display:none">
-              Yesterday: <strong x-text="$store.dashboard.yesterdayTokens"></strong>
+              Yesterday: <strong class="text-on-surface" x-text="$store.dashboard.yesterdayTokens"></strong>
             </span>
           </div>
         </div>
@@ -1600,314 +291,81 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
     <!-- -------------------------------------------------------------------
          PEAK DAYS — all-time per-metric record cards
          ---------------------------------------------------------------- -->
-    <div class="section-title">Peak Days</div>
-    <div class="peak-section">
-      <div class="peak-grid">
+    <div class="font-headline text-sm font-bold uppercase tracking-[0.2em] text-on-surface-variant mb-6 mt-12">Peak Days</div>
+    <div class="mb-8">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
 
         <!-- Peak Messages -->
-        <div class="peak-card">
-          <div class="skel-peak-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-          <div class="skel-peak-meta skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-          <div class="skel-peak-label skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="bg-surface-container-low border border-outline-variant p-4">
+          <div class="h-6 w-[55%] mb-1.5 skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="h-3 w-[75%] mb-1.5 skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="h-2.5 w-[40%] mt-1 skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
           <div x-show="!$store.dashboard.loading" style="display:none">
-            <div class="peak-value" x-text="$store.dashboard.peakMessages ? $store.dashboard.peakMessages.value : '\u2014'"></div>
-            <div class="peak-meta" x-text="$store.dashboard.peakMessages ? ($store.dashboard.peakMessages.project ? $store.dashboard.peakMessages.date + ' \u2013 ' + $store.dashboard.peakMessages.project : $store.dashboard.peakMessages.date) : ''"></div>
-            <div class="peak-label">Messages</div>
+            <div class="text-xl font-headline font-bold text-on-surface leading-tight" x-text="$store.dashboard.peakMessages ? $store.dashboard.peakMessages.value : '\u2014'"></div>
+            <div class="text-[11px] text-on-surface-variant mt-0.5 min-h-[15px]" x-text="$store.dashboard.peakMessages ? ($store.dashboard.peakMessages.project ? $store.dashboard.peakMessages.date + ' \u2013 ' + $store.dashboard.peakMessages.project : $store.dashboard.peakMessages.date) : ''"></div>
+            <div class="text-xs uppercase tracking-widest text-on-surface-variant mt-1 font-headline font-bold">Messages</div>
           </div>
         </div>
 
         <!-- Peak Sessions -->
-        <div class="peak-card">
-          <div class="skel-peak-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-          <div class="skel-peak-meta skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-          <div class="skel-peak-label skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="bg-surface-container-low border border-outline-variant p-4">
+          <div class="h-6 w-[55%] mb-1.5 skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="h-3 w-[75%] mb-1.5 skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="h-2.5 w-[40%] mt-1 skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
           <div x-show="!$store.dashboard.loading" style="display:none">
-            <div class="peak-value" x-text="$store.dashboard.peakSessions ? $store.dashboard.peakSessions.value : '\u2014'"></div>
-            <div class="peak-meta" x-text="$store.dashboard.peakSessions ? ($store.dashboard.peakSessions.project ? $store.dashboard.peakSessions.date + ' \u2013 ' + $store.dashboard.peakSessions.project : $store.dashboard.peakSessions.date) : ''"></div>
-            <div class="peak-label">Sessions</div>
+            <div class="text-xl font-headline font-bold text-on-surface leading-tight" x-text="$store.dashboard.peakSessions ? $store.dashboard.peakSessions.value : '\u2014'"></div>
+            <div class="text-[11px] text-on-surface-variant mt-0.5 min-h-[15px]" x-text="$store.dashboard.peakSessions ? ($store.dashboard.peakSessions.project ? $store.dashboard.peakSessions.date + ' \u2013 ' + $store.dashboard.peakSessions.project : $store.dashboard.peakSessions.date) : ''"></div>
+            <div class="text-xs uppercase tracking-widest text-on-surface-variant mt-1 font-headline font-bold">Sessions</div>
           </div>
         </div>
 
         <!-- Peak Tokens -->
-        <div class="peak-card">
-          <div class="skel-peak-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-          <div class="skel-peak-meta skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-          <div class="skel-peak-label skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="bg-surface-container-low border border-outline-variant p-4">
+          <div class="h-6 w-[55%] mb-1.5 skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="h-3 w-[75%] mb-1.5 skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="h-2.5 w-[40%] mt-1 skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
           <div x-show="!$store.dashboard.loading" style="display:none">
-            <div class="peak-value" x-text="$store.dashboard.peakTokens ? $store.dashboard.peakTokens.value : '\u2014'"></div>
-            <div class="peak-meta" x-text="$store.dashboard.peakTokens ? ($store.dashboard.peakTokens.project ? $store.dashboard.peakTokens.date + ' \u2013 ' + $store.dashboard.peakTokens.project : $store.dashboard.peakTokens.date) : ''"></div>
-            <div class="peak-label">Tokens</div>
+            <div class="text-xl font-headline font-bold text-on-surface leading-tight" x-text="$store.dashboard.peakTokens ? $store.dashboard.peakTokens.value : '\u2014'"></div>
+            <div class="text-[11px] text-on-surface-variant mt-0.5 min-h-[15px]" x-text="$store.dashboard.peakTokens ? ($store.dashboard.peakTokens.project ? $store.dashboard.peakTokens.date + ' \u2013 ' + $store.dashboard.peakTokens.project : $store.dashboard.peakTokens.date) : ''"></div>
+            <div class="text-xs uppercase tracking-widest text-on-surface-variant mt-1 font-headline font-bold">Tokens</div>
           </div>
         </div>
 
         <!-- Peak Cost -->
-        <div class="peak-card">
-          <div class="skel-peak-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-          <div class="skel-peak-meta skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-          <div class="skel-peak-label skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="bg-surface-container-low border border-outline-variant p-4">
+          <div class="h-6 w-[55%] mb-1.5 skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="h-3 w-[75%] mb-1.5 skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <div class="h-2.5 w-[40%] mt-1 skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
           <div x-show="!$store.dashboard.loading" style="display:none">
-            <div class="peak-value" x-text="$store.dashboard.peakCost ? $store.dashboard.peakCost.value : '\u2014'"></div>
-            <div class="peak-meta" x-text="$store.dashboard.peakCost ? ($store.dashboard.peakCost.project ? $store.dashboard.peakCost.date + ' \u2013 ' + $store.dashboard.peakCost.project : $store.dashboard.peakCost.date) : ''"></div>
-            <div class="peak-label">Cost</div>
+            <div class="text-xl font-headline font-bold text-on-surface leading-tight" x-text="$store.dashboard.peakCost ? $store.dashboard.peakCost.value : '\u2014'"></div>
+            <div class="text-[11px] text-on-surface-variant mt-0.5 min-h-[15px]" x-text="$store.dashboard.peakCost ? ($store.dashboard.peakCost.project ? $store.dashboard.peakCost.date + ' \u2013 ' + $store.dashboard.peakCost.project : $store.dashboard.peakCost.date) : ''"></div>
+            <div class="text-xs uppercase tracking-widest text-on-surface-variant mt-1 font-headline font-bold">Cost</div>
           </div>
         </div>
 
       </div>
     </div>
 
-    <!-- -------------------------------------------------------------------
-         HERO STATS
-         ---------------------------------------------------------------- -->
-    <div class="section-title">Overview</div>
-    <div class="hero-grid">
-
-      <!-- Collecting Since -->
-      <div class="stat-card" :class="{ loading: $store.dashboard.loading }">
-        <div class="stat-label">Collecting Since</div>
-        <div class="skel-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="skel-sub skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="skel-sparkline skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="stat-value" x-show="!$store.dashboard.loading" x-text="$store.dashboard.heroTenure" style="display:none"></div>
-        <div class="stat-sub" x-show="!$store.dashboard.loading" style="display:none">
-          <strong x-text="$store.dashboard.heroFirstDate"></strong>
-        </div>
-        <div class="sparkline-wrap" x-show="!$store.dashboard.loading" style="display:none">
-          <svg viewBox="0 0 200 36" preserveAspectRatio="none">
-            <polygon :points="$store.dashboard.sparkSessionsArea(200,36)" class="sparkline-area" fill="var(--orange)" />
-            <polyline :points="$store.dashboard.sparkSessions(200,36)" stroke="var(--orange)" />
-          </svg>
-        </div>
-      </div>
-
-      <!-- Total Tokens -->
-      <div class="stat-card" :class="{ loading: $store.dashboard.loading }">
-        <div class="stat-label">Total Tokens</div>
-        <div class="skel-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="skel-sub skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="skel-sparkline skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="stat-value" x-show="!$store.dashboard.loading" x-text="$store.dashboard.heroTokens" style="display:none"></div>
-        <div class="stat-sub" x-show="!$store.dashboard.loading" style="display:none">
-          <strong x-text="$store.dashboard.heroCacheHitPct"></strong> cache hit rate
-        </div>
-        <div class="sparkline-wrap" x-show="!$store.dashboard.loading" style="display:none">
-          <svg viewBox="0 0 200 36" preserveAspectRatio="none">
-            <polygon :points="$store.dashboard.sparkTokensArea(200,36)" class="sparkline-area" fill="var(--blue)" />
-            <polyline :points="$store.dashboard.sparkTokens(200,36)" stroke="var(--blue)" />
-          </svg>
-        </div>
-      </div>
-
-      <!-- Total Cost -->
-      <div class="stat-card" :class="{ loading: $store.dashboard.loading }">
-        <div class="stat-label">Total Cost</div>
-        <div class="skel-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="skel-sub skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="skel-sparkline skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="stat-value" x-show="!$store.dashboard.loading" x-text="$store.dashboard.heroCost" style="display:none"></div>
-        <div class="stat-sub" x-show="!$store.dashboard.loading" style="display:none">
-          for <strong x-text="$store.dashboard.heroSessions"></strong> sessions
-        </div>
-        <div class="sparkline-wrap" x-show="!$store.dashboard.loading" style="display:none">
-          <svg viewBox="0 0 200 36" preserveAspectRatio="none">
-            <polygon :points="$store.dashboard.sparkCostArea(200,36)" class="sparkline-area" fill="var(--orange)" />
-            <polyline :points="$store.dashboard.sparkCost(200,36)" stroke="var(--orange)" />
-          </svg>
-        </div>
-      </div>
-
-      <!-- Cost / Session (ROI) -->
-      <div class="stat-card" :class="{ loading: $store.dashboard.loading }">
-        <div class="stat-label">Cost / Session</div>
-        <div class="skel-value skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="skel-sub skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="skel-sparkline skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-        <div class="stat-value" x-show="!$store.dashboard.loading" x-text="$store.dashboard.heroCostPerSession" style="display:none"></div>
-        <div class="stat-sub" x-show="!$store.dashboard.loading" style="display:none">
-          avg per session &mdash; <strong x-text="$store.dashboard.heroRange"></strong>
-        </div>
-        <div class="sparkline-wrap" x-show="!$store.dashboard.loading" style="display:none">
-          <svg viewBox="0 0 200 36" preserveAspectRatio="none">
-            <polygon :points="$store.dashboard.sparkCpsArea(200,36)" class="sparkline-area" fill="var(--green)" />
-            <polyline :points="$store.dashboard.sparkCps(200,36)" stroke="var(--green)" />
-          </svg>
-        </div>
-      </div>
-
-    </div><!-- /hero-grid -->
-
-    <!-- -------------------------------------------------------------------
-         OVERVIEW PANELS — Activity Heatmap (wide) + Daily Activity chart
-         ---------------------------------------------------------------- -->
-    <div class="section-title">Activity</div>
-    <div class="panels-wide">
-      <!-- panel-calendar: calendar heatmap -->
-      <div class="panel panel-wide" id="panel-calendar">
-        <div class="panel-header">
-          <span class="panel-title">Activity Heatmap</span>
-          <span class="panel-badge">Calendar</span>
-        </div>
-        <div class="panel-body">
-          <div class="panel-skel skeleton" x-show="$store.dashboard.loading" style="display:none;min-height:120px"></div>
-          <div id="panel-calendar-chart" x-show="!$store.dashboard.loading" style="display:none;width:100%">
-            <div id="heatmap-container"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="panels-overview">
-      <!-- panel-daily: daily activity line/bar chart -->
-      <div class="panel panel-tall" id="panel-daily">
-        <div class="panel-header">
-          <span class="panel-title">Daily Activity</span>
-          <span class="panel-badge">Timeline</span>
-        </div>
-        <div class="panel-body">
-          <div class="panel-skel skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-          <canvas id="panel-daily-chart" x-show="!$store.dashboard.loading" style="display:none"></canvas>
-        </div>
-      </div>
-
-      <!-- panel-dow: day-of-week distribution -->
-      <div class="panel panel-tall" id="panel-dow">
-        <div class="panel-header">
-          <span class="panel-title">Day of Week</span>
-          <span class="panel-badge">Distribution</span>
-        </div>
-        <div class="panel-body">
-          <div class="panel-skel skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-          <canvas id="panel-dow-chart" x-show="!$store.dashboard.loading" style="display:none"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- -------------------------------------------------------------------
-         COMPOSITION PANELS — Tool, Model, Message type donuts
-         ---------------------------------------------------------------- -->
-    <div class="section-title">Composition</div>
-    <div class="panels-row">
-      <!-- panel-tools: tool call donut -->
-      <div class="panel" id="panel-tools">
-        <div class="panel-header">
-          <span class="panel-title">Tool Usage</span>
-          <span class="panel-badge">Donut</span>
-        </div>
-        <div class="panel-body">
-          <div class="panel-skel skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-          <canvas id="panel-tools-chart" x-show="!$store.dashboard.loading" style="display:none"></canvas>
-        </div>
-      </div>
-
-      <!-- panel-models: model usage donut -->
-      <div class="panel" id="panel-models">
-        <div class="panel-header">
-          <span class="panel-title">Model Mix</span>
-          <span class="panel-badge">Donut</span>
-        </div>
-        <div class="panel-body">
-          <div class="panel-skel skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-          <canvas id="panel-models-chart" x-show="!$store.dashboard.loading" style="display:none"></canvas>
-        </div>
-      </div>
-
-      <!-- panel-messages: message type donut -->
-      <div class="panel" id="panel-messages">
-        <div class="panel-header">
-          <span class="panel-title">Message Types</span>
-          <span class="panel-badge">Donut</span>
-        </div>
-        <div class="panel-body">
-          <div class="panel-skel skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-          <canvas id="panel-messages-chart" x-show="!$store.dashboard.loading" style="display:none"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- -------------------------------------------------------------------
-         TOKEN PANELS — Token breakdown + cost over time
-         ---------------------------------------------------------------- -->
-    <div class="section-title">Tokens &amp; Cost</div>
-    <div class="panels-overview">
-      <!-- panel-tokens: token breakdown stacked bar -->
-      <div class="panel" id="panel-tokens">
-        <div class="panel-header">
-          <span class="panel-title">Token Breakdown</span>
-          <span class="panel-badge">Stacked</span>
-        </div>
-        <div class="panel-body">
-          <div class="panel-skel skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-          <canvas id="panel-tokens-chart" x-show="!$store.dashboard.loading" style="display:none"></canvas>
-        </div>
-      </div>
-
-      <!-- panel-cost: cost over time line chart -->
-      <div class="panel" id="panel-cost">
-        <div class="panel-header">
-          <span class="panel-title">Cost Over Time</span>
-          <span class="panel-badge">Line</span>
-        </div>
-        <div class="panel-body">
-          <div class="panel-skel skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
-          <canvas id="panel-cost-chart" x-show="!$store.dashboard.loading" style="display:none"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- -------------------------------------------------------------------
-         PROJECT PANEL — Project activity bars (wide, 1-col)
-         ---------------------------------------------------------------- -->
-    <div class="section-title">Projects</div>
-    <div class="panels-wide">
-      <!-- panel-projects: project activity horizontal bars -->
-      <div class="panel panel-wide" id="panel-projects">
-        <div class="panel-header">
-          <span class="panel-title">Project Activity
-            <span x-show="$store.dashboard.hasProjects" style="display:none;font-weight:400;font-size:12px;color:var(--mid)">
-              (showing <span x-text="Math.min(5, $store.dashboard._projectTotal)"></span> of <span x-text="$store.dashboard._projectTotal"></span>)
-            </span>
-          </span>
-          <div class="btn-group" x-show="$store.dashboard.hasProjects" style="display:none">
-            <button :class="{ active: $store.dashboard.projectSortMetric === 'messages' }"
-              @click="$store.dashboard.projectSortMetric = 'messages'">Messages</button>
-            <button :class="{ active: $store.dashboard.projectSortMetric === 'tokens' }"
-              @click="$store.dashboard.projectSortMetric = 'tokens'">Tokens</button>
-            <button :class="{ active: $store.dashboard.projectSortMetric === 'sessions' }"
-              @click="$store.dashboard.projectSortMetric = 'sessions'">Sessions</button>
-            <button :class="{ active: $store.dashboard.projectSortMetric === 'cost' }"
-              @click="$store.dashboard.projectSortMetric = 'cost'">Cost</button>
-          </div>
-        </div>
-        <div class="panel-body">
-          <div class="panel-skel skeleton" x-show="$store.dashboard.loading" style="display:none;min-height:120px"></div>
-          <div id="panel-projects-content" x-show="!$store.dashboard.loading" style="display:none;width:100%">
-            <div x-show="!$store.dashboard.hasProjects" style="color:var(--mid);font-size:13px;padding:16px 0">
-              No project breakdown available. Sync with <code style="color:var(--orange)">shipcard sync --show-projects</code> to see project data.
-            </div>
-            <canvas id="panel-projects-chart" x-show="$store.dashboard.hasProjects" style="display:none"></canvas>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <!-- =====================================================================
          INSIGHTS
          ================================================================== -->
     <div x-data="insightsPanel()">
       <div x-show="!loading">
-        <div class="section-title">
+        <div class="font-headline text-sm font-bold uppercase tracking-[0.2em] text-on-surface-variant mb-6 mt-12">
           Insights
           <template x-if="data && data.windowDays">
-            <span style="font-size:12px;font-weight:400;color:var(--mid);margin-left:6px" x-text="data.windowDays + '-day window'"></span>
+            <span style="font-size:12px;font-weight:400;margin-left:6px" class="text-on-surface-variant" x-text="data.windowDays + '-day window'"></span>
           </template>
           <template x-if="staleDays > 3">
-            <span class="stale-badge" x-text="'Last updated ' + staleDays + ' days ago'"></span>
+            <span class="inline-block text-[11px] text-on-surface-variant bg-outline-variant px-2 py-0.5 ml-2" x-text="'Last updated ' + staleDays + ' days ago'"></span>
           </template>
         </div>
 
         <!-- Empty state -->
         <template x-if="empty">
-          <div class="insight-card" style="text-align:center;color:var(--mid);padding:32px 20px">
-            <p>Run <code style="color:var(--orange)">shipcard sync</code> to generate insights.</p>
+          <div class="bg-surface-container-low border border-outline-variant p-5 text-center text-on-surface-variant py-8">
+            <p>Run <code class="text-primary">shipcard sync</code> to generate insights.</p>
           </div>
         </template>
 
@@ -1916,30 +374,30 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
           <div>
             <!-- PRO narrative card (only when narrative data exists) -->
             <template x-if="data.narrative">
-              <div class="narrative-card">
-                <div class="narrative-label">AI Weekly Summary</div>
-                <div class="narrative-text" x-text="data.narrative"></div>
+              <div class="bg-gradient-to-br from-surface-container to-[#1a1f2e] border border-[#6a9bcc] p-5 mb-4">
+                <div class="text-[11px] text-[#6a9bcc] uppercase tracking-widest mb-2">AI Weekly Summary</div>
+                <div class="text-sm text-on-surface leading-relaxed" x-text="data.narrative"></div>
               </div>
             </template>
 
             <!-- Insight cards grid -->
-            <div class="insights-grid">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
 
               <!-- Peak Activity card -->
-              <div class="insight-card">
-                <h4 x-text="data.peakHours && data.peakHours.topHours.length > 0 ? 'Peak Hours' : 'Peak Days'"></h4>
+              <div class="bg-surface-container-low border border-outline-variant p-5">
+                <h4 class="text-sm text-on-surface-variant uppercase tracking-widest mb-3 font-headline font-bold" x-text="data.peakHours && data.peakHours.topHours.length > 0 ? 'Peak Hours' : 'Peak Days'"></h4>
                 <!-- Peak hours bar chart -->
                 <template x-if="data.peakHours && data.peakHours.topHours.length > 0">
                   <div>
                     <template x-for="(item, i) in data.peakHours.topHours.slice(0, 3)" :key="i">
-                      <div class="insight-bar">
-                        <span class="insight-bar-label" x-text="item.label"></span>
-                        <div class="insight-bar-track">
-                          <div class="insight-bar-fill"
+                      <div class="flex items-center gap-2 my-1">
+                        <span class="w-10 text-xs text-on-surface-variant text-right" x-text="item.label"></span>
+                        <div class="flex-1 h-1.5 bg-outline-variant rounded-full overflow-hidden">
+                          <div class="insight-bar-fill h-full bg-primary rounded-full"
                             :style="'width:' + Math.round((item.totalSessions / data.peakHours.topHours[0].totalSessions) * 100) + '%'">
                           </div>
                         </div>
-                        <span style="font-size:11px;color:var(--mid);width:24px;text-align:right" x-text="item.totalSessions"></span>
+                        <span class="text-[11px] text-on-surface-variant w-6 text-right" x-text="item.totalSessions"></span>
                       </div>
                     </template>
                   </div>
@@ -1948,64 +406,64 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
                 <template x-if="(!data.peakHours || data.peakHours.topHours.length === 0) && data.peakDays && data.peakDays.topDays.length > 0">
                   <div>
                     <template x-for="(item, i) in data.peakDays.topDays.slice(0, 3)" :key="i">
-                      <div class="insight-bar">
-                        <span class="insight-bar-label" x-text="item.label"></span>
-                        <div class="insight-bar-track">
-                          <div class="insight-bar-fill"
+                      <div class="flex items-center gap-2 my-1">
+                        <span class="w-10 text-xs text-on-surface-variant text-right" x-text="item.label"></span>
+                        <div class="flex-1 h-1.5 bg-outline-variant rounded-full overflow-hidden">
+                          <div class="insight-bar-fill h-full bg-primary rounded-full"
                             :style="'width:' + Math.round((item.avgSessions / data.peakDays.topDays[0].avgSessions) * 100) + '%'">
                           </div>
                         </div>
-                        <span style="font-size:11px;color:var(--mid);width:32px;text-align:right" x-text="item.avgSessions.toFixed(1)"></span>
+                        <span class="text-[11px] text-on-surface-variant w-8 text-right" x-text="item.avgSessions.toFixed(1)"></span>
                       </div>
                     </template>
                   </div>
                 </template>
                 <!-- No activity data -->
                 <template x-if="(!data.peakHours || data.peakHours.topHours.length === 0) && (!data.peakDays || data.peakDays.topDays.length === 0)">
-                  <div class="insight-detail" style="color:var(--mid)">No activity data yet.</div>
+                  <div class="mt-3 text-sm text-on-surface-variant">No activity data yet.</div>
                 </template>
               </div>
 
               <!-- Cost Trend card -->
-              <div class="insight-card">
-                <h4>Cost Trend</h4>
+              <div class="bg-surface-container-low border border-outline-variant p-5">
+                <h4 class="text-sm text-on-surface-variant uppercase tracking-widest mb-3 font-headline font-bold">Cost Trend</h4>
                 <template x-if="data.costTrend && data.costTrend.weeklyTotals && data.costTrend.weeklyTotals.length > 0">
                   <div>
-                    <div class="insight-value" x-text="formatCost(data.costTrend.weeklyTotals[data.costTrend.weeklyTotals.length - 1].costCents)"></div>
-                    <div class="insight-sub">
-                      <span :class="data.costTrend.trend === 'up' ? 'trend-up' : data.costTrend.trend === 'down' ? 'trend-down' : 'trend-flat'">
-                        <span x-text="data.costTrend.trend === 'up' ? '↑' : data.costTrend.trend === 'down' ? '↓' : '—'"></span>
+                    <div class="text-3xl font-headline font-bold text-on-surface leading-tight" x-text="formatCost(data.costTrend.weeklyTotals[data.costTrend.weeklyTotals.length - 1].costCents)"></div>
+                    <div class="text-xs text-on-surface-variant mt-1">
+                      <span :class="data.costTrend.trend === 'up' ? 'text-primary' : data.costTrend.trend === 'down' ? 'text-secondary' : 'text-on-surface-variant'">
+                        <span x-text="data.costTrend.trend === 'up' ? '\u2191' : data.costTrend.trend === 'down' ? '\u2193' : '\u2014'"></span>
                         <span x-text="data.costTrend.deltaPercent != null ? Math.abs(Math.round(data.costTrend.deltaPercent)) + '% vs last week' : 'vs last week'"></span>
                       </span>
                     </div>
-                    <div class="insight-detail" x-show="data.costTrend.weeklyTotals.length >= 2">
-                      <span x-text="data.costTrend.weeklyTotals.slice(-2).map((w, i) => 'W' + (i+1) + ': ' + formatCost(w.costCents)).join(' → ')"></span>
+                    <div class="mt-3 text-sm text-on-surface" x-show="data.costTrend.weeklyTotals.length >= 2">
+                      <span x-text="data.costTrend.weeklyTotals.slice(-2).map((w, i) => 'W' + (i+1) + ': ' + formatCost(w.costCents)).join(' \u2192 ')"></span>
                     </div>
                   </div>
                 </template>
                 <template x-if="!data.costTrend || !data.costTrend.weeklyTotals || data.costTrend.weeklyTotals.length === 0">
-                  <div class="insight-detail" style="color:var(--mid)">No cost data yet.</div>
+                  <div class="mt-3 text-sm text-on-surface-variant">No cost data yet.</div>
                 </template>
               </div>
 
               <!-- Coding Streak card -->
-              <div class="insight-card">
-                <h4>Coding Streak</h4>
+              <div class="bg-surface-container-low border border-outline-variant p-5">
+                <h4 class="text-sm text-on-surface-variant uppercase tracking-widest mb-3 font-headline font-bold">Coding Streak</h4>
                 <template x-if="data.streak">
                   <div>
-                    <div class="insight-value">
-                      <span class="streak-flame">🔥</span>
+                    <div class="text-3xl font-headline font-bold text-on-surface leading-tight">
+                      <span class="text-primary">&#x1F525;</span>
                       <span x-text="data.streak.currentStreak"></span>
                     </div>
-                    <div class="insight-sub" x-text="data.streak.currentStreak === 1 ? 'day streak' : 'days streak'"></div>
-                    <div class="insight-detail">
+                    <div class="text-xs text-on-surface-variant mt-1" x-text="data.streak.currentStreak === 1 ? 'day streak' : 'days streak'"></div>
+                    <div class="mt-3 text-sm text-on-surface">
                       <div>Longest: <span x-text="data.streak.longestStreak"></span> days</div>
                       <div>Active this week: <span x-text="data.streak.activeDaysThisWeek"></span>/7 days</div>
                     </div>
                   </div>
                 </template>
                 <template x-if="!data.streak">
-                  <div class="insight-detail" style="color:var(--mid)">No streak data yet.</div>
+                  <div class="mt-3 text-sm text-on-surface-variant">No streak data yet.</div>
                 </template>
               </div>
 
@@ -2015,24 +473,270 @@ const DASHBOARD_HTML = `<!DOCTYPE html>
       </div><!-- /insights loaded -->
     </div><!-- /insightsPanel -->
 
+    <!-- -------------------------------------------------------------------
+         HERO STATS
+         ---------------------------------------------------------------- -->
+    <div class="font-headline text-sm font-bold uppercase tracking-[0.2em] text-on-surface-variant mb-6 mt-12">Overview</div>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+
+      <!-- Collecting Since -->
+      <div class="bg-surface-container-low border border-outline-variant p-5 flex flex-col gap-2 transition-colors hover:border-surface-container-highest" :class="{ 'loading': $store.dashboard.loading }">
+        <div class="text-[11px] font-headline font-bold uppercase tracking-widest text-on-surface-variant">Collecting Since</div>
+        <div class="h-8 w-[70%] skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="h-3.5 w-[50%] mt-0.5 skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="h-9 w-full mt-2 skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="text-3xl font-headline font-bold text-on-surface tracking-tight leading-none" x-show="!$store.dashboard.loading" x-text="$store.dashboard.heroTenure" style="display:none"></div>
+        <div class="text-xs text-on-surface-variant" x-show="!$store.dashboard.loading" style="display:none">
+          <strong class="text-on-surface" x-text="$store.dashboard.heroFirstDate"></strong>
+        </div>
+        <div class="sparkline-wrap mt-1 h-9" x-show="!$store.dashboard.loading" style="display:none">
+          <svg viewBox="0 0 200 36" preserveAspectRatio="none">
+            <polygon :points="$store.dashboard.sparkSessionsArea(200,36)" class="sparkline-area" fill="#00d4aa" />
+            <polyline :points="$store.dashboard.sparkSessions(200,36)" stroke="#00d4aa" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Total Tokens -->
+      <div class="bg-surface-container-low border border-outline-variant p-5 flex flex-col gap-2 transition-colors hover:border-surface-container-highest" :class="{ 'loading': $store.dashboard.loading }">
+        <div class="text-[11px] font-headline font-bold uppercase tracking-widest text-on-surface-variant">Total Tokens</div>
+        <div class="h-8 w-[70%] skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="h-3.5 w-[50%] mt-0.5 skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="h-9 w-full mt-2 skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="text-3xl font-headline font-bold text-on-surface tracking-tight leading-none" x-show="!$store.dashboard.loading" x-text="$store.dashboard.heroTokens" style="display:none"></div>
+        <div class="text-xs text-on-surface-variant" x-show="!$store.dashboard.loading" style="display:none">
+          <strong class="text-on-surface" x-text="$store.dashboard.heroCacheHitPct"></strong> cache hit rate
+        </div>
+        <div class="sparkline-wrap mt-1 h-9" x-show="!$store.dashboard.loading" style="display:none">
+          <svg viewBox="0 0 200 36" preserveAspectRatio="none">
+            <polygon :points="$store.dashboard.sparkTokensArea(200,36)" class="sparkline-area" fill="#6a9bcc" />
+            <polyline :points="$store.dashboard.sparkTokens(200,36)" stroke="#6a9bcc" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Total Cost -->
+      <div class="bg-surface-container-low border border-outline-variant p-5 flex flex-col gap-2 transition-colors hover:border-surface-container-highest" :class="{ 'loading': $store.dashboard.loading }">
+        <div class="text-[11px] font-headline font-bold uppercase tracking-widest text-on-surface-variant">Total Cost</div>
+        <div class="h-8 w-[70%] skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="h-3.5 w-[50%] mt-0.5 skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="h-9 w-full mt-2 skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="text-3xl font-headline font-bold text-on-surface tracking-tight leading-none" x-show="!$store.dashboard.loading" x-text="$store.dashboard.heroCost" style="display:none"></div>
+        <div class="text-xs text-on-surface-variant" x-show="!$store.dashboard.loading" style="display:none">
+          for <strong class="text-on-surface" x-text="$store.dashboard.heroSessions"></strong> sessions
+        </div>
+        <div class="sparkline-wrap mt-1 h-9" x-show="!$store.dashboard.loading" style="display:none">
+          <svg viewBox="0 0 200 36" preserveAspectRatio="none">
+            <polygon :points="$store.dashboard.sparkCostArea(200,36)" class="sparkline-area" fill="#00d4aa" />
+            <polyline :points="$store.dashboard.sparkCost(200,36)" stroke="#00d4aa" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Cost / Session (ROI) -->
+      <div class="bg-surface-container-low border border-outline-variant p-5 flex flex-col gap-2 transition-colors hover:border-surface-container-highest" :class="{ 'loading': $store.dashboard.loading }">
+        <div class="text-[11px] font-headline font-bold uppercase tracking-widest text-on-surface-variant">Cost / Session</div>
+        <div class="h-8 w-[70%] skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="h-3.5 w-[50%] mt-0.5 skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="h-9 w-full mt-2 skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+        <div class="text-3xl font-headline font-bold text-on-surface tracking-tight leading-none" x-show="!$store.dashboard.loading" x-text="$store.dashboard.heroCostPerSession" style="display:none"></div>
+        <div class="text-xs text-on-surface-variant" x-show="!$store.dashboard.loading" style="display:none">
+          avg per session &mdash; <strong class="text-on-surface" x-text="$store.dashboard.heroRange"></strong>
+        </div>
+        <div class="sparkline-wrap mt-1 h-9" x-show="!$store.dashboard.loading" style="display:none">
+          <svg viewBox="0 0 200 36" preserveAspectRatio="none">
+            <polygon :points="$store.dashboard.sparkCpsArea(200,36)" class="sparkline-area" fill="#788c5d" />
+            <polyline :points="$store.dashboard.sparkCps(200,36)" stroke="#788c5d" />
+          </svg>
+        </div>
+      </div>
+
+    </div><!-- /hero-grid -->
+
+    <!-- -------------------------------------------------------------------
+         OVERVIEW PANELS — Activity Heatmap (wide) + Daily Activity chart
+         ---------------------------------------------------------------- -->
+    <div class="font-headline text-sm font-bold uppercase tracking-[0.2em] text-on-surface-variant mb-6 mt-12">Activity</div>
+    <div class="grid grid-cols-1 gap-4 mb-4">
+      <!-- panel-calendar: calendar heatmap -->
+      <div class="bg-surface-container-low border border-outline-variant p-5 min-h-[200px] flex flex-col" id="panel-calendar">
+        <div class="flex justify-between items-center mb-4 shrink-0">
+          <span class="font-headline text-sm font-bold text-on-surface">Activity Heatmap</span>
+          <span class="text-[10px] uppercase tracking-widest text-on-surface-variant">Calendar</span>
+        </div>
+        <div class="flex-1 relative flex items-stretch h-[220px] lg:h-[280px]">
+          <div class="flex-1 min-h-[180px] skeleton" x-show="$store.dashboard.loading" style="display:none;min-height:120px"></div>
+          <div id="panel-calendar-chart" x-show="!$store.dashboard.loading" style="display:none;width:100%">
+            <div id="heatmap-container"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+      <!-- panel-daily: daily activity line/bar chart -->
+      <div class="bg-surface-container-low border border-outline-variant p-5 min-h-[340px] flex flex-col" id="panel-daily">
+        <div class="flex justify-between items-center mb-4 shrink-0">
+          <span class="font-headline text-sm font-bold text-on-surface">Daily Activity</span>
+          <span class="text-[10px] uppercase tracking-widest text-on-surface-variant">Timeline</span>
+        </div>
+        <div class="flex-1 relative flex items-stretch h-[220px] lg:h-[280px]">
+          <div class="flex-1 min-h-[180px] skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <canvas id="panel-daily-chart" x-show="!$store.dashboard.loading" style="display:none"></canvas>
+        </div>
+      </div>
+
+      <!-- panel-dow: day-of-week distribution -->
+      <div class="bg-surface-container-low border border-outline-variant p-5 min-h-[340px] flex flex-col" id="panel-dow">
+        <div class="flex justify-between items-center mb-4 shrink-0">
+          <span class="font-headline text-sm font-bold text-on-surface">Day of Week</span>
+          <span class="text-[10px] uppercase tracking-widest text-on-surface-variant">Distribution</span>
+        </div>
+        <div class="flex-1 relative flex items-stretch h-[220px] lg:h-[280px]">
+          <div class="flex-1 min-h-[180px] skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <canvas id="panel-dow-chart" x-show="!$store.dashboard.loading" style="display:none"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- -------------------------------------------------------------------
+         COMPOSITION PANELS — Tool, Model, Message type donuts
+         ---------------------------------------------------------------- -->
+    <div class="font-headline text-sm font-bold uppercase tracking-[0.2em] text-on-surface-variant mb-6 mt-12">Composition</div>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+      <!-- panel-tools: tool call donut -->
+      <div class="bg-surface-container-low border border-outline-variant p-5 min-h-[260px] flex flex-col" id="panel-tools">
+        <div class="flex justify-between items-center mb-4 shrink-0">
+          <span class="font-headline text-sm font-bold text-on-surface">Tool Usage</span>
+          <span class="text-[10px] uppercase tracking-widest text-on-surface-variant">Donut</span>
+        </div>
+        <div class="flex-1 relative flex items-stretch h-[220px] lg:h-[280px]">
+          <div class="flex-1 min-h-[180px] skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <canvas id="panel-tools-chart" x-show="!$store.dashboard.loading" style="display:none"></canvas>
+        </div>
+      </div>
+
+      <!-- panel-models: model usage donut -->
+      <div class="bg-surface-container-low border border-outline-variant p-5 min-h-[260px] flex flex-col" id="panel-models">
+        <div class="flex justify-between items-center mb-4 shrink-0">
+          <span class="font-headline text-sm font-bold text-on-surface">Model Mix</span>
+          <span class="text-[10px] uppercase tracking-widest text-on-surface-variant">Donut</span>
+        </div>
+        <div class="flex-1 relative flex items-stretch h-[220px] lg:h-[280px]">
+          <div class="flex-1 min-h-[180px] skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <canvas id="panel-models-chart" x-show="!$store.dashboard.loading" style="display:none"></canvas>
+        </div>
+      </div>
+
+      <!-- panel-messages: message type donut -->
+      <div class="bg-surface-container-low border border-outline-variant p-5 min-h-[260px] flex flex-col" id="panel-messages">
+        <div class="flex justify-between items-center mb-4 shrink-0">
+          <span class="font-headline text-sm font-bold text-on-surface">Message Types</span>
+          <span class="text-[10px] uppercase tracking-widest text-on-surface-variant">Donut</span>
+        </div>
+        <div class="flex-1 relative flex items-stretch h-[220px] lg:h-[280px]">
+          <div class="flex-1 min-h-[180px] skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <canvas id="panel-messages-chart" x-show="!$store.dashboard.loading" style="display:none"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- -------------------------------------------------------------------
+         TOKEN PANELS — Token breakdown + cost over time
+         ---------------------------------------------------------------- -->
+    <div class="font-headline text-sm font-bold uppercase tracking-[0.2em] text-on-surface-variant mb-6 mt-12">Tokens &amp; Cost</div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+      <!-- panel-tokens: token breakdown stacked bar -->
+      <div class="bg-surface-container-low border border-outline-variant p-5 min-h-[260px] flex flex-col" id="panel-tokens">
+        <div class="flex justify-between items-center mb-4 shrink-0">
+          <span class="font-headline text-sm font-bold text-on-surface">Token Breakdown</span>
+          <span class="text-[10px] uppercase tracking-widest text-on-surface-variant">Stacked</span>
+        </div>
+        <div class="flex-1 relative flex items-stretch h-[220px] lg:h-[280px]">
+          <div class="flex-1 min-h-[180px] skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <canvas id="panel-tokens-chart" x-show="!$store.dashboard.loading" style="display:none"></canvas>
+        </div>
+      </div>
+
+      <!-- panel-cost: cost over time line chart -->
+      <div class="bg-surface-container-low border border-outline-variant p-5 min-h-[260px] flex flex-col" id="panel-cost">
+        <div class="flex justify-between items-center mb-4 shrink-0">
+          <span class="font-headline text-sm font-bold text-on-surface">Cost Over Time</span>
+          <span class="text-[10px] uppercase tracking-widest text-on-surface-variant">Line</span>
+        </div>
+        <div class="flex-1 relative flex items-stretch h-[220px] lg:h-[280px]">
+          <div class="flex-1 min-h-[180px] skeleton" x-show="$store.dashboard.loading" style="display:none"></div>
+          <canvas id="panel-cost-chart" x-show="!$store.dashboard.loading" style="display:none"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- -------------------------------------------------------------------
+         PROJECT PANEL — Project activity bars (wide, 1-col)
+         ---------------------------------------------------------------- -->
+    <div class="font-headline text-sm font-bold uppercase tracking-[0.2em] text-on-surface-variant mb-6 mt-12">Projects</div>
+    <div class="grid grid-cols-1 gap-4 mb-4">
+      <!-- panel-projects: project activity horizontal bars -->
+      <div class="bg-surface-container-low border border-outline-variant p-5 min-h-[200px] flex flex-col" id="panel-projects">
+        <div class="flex justify-between items-center mb-4 shrink-0">
+          <span class="font-headline text-sm font-bold text-on-surface">Project Activity
+            <span x-show="$store.dashboard.hasProjects" style="display:none;font-weight:400;font-size:12px" class="text-on-surface-variant">
+              (showing <span x-text="Math.min(5, $store.dashboard._projectTotal)"></span> of <span x-text="$store.dashboard._projectTotal"></span>)
+            </span>
+          </span>
+          <div class="flex border border-outline-variant overflow-hidden" x-show="$store.dashboard.hasProjects" style="display:none">
+            <button class="px-2 py-1 text-[11px] font-bold font-headline bg-background text-on-surface-variant border-r border-outline-variant cursor-pointer transition-colors whitespace-nowrap"
+              :class="$store.dashboard.projectSortMetric === 'messages' ? '!bg-primary !text-on-primary' : 'hover:bg-surface-container'"
+              @click="$store.dashboard.projectSortMetric = 'messages'">Messages</button>
+            <button class="px-2 py-1 text-[11px] font-bold font-headline bg-background text-on-surface-variant border-r border-outline-variant cursor-pointer transition-colors whitespace-nowrap"
+              :class="$store.dashboard.projectSortMetric === 'tokens' ? '!bg-primary !text-on-primary' : 'hover:bg-surface-container'"
+              @click="$store.dashboard.projectSortMetric = 'tokens'">Tokens</button>
+            <button class="px-2 py-1 text-[11px] font-bold font-headline bg-background text-on-surface-variant border-r border-outline-variant cursor-pointer transition-colors whitespace-nowrap"
+              :class="$store.dashboard.projectSortMetric === 'sessions' ? '!bg-primary !text-on-primary' : 'hover:bg-surface-container'"
+              @click="$store.dashboard.projectSortMetric = 'sessions'">Sessions</button>
+            <button class="px-2 py-1 text-[11px] font-bold font-headline bg-background text-on-surface-variant cursor-pointer transition-colors whitespace-nowrap"
+              :class="$store.dashboard.projectSortMetric === 'cost' ? '!bg-primary !text-on-primary' : 'hover:bg-surface-container'"
+              @click="$store.dashboard.projectSortMetric = 'cost'">Cost</button>
+          </div>
+        </div>
+        <div class="flex-1 relative flex items-stretch" style="height:auto">
+          <div class="flex-1 min-h-[180px] skeleton" x-show="$store.dashboard.loading" style="display:none;min-height:120px"></div>
+          <div id="panel-projects-content" x-show="!$store.dashboard.loading" style="display:none;width:100%">
+            <div x-show="!$store.dashboard.hasProjects" class="text-on-surface-variant text-sm py-4">
+              No project breakdown available. Sync with <code class="text-primary">shipcard sync --show-projects</code> to see project data.
+            </div>
+            <div x-show="$store.dashboard.hasProjects" style="display:none;position:relative;width:100%;min-height:200px">
+              <canvas id="panel-projects-chart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
   </div><!-- /dashboard content -->
 </div><!-- /page -->
 
 <!-- =========================================================================
      FOOTER
      ====================================================================== -->
-<div class="footer">
-  <span>
-    Powered by <a href="https://shipcard.dev">ShipCard</a>
-  </span>
-  <div class="footer-right">
-    <span x-show="$store.dashboard.syncedAt" style="display:none">
-      <span class="synced-dot"></span>
-      Synced <span x-text="$store.dashboard.syncedAtFormatted"></span>
-    </span>
-    <a href="/u/__USERNAME__">View Card</a>
+<footer class="py-12 border-t border-outline-variant/5 bg-background">
+<div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+  <div class="flex items-center gap-4">
+    <span class="font-headline font-bold text-on-surface">ShipCard</span>
+    <span class="text-on-surface-variant text-xs font-body">&copy; 2026</span>
+  </div>
+  <div class="flex gap-8 text-on-surface-variant text-xs font-medium">
+    <a class="hover:text-on-surface" href="https://github.com/jjaimealeman/shipcard" target="_blank" rel="noopener">GitHub</a>
+    <a class="hover:text-on-surface" href="https://www.npmjs.com/package/@jjaimealeman/shipcard" target="_blank" rel="noopener">npm</a>
+    <a class="hover:text-on-surface" href="/u/__USERNAME__">View Card</a>
+  </div>
+  <div class="text-on-surface-variant text-xs">
+    MIT License &middot; Built on Cloudflare &middot; Made in El Paso
+    <span x-show="$store.dashboard.syncedAt" x-text="'Synced: ' + $store.dashboard.syncedAtFormatted" style="display:none" class="ml-2"></span>
   </div>
 </div>
+</footer>
 
 <!-- =========================================================================
      SCRIPTS — load order is critical
