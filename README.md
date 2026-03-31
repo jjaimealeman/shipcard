@@ -143,7 +143,37 @@ See [USAGE.md](USAGE.md) for full flag reference.
 
 ## Data Availability
 
-ShipCard parses Claude Code JSONL files from approximately **January 2026 onward**. Earlier sessions used a different schema that lacks the fields ShipCard needs.
+ShipCard parses Claude Code JSONL files from approximately **January 2026 onward**. Earlier sessions used a different schema that lacks the fields ShipCard needs. The SQLite bridge (v3.0) will preserve your data permanently going forward — no more data loss from format changes.
+
+---
+
+## Roadmap
+
+**v2.1 — Polish & Launch**
+- [ ] Landing page animations (Vue + Cloudflare Pages)
+- [ ] Hero video section (Remotion)
+- [ ] Additional theme packs
+- [ ] Card badge customization
+
+**v3.0 — SQLite Bridge**
+- [ ] Local SQLite database (`~/.shipcard/stats.db`) replaces raw JSONL parsing
+- [ ] Incremental ETL — only parse new sessions, not the full history
+- [ ] Hook-driven sync (auto-update after each Claude Code session)
+- [ ] Survives Anthropic JSONL format changes — old data safe forever
+- [ ] 10x faster CLI and MCP responses
+
+**v4.0 — Teams & Enterprise**
+- [ ] Team dashboards with shared stats (`/t/:team/dashboard`)
+- [ ] PostgreSQL option for persistent multi-month data
+- [ ] Multi-agent support (Codex CLI, Gemini CLI, Kiro, OpenCode)
+- [ ] Cost allocation and budget alerts
+- [ ] Weekly email digest of AI insights
+
+**Future**
+- [ ] VS Code extension with inline stats
+- [ ] GitHub Action for auto-sync on push
+- [ ] Burn rate predictor (estimated cost remaining in billing window)
+- [ ] Natural language date filtering (`--since yesterday`)
 
 ---
 
