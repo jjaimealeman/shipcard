@@ -26,405 +26,314 @@ export const configureRoutes = new Hono<AppType>();
 
 /* eslint-disable no-secrets/no-secrets */
 const CONFIGURATOR_HTML = `<!DOCTYPE html>
-<html lang="en">
+<html class="dark" lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ShipCard | Configurator</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ShipCard | Configure — Make your card yours.</title>
+<meta name="description" content="Customize your ShipCard — toggle stats, pick a theme, choose a layout, and grab your embed code." />
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@700&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script>
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "on-tertiary-container": "#4a4a56",
+        "surface-dim": "#131318",
+        "on-tertiary": "#2f2f3b",
+        "inverse-surface": "#e4e1e9",
+        "primary": "#00d4aa",
+        "on-secondary": "#472a00",
+        "on-background": "#e4e1e9",
+        "on-primary": "#00382b",
+        "tertiary": "#d8d6e4",
+        "surface-container-high": "#2a292f",
+        "on-error": "#690005",
+        "error-container": "#93000a",
+        "secondary-fixed": "#ffddb8",
+        "secondary-container": "#ca8007",
+        "surface-tint": "#28dfb5",
+        "inverse-on-surface": "#303036",
+        "tertiary-fixed-dim": "#c7c5d3",
+        "surface-container-lowest": "#0e0e13",
+        "surface": "#0a0a0f",
+        "on-primary-container": "#005643",
+        "on-secondary-fixed-variant": "#663e00",
+        "inverse-primary": "#006b55",
+        "on-surface-variant": "#8888a0",
+        "surface-container-highest": "#35343a",
+        "secondary": "#f0a030",
+        "secondary-fixed-dim": "#ffb961",
+        "tertiary-container": "#bcbac8",
+        "surface-bright": "#39383e",
+        "primary-fixed": "#55fcd0",
+        "primary-container": "#00d4aa",
+        "outline-variant": "#2a2a35",
+        "on-tertiary-fixed": "#1a1b25",
+        "primary-fixed-dim": "#28dfb5",
+        "outline": "#85948d",
+        "error": "#ffb4ab",
+        "background": "#0a0a0f",
+        "on-secondary-container": "#3e2400",
+        "on-primary-fixed": "#002118",
+        "tertiary-fixed": "#e3e1f0",
+        "on-error-container": "#ffdad6",
+        "surface-container-low": "#141419",
+        "on-primary-fixed-variant": "#00513f",
+        "on-surface": "#e8e8ed",
+        "surface-container": "#1f1f25",
+        "on-secondary-fixed": "#2b1700",
+        "on-tertiary-fixed-variant": "#464651",
+        "surface-variant": "#35343a"
+      },
+      fontFamily: {
+        "headline": ["Instrument Sans", "sans-serif"],
+        "body": ["IBM Plex Mono", "monospace"],
+        "label": ["IBM Plex Mono", "monospace"]
+      },
+      borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+    },
+  },
+}
+</script>
 <style>
-  :root {
-    --bg: #141413;
-    --fg: #faf9f5;
-    --mid: #b0aea5;
-    --light: #e8e6dc;
-    --orange: #d97757;
-    --blue: #6a9bcc;
-    --green: #788c5d;
-    --surface: #1e1e1c;
-    --border: #2a2a28;
-    --radius: 8px;
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 14px;
-    line-height: 1.6;
-    background: var(--bg);
-    color: var(--fg);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-  nav {
-    padding: 16px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    max-width: 960px;
-    margin: 0 auto;
-    width: 100%;
-  }
-  .nav-brand {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--fg);
-    text-decoration: none;
-    letter-spacing: -0.02em;
-  }
-  .nav-links { display: flex; gap: 20px; align-items: center; }
-  .nav-links a {
-    color: var(--mid);
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 600;
-    transition: color 0.15s;
-  }
-  .nav-links a:hover { color: var(--fg); }
-  .badge {
-    font-size: 11px;
-    background: var(--surface);
-    color: var(--mid);
-    padding: 2px 8px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-  }
-  .layout {
-    display: flex;
-    gap: 24px;
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 0 24px 48px;
-    width: 100%;
-  }
-  .sidebar {
-    width: 280px;
-    min-width: 280px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow-y: auto;
-    padding: 20px;
-  }
-  .main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    overflow-y: auto;
-  }
-  .config-group { margin-bottom: 20px; }
-  .config-group:last-child { margin-bottom: 0; }
-  .config-group-title {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--mid);
-    margin-bottom: 12px;
-  }
-  .config-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 6px 0;
-  }
-  .config-label { font-size: 13px; color: var(--light); }
-  .btn-group {
-    display: flex;
-    gap: 0;
-    border-radius: 6px;
-    overflow: hidden;
-    border: 1px solid var(--border);
-  }
-  .btn-group button {
-    flex: 1;
-    padding: 5px 10px;
-    font-size: 12px;
-    font-weight: 600;
-    background: var(--bg);
-    color: var(--mid);
-    border: none;
-    cursor: pointer;
-    transition: background 0.15s, color 0.15s;
-    white-space: nowrap;
-  }
-  .btn-group button + button { border-left: 1px solid var(--border); }
-  .btn-group button.active {
-    background: var(--orange);
-    color: var(--bg);
-  }
-  .toggle {
-    position: relative;
-    width: 36px;
-    height: 20px;
-    flex-shrink: 0;
-  }
-  .toggle input { opacity: 0; width: 0; height: 0; }
-  .toggle-track {
-    position: absolute;
-    inset: 0;
-    background: var(--border);
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-  .toggle input:checked + .toggle-track { background: var(--orange); }
-  .toggle-track::after {
-    content: "";
-    position: absolute;
-    width: 14px;
-    height: 14px;
-    background: var(--fg);
-    border-radius: 50%;
-    top: 3px;
-    left: 3px;
-    transition: transform 0.15s;
-  }
-  .toggle input:checked + .toggle-track::after { transform: translateX(16px); }
-  .reset-btn {
-    width: 100%;
-    padding: 8px;
-    margin-top: 16px;
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--mid);
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: border-color 0.15s, color 0.15s;
-  }
-  .reset-btn:hover { border-color: var(--orange); color: var(--orange); }
-  .preview-area {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 32px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-  }
-  .preview-area svg { max-width: 100%; }
-  .preview-label {
-    font-size: 11px;
-    color: var(--mid);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-  }
-  .snippet-wrap {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-  }
-  .tabs-bar {
-    display: flex;
-    gap: 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .tab-btn {
-    padding: 8px 16px;
-    font-size: 13px;
-    font-weight: 600;
-    background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
-    color: var(--mid);
-    cursor: pointer;
-    transition: color 0.15s, border-color 0.15s;
-  }
-  .tab-btn.active { color: var(--orange); border-bottom-color: var(--orange); }
-  .tab-content { display: none; }
-  .tab-content.active { display: block; }
-  .snippet-title {
-    padding: 8px 16px;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--mid);
-    border-bottom: 1px solid var(--border);
-  }
-  .code-block {
-    background: #0d0d0c;
-    color: var(--light);
-    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
-    font-size: 12px;
-    padding: 12px 14px;
-    border-radius: var(--radius);
-    overflow-x: auto;
-    white-space: pre;
-    position: relative;
-  }
-  .copy-btn {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background: var(--border);
-    color: var(--mid);
-    border: none;
-    padding: 3px 8px;
-    border-radius: 4px;
-    font-size: 11px;
-    cursor: pointer;
-    transition: background 0.15s, color 0.15s;
-  }
-  .copy-btn:hover { background: var(--orange); color: var(--bg); }
-  .copy-btn.copied { background: var(--green); color: var(--bg); }
-  .no-data {
-    padding: 48px 24px;
-    text-align: center;
-    color: var(--mid);
-  }
-  .no-data p { margin-bottom: 8px; }
-  .no-data code {
-    font-family: monospace;
-    background: var(--surface);
-    padding: 2px 6px;
-    border-radius: 3px;
-    color: var(--light);
-  }
-  .hero {
-    text-align: center;
-    padding: 40px 24px 24px;
-    max-width: 960px;
-    margin: 0 auto;
-    width: 100%;
-  }
-  .hero h1 {
-    font-size: clamp(28px, 5vw, 48px);
-    font-weight: 700;
-    line-height: 1.2;
-    letter-spacing: -0.03em;
-    margin-bottom: 8px;
-  }
-  .hero h1 .accent { color: var(--orange); }
-  .hero .sub {
-    font-size: 15px;
-    color: var(--mid);
-    line-height: 1.5;
-  }
-  .version-badge {
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-bottom: none;
-    border-right: none;
-    border-top-left-radius: 8px;
-    padding: 4px 10px;
-    font-size: 10px;
-    font-weight: 600;
-    color: var(--mid);
-    letter-spacing: 0.02em;
-    z-index: 10;
-  }
-  .footer {
-    text-align: center;
-    padding: 16px;
-    color: var(--mid);
-    font-size: 13px;
-  }
-  .footer a { color: var(--orange); text-decoration: none; }
-  .footer a:hover { text-decoration: underline; }
-  @media (max-width: 700px) {
-    .layout { flex-direction: column; }
-    .sidebar { width: 100%; min-width: 0; }
-  }
+.bg-dot-grid {
+  background-image: radial-gradient(circle, #2a2a35 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: radial-gradient(ellipse at center, black, transparent 80%);
+}
+.hero-glow {
+  background: radial-gradient(circle at 50% 50%, rgba(0, 212, 170, 0.08) 0%, transparent 60%);
+}
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+/* Toggle switch */
+.toggle-track {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  border-radius: 10px;
+  background: #2a2a35;
+  cursor: pointer;
+  transition: background 0.15s;
+  flex-shrink: 0;
+  display: inline-block;
+}
+.toggle-track::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: #e8e8ed;
+  border-radius: 50%;
+  top: 3px;
+  left: 3px;
+  transition: transform 0.15s;
+}
+.toggle-input:checked + .toggle-track {
+  background: #00d4aa;
+}
+.toggle-input:checked + .toggle-track::after {
+  transform: translateX(16px);
+}
+/* Button group active state */
+.btn-opt.active {
+  background-color: #00d4aa !important;
+  color: #00382b !important;
+  border-color: #00d4aa !important;
+}
+/* Tab active state */
+.tab-btn.active {
+  color: #00d4aa;
+  border-bottom-color: #00d4aa;
+}
+/* Copy button states */
+.copy-btn.copied {
+  background: #00d4aa !important;
+  color: #00382b !important;
+}
+/* Code block scrollbar */
+.code-block::-webkit-scrollbar { height: 4px; }
+.code-block::-webkit-scrollbar-track { background: transparent; }
+.code-block::-webkit-scrollbar-thumb { background: #2a2a35; border-radius: 2px; }
 </style>
 </head>
-<body>
-<nav>
-  <a href="/" class="nav-brand">ShipCard</a>
-  <div class="nav-links">
-  <a href="/">Home</a>
-  <a href="https://www.npmjs.com/package/@jjaimealeman/shipcard" target="_blank" rel="noopener">npm</a>
-    <a href="https://github.com/jjaimealeman/shipcard" target="_blank" rel="noopener">GitHub</a>
+<body class="bg-background text-on-surface font-body selection:bg-primary selection:text-on-primary">
+
+<!-- NAVIGATION BAR -->
+<nav class="sticky top-0 z-50 w-full border-b border-outline-variant/10 bg-background/80 backdrop-blur-md">
+<div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+  <div class="flex items-center gap-2">
+    <a href="/" class="flex items-center gap-2">
+      <div class="w-6 h-6 text-primary">
+        <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8.578 8.578C5.528 11.628 3.451 15.514 2.609 19.745c-.841 4.23-.41 8.616 1.241 12.601 1.65 3.985 4.446 7.391 8.032 9.788 3.587 2.396 7.804 3.675 12.118 3.675 4.314 0 8.53-1.279 12.117-3.675 3.586-2.397 6.382-5.803 8.032-9.788 1.651-3.985 2.083-8.371 1.241-12.601-.842-4.231-2.919-8.117-5.969-11.167L24 24 8.578 8.578z" fill="currentColor"></path>
+        </svg>
+      </div>
+      <span class="font-headline text-xl font-bold tracking-tight text-on-surface">ShipCard</span>
+    </a>
   </div>
+  <div class="hidden md:flex items-center gap-8 text-on-surface-variant text-sm font-medium">
+    <a class="hover:text-on-surface transition-colors" href="/community">Community</a>
+    <a class="text-primary transition-colors" href="/configure">Configurator</a>
+    <a class="hover:text-on-surface transition-colors" href="https://www.npmjs.com/package/@jjaimealeman/shipcard" target="_blank" rel="noopener">npm</a>
+    <a class="hover:text-on-surface transition-colors" href="https://github.com/jjaimealeman/shipcard" target="_blank" rel="noopener">GitHub</a>
+  </div>
+  <a href="https://github.com/jjaimealeman/shipcard" target="_blank" rel="noopener" class="border border-primary/20 hover:border-primary/40 text-primary px-4 py-2 text-sm font-medium transition-all inline-flex items-center gap-2">
+    <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span> Star on GitHub
+  </a>
+</div>
 </nav>
 
-<div class="hero">
-  <h1>Configure your <span class="accent">ShipCard</span></h1>
-  <p class="sub">Toggle stats, pick a style, grab your embed code.</p>
+<!-- PAGE HEADER -->
+<section class="relative pt-16 pb-12 overflow-hidden">
+<div class="absolute inset-0 bg-dot-grid pointer-events-none opacity-40"></div>
+<div class="absolute inset-0 hero-glow pointer-events-none"></div>
+<div class="max-w-7xl mx-auto px-6 text-center relative z-10">
+  <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold mb-6 uppercase tracking-widest">
+    <span class="material-symbols-outlined text-sm">tune</span>
+    Configurator
+  </div>
+  <h1 class="font-headline text-4xl md:text-5xl font-bold tracking-tight text-on-surface mb-4 leading-[1.1]">
+    Make your card yours.
+  </h1>
+  <p class="text-on-surface-variant text-base md:text-lg max-w-xl mx-auto font-body leading-relaxed">
+    Toggle stats, pick a theme, choose a layout, and grab your embed code.
+  </p>
 </div>
+</section>
 
-<div class="layout">
-  <aside class="sidebar" id="sidebar">
-    <div class="config-group">
-      <div class="config-group-title">Theme</div>
-      <div class="btn-group" id="bg-theme">
-        <button data-val="dark" class="active">Dark</button>
-        <button data-val="light">Light</button>
+<!-- CONFIGURATOR LAYOUT -->
+<section class="pb-24">
+<div class="max-w-7xl mx-auto px-6">
+  <div class="flex flex-col lg:flex-row gap-8" id="configurator-root">
+
+    <!-- LEFT: CONTROLS -->
+    <aside class="w-full lg:w-80 lg:min-w-[320px] flex-shrink-0" id="sidebar">
+      <div class="bg-surface-container-low border border-outline-variant p-6 space-y-8 sticky top-24">
+
+        <!-- Theme (dark/light) -->
+        <div>
+          <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant mb-3">Theme</div>
+          <div class="flex gap-0 border border-outline-variant rounded overflow-hidden" id="bg-theme">
+            <button data-val="dark" class="btn-opt active flex-1 py-2 px-4 text-xs font-medium bg-surface-container border-r border-outline-variant text-on-surface-variant transition-all">Dark</button>
+            <button data-val="light" class="btn-opt flex-1 py-2 px-4 text-xs font-medium bg-surface-container text-on-surface-variant transition-all">Light</button>
+          </div>
+        </div>
+
+        <!-- Layout -->
+        <div>
+          <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant mb-3">Layout</div>
+          <div class="flex gap-0 border border-outline-variant rounded overflow-hidden" id="bg-layout">
+            <button data-val="classic" class="btn-opt active flex-1 py-2 px-3 text-xs font-medium bg-surface-container border-r border-outline-variant text-on-surface-variant transition-all">Classic</button>
+            <button data-val="compact" class="btn-opt flex-1 py-2 px-3 text-xs font-medium bg-surface-container border-r border-outline-variant text-on-surface-variant transition-all">Compact</button>
+            <button data-val="hero" class="btn-opt flex-1 py-2 px-3 text-xs font-medium bg-surface-container text-on-surface-variant transition-all">Hero</button>
+          </div>
+        </div>
+
+        <!-- Style -->
+        <div>
+          <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant mb-3">Style</div>
+          <div class="flex gap-0 border border-outline-variant rounded overflow-hidden" id="bg-style">
+            <button data-val="github" class="btn-opt active flex-1 py-2 px-3 text-xs font-medium bg-surface-container border-r border-outline-variant text-on-surface-variant transition-all">GitHub</button>
+            <button data-val="branded" class="btn-opt flex-1 py-2 px-3 text-xs font-medium bg-surface-container border-r border-outline-variant text-on-surface-variant transition-all">Branded</button>
+            <button data-val="minimal" class="btn-opt flex-1 py-2 px-3 text-xs font-medium bg-surface-container text-on-surface-variant transition-all">Minimal</button>
+          </div>
+        </div>
+
+        <!-- Stats Toggles -->
+        <div>
+          <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant mb-3">Visible Stats</div>
+          <div class="space-y-3">
+            <label class="flex items-center justify-between cursor-pointer group">
+              <span class="text-sm text-on-surface group-hover:text-primary transition-colors">Sessions</span>
+              <span><input type="checkbox" id="tog-sessions" checked class="toggle-input sr-only"><span class="toggle-track"></span></span>
+            </label>
+            <label class="flex items-center justify-between cursor-pointer group">
+              <span class="text-sm text-on-surface group-hover:text-primary transition-colors">Tool Calls</span>
+              <span><input type="checkbox" id="tog-toolCalls" checked class="toggle-input sr-only"><span class="toggle-track"></span></span>
+            </label>
+            <label class="flex items-center justify-between cursor-pointer group">
+              <span class="text-sm text-on-surface group-hover:text-primary transition-colors">Projects</span>
+              <span><input type="checkbox" id="tog-projects" checked class="toggle-input sr-only"><span class="toggle-track"></span></span>
+            </label>
+            <label class="flex items-center justify-between cursor-pointer group">
+              <span class="text-sm text-on-surface group-hover:text-primary transition-colors">Cost</span>
+              <span><input type="checkbox" id="tog-cost" checked class="toggle-input sr-only"><span class="toggle-track"></span></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Reset -->
+        <button class="w-full py-2.5 border border-outline-variant text-on-surface-variant text-xs font-medium hover:border-primary hover:text-primary transition-all rounded" id="btn-reset">
+          Reset to defaults
+        </button>
       </div>
-    </div>
+    </aside>
 
-    <div class="config-group">
-      <div class="config-group-title">Layout</div>
-      <div class="btn-group" id="bg-layout">
-        <button data-val="classic" class="active">Classic</button>
-        <button data-val="compact">Compact</button>
-        <button data-val="hero">Hero</button>
+    <!-- RIGHT: PREVIEW + SNIPPETS -->
+    <main class="flex-1 space-y-6" id="main-content">
+
+      <!-- Live Preview -->
+      <div class="bg-surface-container-low border border-outline-variant p-8 md:p-12 flex flex-col items-center gap-4" id="preview-area">
+        <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant">Live Preview</div>
+        <div id="svg-container" class="w-full flex justify-center"></div>
       </div>
-    </div>
 
-    <div class="config-group">
-      <div class="config-group-title">Style</div>
-      <div class="btn-group" id="bg-style">
-        <button data-val="github" class="active">GitHub</button>
-        <button data-val="branded">Branded</button>
-        <button data-val="minimal">Minimal</button>
+      <!-- Embed Code -->
+      <div class="bg-surface-container-low border border-outline-variant overflow-hidden" id="snippet-wrap">
+        <div class="flex border-b border-outline-variant">
+          <button class="tab-btn active py-3 px-5 text-xs font-medium border-b-2 border-transparent text-on-surface-variant transition-all" data-tab="md">Markdown</button>
+          <button class="tab-btn py-3 px-5 text-xs font-medium border-b-2 border-transparent text-on-surface-variant transition-all" data-tab="html">HTML</button>
+        </div>
+        <div class="tab-content active" id="tab-md">
+          <div class="code-block relative bg-surface-container-lowest p-4 font-body text-xs text-primary overflow-x-auto whitespace-pre" id="snippet-md"></div>
+        </div>
+        <div class="tab-content hidden" id="tab-html">
+          <div class="code-block relative bg-surface-container-lowest p-4 font-body text-xs text-primary overflow-x-auto whitespace-pre" id="snippet-html"></div>
+        </div>
       </div>
-    </div>
 
-    <div class="config-group">
-      <div class="config-group-title">Stats</div>
-      <div class="config-row"><span class="config-label">Sessions</span><label class="toggle"><input type="checkbox" id="tog-sessions" checked><span class="toggle-track"></span></label></div>
-      <div class="config-row"><span class="config-label">Tool Calls</span><label class="toggle"><input type="checkbox" id="tog-toolCalls" checked><span class="toggle-track"></span></label></div>
-      <div class="config-row"><span class="config-label">Projects</span><label class="toggle"><input type="checkbox" id="tog-projects" checked><span class="toggle-track"></span></label></div>
-      <div class="config-row"><span class="config-label">Cost</span><label class="toggle"><input type="checkbox" id="tog-cost" checked><span class="toggle-track"></span></label></div>
-    </div>
-
-    <button class="reset-btn" id="btn-reset">Reset to defaults</button>
-  </aside>
-
-  <main class="main" id="main-content">
-    <div class="preview-area" id="preview-area">
-      <div class="preview-label">Live Preview</div>
-      <div id="svg-container"></div>
-    </div>
-
-    <div class="snippet-wrap" id="snippet-wrap">
-      <div class="tabs-bar">
-        <button class="tab-btn active" data-tab="md">Markdown</button>
-        <button class="tab-btn" data-tab="html">HTML</button>
+      <!-- CLI Command -->
+      <div class="bg-surface-container-low border border-outline-variant overflow-hidden">
+        <div class="px-5 py-3 border-b border-outline-variant">
+          <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant">CLI Command</span>
+        </div>
+        <div class="code-block relative bg-surface-container-lowest p-4 font-body text-xs text-primary overflow-x-auto whitespace-pre" id="cli-block"></div>
       </div>
-      <div class="tab-content active" id="tab-md">
-        <div class="code-block" id="snippet-md"></div>
-      </div>
-      <div class="tab-content" id="tab-html">
-        <div class="code-block" id="snippet-html"></div>
-      </div>
-    </div>
 
-    <div class="snippet-wrap">
-      <div class="snippet-title">CLI Command</div>
-      <div class="code-block" id="cli-block"></div>
-    </div>
+      <!-- Card URL -->
+      <div class="bg-surface-container-low border border-outline-variant overflow-hidden">
+        <div class="px-5 py-3 border-b border-outline-variant">
+          <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant">Card URL</span>
+        </div>
+        <div class="code-block relative bg-surface-container-lowest p-4 font-body text-xs text-primary overflow-x-auto whitespace-pre" id="url-block"></div>
+      </div>
 
-    <div class="snippet-wrap">
-      <div class="snippet-title">Card URL</div>
-      <div class="code-block" id="url-block"></div>
-    </div>
-  </main>
+    </main>
+  </div>
 </div>
+</section>
 
-<footer class="footer">
-  <p>MIT License &middot; Made by <a href="https://github.com/jjaimealeman">jjaimealeman</a></p>
+<!-- FOOTER -->
+<footer class="py-12 border-t border-outline-variant/5 bg-background">
+<div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+  <div class="flex items-center gap-4">
+    <span class="font-headline font-bold text-on-surface">ShipCard</span>
+    <span class="text-on-surface-variant text-xs font-body">&copy; 2026</span>
+  </div>
+  <div class="flex gap-8 text-on-surface-variant text-xs font-medium">
+    <a class="hover:text-on-surface" href="https://github.com/jjaimealeman/shipcard" target="_blank" rel="noopener">GitHub</a>
+    <a class="hover:text-on-surface" href="https://www.npmjs.com/package/@jjaimealeman/shipcard" target="_blank" rel="noopener">npm</a>
+  </div>
+  <div class="text-on-surface-variant text-xs">
+    MIT License &middot; Built on Cloudflare &middot; Made in El Paso
+  </div>
+</div>
 </footer>
 
 <script>
@@ -437,10 +346,12 @@ const CONFIGURATOR_HTML = `<!DOCTYPE html>
   } catch (e) { /* ignore */ }
 
   if (!stats) {
+    // Safe: no user-derived content in this static HTML string
     document.getElementById('main-content').innerHTML =
-      '<div class="no-data">' +
-      '<p>No stats data found.</p>' +
-      '<p>Run <code>shipcard sync</code> to open this page with your stats.</p>' +
+      '<div class="bg-surface-container-low border border-outline-variant p-12 text-center">' +
+      '<span class="material-symbols-outlined text-4xl text-on-surface-variant/40 mb-4 block">data_object</span>' +
+      '<p class="text-on-surface-variant mb-2">No stats data found.</p>' +
+      '<p class="text-on-surface-variant text-sm">Run <code class="text-primary bg-surface-container-lowest px-2 py-0.5 rounded text-xs">shipcard sync</code> to open this page with your stats.</p>' +
       '</div>';
     document.getElementById('sidebar').style.display = 'none';
     return;
@@ -694,7 +605,7 @@ const CONFIGURATOR_HTML = `<!DOCTYPE html>
     while (block.firstChild) block.removeChild(block.firstChild);
     block.appendChild(document.createTextNode(text));
     var btn = document.createElement('button');
-    btn.className = 'copy-btn';
+    btn.className = 'copy-btn absolute top-3 right-3 bg-surface-container-high text-on-surface-variant text-[10px] font-medium px-2 py-1 rounded hover:bg-primary hover:text-on-primary transition-all cursor-pointer';
     btn.textContent = 'Copy';
     btn.addEventListener('click', function() { copyText(text, btn); });
     block.appendChild(btn);
@@ -709,7 +620,9 @@ const CONFIGURATOR_HTML = `<!DOCTYPE html>
       for (var j = 0; j < allBtns.length; j++) allBtns[j].classList.remove('active');
       e.target.classList.add('active');
       document.getElementById('tab-md').classList.toggle('active', tab === 'md');
+      document.getElementById('tab-md').classList.toggle('hidden', tab !== 'md');
       document.getElementById('tab-html').classList.toggle('active', tab === 'html');
+      document.getElementById('tab-html').classList.toggle('hidden', tab !== 'html');
     });
   }
 
@@ -736,7 +649,6 @@ const CONFIGURATOR_HTML = `<!DOCTYPE html>
   render();
 })();
 </script>
-<div class="version-badge">v${__APP_VERSION__}</div>
 </body>
 </html>`;
 

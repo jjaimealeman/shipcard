@@ -4,6 +4,12 @@ Full reference for CLI commands and MCP tools.
 
 ---
 
+## Data Availability
+
+> **Important:** ShipCard can only parse Claude Code JSONL files from approximately **January 2026 onward**. Earlier sessions used a different JSONL schema that lacks the fields ShipCard needs (token counts, model names, timestamps). If you've been using Claude Code since before January 2026, your older sessions won't appear in stats.
+
+---
+
 ## CLI Commands
 
 ### `shipcard summary`
@@ -138,6 +144,37 @@ Markdown:
 
 ---
 
+### `shipcard slug`
+
+Manage custom card URL slugs (PRO only). Create personalized URLs like `/u/yourname/dark-minimal` with saved theme and layout configurations.
+
+```sh
+shipcard slug create dark-minimal --theme tokyo-night --layout compact
+shipcard slug list
+shipcard slug list --json
+shipcard slug delete dark-minimal
+```
+
+**Subcommands:**
+
+| Subcommand | Description                                    |
+| ---------- | ---------------------------------------------- |
+| `create`   | Create a new slug with theme/layout config     |
+| `list`     | List all your slugs                            |
+| `delete`   | Delete a slug                                  |
+
+**Create flags:**
+
+| Flag               | Description                                              |
+| ------------------ | -------------------------------------------------------- |
+| `--theme <name>`   | Theme for this slug (default: `catppuccin`)              |
+| `--layout <name>`  | Layout: `classic`, `compact`, `hero` (default: `classic`)|
+| `--json`           | Output result as JSON                                    |
+
+**Slug rules:** 3-50 characters, lowercase alphanumeric and hyphens, no leading/trailing hyphens, no reserved words (admin, api, dashboard, etc.).
+
+---
+
 ### Global Flags
 
 | Flag             | Description                        |
@@ -158,7 +195,7 @@ Add shipcard to Claude Code and ask about your stats in any conversation.
   "mcpServers": {
     "shipcard": {
       "command": "npx",
-      "args": ["-y", "-p", "shipcard", "shipcard-mcp"]
+      "args": ["-y", "-p", "@jjaimealeman/shipcard", "shipcard-mcp"]
     }
   }
 }

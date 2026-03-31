@@ -64,13 +64,14 @@ export function renderTable(
   const _ = options; // reserved for future color usage
   if (headers.length === 0) return "";
 
-  // Calculate column widths: max of header and all row values.
+  // Calculate column widths: max of header and all row values, capped at 80.
+  const MAX_COL_WIDTH = 80;
   const colWidths = headers.map((h, i) => {
     const dataMax = rows.reduce((max, row) => {
       const cell = row[i] ?? "";
       return Math.max(max, cell.length);
     }, 0);
-    return Math.max(h.length, dataMax);
+    return Math.min(Math.max(h.length, dataMax), MAX_COL_WIDTH);
   });
 
   const lines: string[] = [];
@@ -140,16 +141,21 @@ export function formatSummary(
   const { summary } = result;
   const tokens = summary.totalTokens;
 
+  // Clean model names: strip date suffixes (claude-sonnet-4-6-20250929 → claude-sonnet-4-6)
+  const cleanModels = summary.modelsUsed
+    .filter((m) => m !== "<synthetic>")
+    .map((m) => m.replace(/-\d{8}$/, ""))
+    .join(", ") || "(none)";
+
   const overviewRows: string[][] = [
     ["Sessions", String(summary.totalSessions)],
     ["Tokens (input)", tokens.input.toLocaleString()],
     ["Tokens (output)", tokens.output.toLocaleString()],
     ["Cache creation", tokens.cacheCreate.toLocaleString()],
     ["Cache read", tokens.cacheRead.toLocaleString()],
-    ["Models", summary.modelsUsed.join(", ") || "(none)"],
-    ["Projects", summary.projectsTouched.join(", ") || "(none)"],
+    ["Models", cleanModels],
+    ["Projects", String(summary.projectsTouched.length)],
     ["Total cost", summary.totalCost],
-    ["Pricing source", summary.pricingVersion],
   ];
 
   sections.push("Overview");
@@ -213,12 +219,13 @@ export function formatCosts(
         const bCost = parseFloat(b.cost.replace(/[^0-9.]/g, "")) || 0;
         return bCost - aCost;
       })
-      .map(([name, stats]) => [
-        name,
-        String(stats.sessions),
-        stats.cost,
-        stats.models.join(", ") || "(none)",
-      ]);
+      .map(([name, stats]) => {
+        const models = stats.models
+          .filter((m) => m !== "<synthetic>")
+          .map((m) => m.replace(/-\d{8}$/, ""))
+          .join(", ") || "(none)";
+        return [name, String(stats.sessions), stats.cost, models];
+      });
 
     sections.push("Cost by Project");
     sections.push(

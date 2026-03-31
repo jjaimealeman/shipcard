@@ -11,7 +11,7 @@
 
 import { Hono } from "hono";
 import type { AppType } from "../types.js";
-import { listUsers } from "../kv.js";
+import { listUsers, getCardsServedCount } from "../kv.js";
 
 export const communityRoutes = new Hono<AppType>();
 
@@ -39,7 +39,10 @@ function escHtml(s: string): string {
  * Full leaderboard with all users and client-side Alpine.js sorting.
  */
 communityRoutes.get("/", async (c) => {
-  const users = await listUsers(c.env.USER_DATA_KV, 1000);
+  const [users, cardsServed] = await Promise.all([
+    listUsers(c.env.USER_DATA_KV, 1000),
+    getCardsServedCount(c.env.CARDS_KV),
+  ]);
 
   // Serialize users as safe JSON for client-side Alpine.js sorting.
   // Each entry: { username, syncedAt, totalSessions, totalCost, costNum, projectCount, totalTokens }
@@ -59,313 +62,234 @@ communityRoutes.get("/", async (c) => {
   );
 
   const html = `<!DOCTYPE html>
-<html lang="en">
+<html class="dark" lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Community — ShipCard</title>
-<meta name="description" content="See who's shipping with ShipCard. Leaderboard of Claude Code developers.">
+<meta name="description" content="Builders who ship in the open. See who's building with Claude Code and ShipCard."/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@700&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script>
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "on-tertiary-container": "#4a4a56",
+        "surface-dim": "#131318",
+        "on-tertiary": "#2f2f3b",
+        "inverse-surface": "#e4e1e9",
+        "primary": "#00d4aa",
+        "on-secondary": "#472a00",
+        "on-background": "#e4e1e9",
+        "on-primary": "#00382b",
+        "tertiary": "#d8d6e4",
+        "surface-container-high": "#2a292f",
+        "on-error": "#690005",
+        "error-container": "#93000a",
+        "secondary-fixed": "#ffddb8",
+        "secondary-container": "#ca8007",
+        "surface-tint": "#28dfb5",
+        "inverse-on-surface": "#303036",
+        "tertiary-fixed-dim": "#c7c5d3",
+        "surface-container-lowest": "#0e0e13",
+        "surface": "#0a0a0f",
+        "on-primary-container": "#005643",
+        "on-secondary-fixed-variant": "#663e00",
+        "inverse-primary": "#006b55",
+        "on-surface-variant": "#8888a0",
+        "surface-container-highest": "#35343a",
+        "secondary": "#f0a030",
+        "secondary-fixed-dim": "#ffb961",
+        "tertiary-container": "#bcbac8",
+        "surface-bright": "#39383e",
+        "primary-fixed": "#55fcd0",
+        "primary-container": "#00d4aa",
+        "outline-variant": "#2a2a35",
+        "on-tertiary-fixed": "#1a1b25",
+        "primary-fixed-dim": "#28dfb5",
+        "outline": "#85948d",
+        "error": "#ffb4ab",
+        "background": "#0a0a0f",
+        "on-secondary-container": "#3e2400",
+        "on-primary-fixed": "#002118",
+        "tertiary-fixed": "#e3e1f0",
+        "on-error-container": "#ffdad6",
+        "surface-container-low": "#141419",
+        "on-primary-fixed-variant": "#00513f",
+        "on-surface": "#e8e8ed",
+        "surface-container": "#1f1f25",
+        "on-secondary-fixed": "#2b1700",
+        "on-tertiary-fixed-variant": "#464651",
+        "surface-variant": "#35343a"
+      },
+      fontFamily: {
+        "headline": ["Instrument Sans", "sans-serif"],
+        "body": ["IBM Plex Mono", "monospace"],
+        "label": ["IBM Plex Mono", "monospace"]
+      },
+      borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+    },
+  },
+}
+</script>
 <style>
-  :root {
-    --bg: #16161a;
-    --fg: #e8e6dc;
-    --mid: #b0aea5;
-    --light: #e8e6dc;
-    --orange: #d97757;
-    --blue: #6a9bcc;
-    --green: #788c5d;
-    --surface: #1e1e1c;
-    --border: #2a2a28;
-    --radius: 8px;
-  }
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: Georgia, serif;
-    font-size: 16px;
-    line-height: 1.6;
-    background: var(--bg);
-    color: var(--fg);
-    min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  h1, h2, h3, nav, label, button, .sort-tabs button {
-    font-family: system-ui, sans-serif;
-  }
-
-  .container {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 0 24px;
-  }
-
-  /* ---------- NAV ---------- */
-  .nav-wrap {
-    border-bottom: 1px solid var(--border);
-    position: sticky;
-    top: 0;
-    background: var(--bg);
-    z-index: 10;
-  }
-  nav {
-    padding: 16px 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .nav-brand {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--fg);
-    text-decoration: none;
-    letter-spacing: -0.02em;
-    font-family: system-ui, sans-serif;
-  }
-  .nav-links { display: flex; gap: 20px; align-items: center; }
-  .nav-links a {
-    color: var(--mid);
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 600;
-    font-family: system-ui, sans-serif;
-    transition: color 0.15s;
-  }
-  .nav-links a:hover { color: var(--fg); }
-  .nav-links a.active { color: var(--orange); }
-
-  /* ---------- PAGE HEADER ---------- */
-  .page-header {
-    padding: 48px 0 32px;
-    text-align: center;
-  }
-  .page-header h1 {
-    font-size: clamp(24px, 4vw, 36px);
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    margin-bottom: 8px;
-  }
-  .page-header .subtitle {
-    color: var(--mid);
-    font-size: 16px;
-  }
-
-  /* ---------- SORT TABS ---------- */
-  .sort-tabs {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-  }
-  .sort-tabs button {
-    padding: 7px 16px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    color: var(--mid);
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .sort-tabs button:hover { color: var(--fg); border-color: var(--mid); }
-  .sort-tabs button.active {
-    background: var(--orange);
-    border-color: var(--orange);
-    color: #fff;
-  }
-
-  /* ---------- TABLE ---------- */
-  .table-wrap {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow-x: auto;
-    margin-bottom: 48px;
-  }
-  .leaderboard-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-  }
-  .leaderboard-table thead th {
-    padding: 11px 14px;
-    text-align: left;
-    font-family: system-ui, sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--mid);
-    border-bottom: 1px solid var(--border);
-    cursor: pointer;
-    user-select: none;
-    white-space: nowrap;
-  }
-  .leaderboard-table thead th:hover { color: var(--fg); }
-  .leaderboard-table thead th.sort-active { color: var(--orange); }
-  .leaderboard-table thead th.sort-active.asc::after { content: ' ↑'; }
-  .leaderboard-table thead th.sort-active.desc::after { content: ' ↓'; }
-  .leaderboard-table tbody tr {
-    border-bottom: 1px solid var(--border);
-    transition: background 0.1s;
-  }
-  .leaderboard-table tbody tr:last-child { border-bottom: none; }
-  .leaderboard-table tbody tr:hover { background: rgba(255,255,255,0.03); }
-  .leaderboard-table td {
-    padding: 11px 14px;
-    color: var(--fg);
-  }
-  .leaderboard-table td.rank {
-    color: var(--mid);
-    font-family: monospace;
-    font-size: 12px;
-    width: 40px;
-  }
-  .leaderboard-table td.username a {
-    color: var(--blue);
-    text-decoration: none;
-    font-weight: 600;
-    font-family: system-ui, sans-serif;
-  }
-  .leaderboard-table td.username a:hover { text-decoration: underline; }
-  .leaderboard-table td.num {
-    font-family: monospace;
-    color: var(--mid);
-  }
-  .leaderboard-table td.cost { color: var(--green); font-family: monospace; }
-  .empty-state {
-    padding: 48px 24px;
-    text-align: center;
-    color: var(--mid);
-    font-size: 15px;
-  }
-  .empty-state code {
-    background: var(--bg);
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 13px;
-    color: var(--light);
-  }
-
-  /* ---------- FOOTER ---------- */
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 32px 0;
-    text-align: center;
-    color: var(--mid);
-    font-size: 14px;
-  }
-  .footer-links {
-    display: flex;
-    justify-content: center;
-    gap: 24px;
-    margin-bottom: 12px;
-  }
-  .footer-links a {
-    color: var(--mid);
-    text-decoration: none;
-    font-family: system-ui, sans-serif;
-    font-weight: 600;
-    font-size: 13px;
-    transition: color 0.15s;
-  }
-  .footer-links a:hover { color: var(--orange); }
+.bg-dot-grid {
+  background-image: radial-gradient(circle, #2a2a35 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: radial-gradient(ellipse at center, black, transparent 80%);
+}
+.hero-glow {
+  background: radial-gradient(circle at 50% 50%, rgba(0, 212, 170, 0.08) 0%, transparent 60%);
+}
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+.sort-tab { border-bottom: 2px solid transparent; transition: all 0.15s; }
+.sort-tab:hover { color: #e8e8ed; border-bottom-color: #35343a; }
+.sort-tab.active { color: #00d4aa; border-bottom-color: #00d4aa; }
 </style>
 </head>
-<body>
+<body class="bg-background text-on-surface font-body selection:bg-primary selection:text-on-primary">
 
-<div class="nav-wrap">
-  <div class="container">
-    <nav>
-      <a href="/" class="nav-brand">ShipCard</a>
-      <div class="nav-links">
-        <a href="/community" class="active">Community</a>
-        <a href="/configure">Configurator</a>
-        <a href="https://www.npmjs.com/package/@jjaimealeman/shipcard" target="_blank" rel="noopener">npm</a>
-        <a href="https://github.com/jjaimealeman/shipcard" target="_blank" rel="noopener">GitHub</a>
-      </div>
-    </nav>
+<!-- NAVIGATION BAR -->
+<nav class="sticky top-0 z-50 w-full border-b border-outline-variant/10 bg-background/80 backdrop-blur-md">
+<div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+  <div class="flex items-center gap-2">
+    <div class="w-6 h-6 text-primary">
+      <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8.578 8.578C5.528 11.628 3.451 15.514 2.609 19.745c-.841 4.23-.41 8.616 1.241 12.601 1.65 3.985 4.446 7.391 8.032 9.788 3.587 2.396 7.804 3.675 12.118 3.675 4.314 0 8.53-1.279 12.117-3.675 3.586-2.397 6.382-5.803 8.032-9.788 1.651-3.985 2.083-8.371 1.241-12.601-.842-4.231-2.919-8.117-5.969-11.167L24 24 8.578 8.578z" fill="currentColor"></path>
+      </svg>
+    </div>
+    <span class="font-headline text-xl font-bold tracking-tight text-on-surface">ShipCard</span>
   </div>
+  <div class="hidden md:flex items-center gap-8 text-on-surface-variant text-sm font-medium">
+    <a class="text-primary" href="/community">Community</a>
+    <a class="hover:text-on-surface transition-colors" href="/configure">Configurator</a>
+    <a class="hover:text-on-surface transition-colors" href="https://www.npmjs.com/package/@jjaimealeman/shipcard" target="_blank" rel="noopener">npm</a>
+    <a class="hover:text-on-surface transition-colors" href="https://github.com/jjaimealeman/shipcard" target="_blank" rel="noopener">GitHub</a>
+  </div>
+  <a href="https://github.com/jjaimealeman/shipcard" target="_blank" rel="noopener" class="border border-primary/20 hover:border-primary/40 text-primary px-4 py-2 text-sm font-medium transition-all inline-flex items-center gap-2">
+    <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span> Star on GitHub
+  </a>
 </div>
+</nav>
 
-<div class="page-header">
-  <div class="container">
-    <h1>Community</h1>
-    <p class="subtitle">See who's shipping with ShipCard</p>
-  </div>
+<!-- HERO -->
+<section class="relative pt-20 pb-12 overflow-hidden">
+<div class="absolute inset-0 bg-dot-grid pointer-events-none"></div>
+<div class="absolute inset-0 hero-glow pointer-events-none"></div>
+<div class="max-w-4xl mx-auto px-6 text-center relative z-10">
+  <h1 class="font-headline text-4xl md:text-5xl font-bold tracking-tight text-on-surface mb-4 leading-[1.1]">
+    Community
+  </h1>
+  <p class="text-on-surface-variant text-lg md:text-xl max-w-2xl mx-auto font-body leading-relaxed">
+    Builders who ship in the open.
+  </p>
+  ${cardsServed > 0 ? `<div class="mt-8 inline-flex items-center gap-2 px-4 py-2 bg-surface-container-low border border-outline-variant text-on-surface-variant text-xs font-medium">
+    <span class="material-symbols-outlined text-primary text-sm">monitoring</span>
+    <span class="text-on-surface font-headline text-sm">${cardsServed.toLocaleString()}</span> cards served
+  </div>` : ""}
 </div>
+</section>
 
-<div class="container" x-data="leaderboard()" x-init="init()">
-  <div class="sort-tabs">
-    <button :class="{ active: sortKey === 'syncedAt' }" @click="setSort('syncedAt', 'desc')">Most Recent</button>
-    <button :class="{ active: sortKey === 'totalSessions' }" @click="setSort('totalSessions', 'desc')">Most Active</button>
-    <button :class="{ active: sortKey === 'costNum' }" @click="setSort('costNum', 'desc')">Highest Cost</button>
-    <button :class="{ active: sortKey === 'totalTokens' }" @click="setSort('totalTokens', 'desc')">Most Tokens</button>
+<!-- LEADERBOARD -->
+<section class="max-w-5xl mx-auto px-6 pb-24" x-data="leaderboard()" x-init="init()">
+
+  <!-- SORT TABS -->
+  <div class="flex gap-6 border-b border-outline-variant/20 mb-6 overflow-x-auto no-scrollbar">
+    <button class="sort-tab pb-3 text-sm font-medium whitespace-nowrap" :class="{ active: sortKey === 'syncedAt' }" @click="setSort('syncedAt', 'desc')">Most Recent</button>
+    <button class="sort-tab pb-3 text-sm font-medium whitespace-nowrap" :class="{ active: sortKey === 'totalSessions' }" @click="setSort('totalSessions', 'desc')">Most Active</button>
+    <button class="sort-tab pb-3 text-sm font-medium whitespace-nowrap" :class="{ active: sortKey === 'costNum' }" @click="setSort('costNum', 'desc')">Highest Cost</button>
+    <button class="sort-tab pb-3 text-sm font-medium whitespace-nowrap" :class="{ active: sortKey === 'totalTokens' }" @click="setSort('totalTokens', 'desc')">Most Tokens</button>
   </div>
 
-  <div class="table-wrap">
-    <table class="leaderboard-table">
+  <!-- TABLE -->
+  <div class="bg-surface-container-low border border-outline-variant overflow-x-auto">
+    <table class="w-full text-sm">
       <thead>
-        <tr>
-          <th>#</th>
-          <th
-            :class="{ 'sort-active': sortKey === 'username', 'asc': sortKey === 'username' && sortDir === 'asc', 'desc': sortKey === 'username' && sortDir === 'desc' }"
-            @click="toggleSort('username')"
-          >Username</th>
-          <th
-            :class="{ 'sort-active': sortKey === 'costNum', 'asc': sortKey === 'costNum' && sortDir === 'asc', 'desc': sortKey === 'costNum' && sortDir === 'desc' }"
-            @click="toggleSort('costNum')"
-          >Est. Cost</th>
-          <th
-            :class="{ 'sort-active': sortKey === 'projectCount', 'asc': sortKey === 'projectCount' && sortDir === 'asc', 'desc': sortKey === 'projectCount' && sortDir === 'desc' }"
-            @click="toggleSort('projectCount')"
-          >Projects</th>
-          <th
-            :class="{ 'sort-active': sortKey === 'totalSessions', 'asc': sortKey === 'totalSessions' && sortDir === 'asc', 'desc': sortKey === 'totalSessions' && sortDir === 'desc' }"
-            @click="toggleSort('totalSessions')"
-          >Sessions</th>
-          <th
-            :class="{ 'sort-active': sortKey === 'totalTokens', 'asc': sortKey === 'totalTokens' && sortDir === 'asc', 'desc': sortKey === 'totalTokens' && sortDir === 'desc' }"
-            @click="toggleSort('totalTokens')"
-          >Tokens</th>
+        <tr class="border-b border-outline-variant">
+          <th class="py-3 px-4 text-left text-[11px] font-bold uppercase tracking-[0.06em] text-on-surface-variant whitespace-nowrap">#</th>
+          <th class="py-3 px-4 text-left text-[11px] font-bold uppercase tracking-[0.06em] text-on-surface-variant cursor-pointer whitespace-nowrap hover:text-on-surface transition-colors"
+              :class="{ 'text-primary': sortKey === 'username' }"
+              @click="toggleSort('username')">
+            Username
+            <template x-if="sortKey === 'username'"><span x-text="sortDir === 'asc' ? ' \\u2191' : ' \\u2193'"></span></template>
+          </th>
+          <th class="py-3 px-4 text-left text-[11px] font-bold uppercase tracking-[0.06em] text-on-surface-variant cursor-pointer whitespace-nowrap hover:text-on-surface transition-colors"
+              :class="{ 'text-primary': sortKey === 'costNum' }"
+              @click="toggleSort('costNum')">
+            Est. Cost
+            <template x-if="sortKey === 'costNum'"><span x-text="sortDir === 'asc' ? ' \\u2191' : ' \\u2193'"></span></template>
+          </th>
+          <th class="py-3 px-4 text-left text-[11px] font-bold uppercase tracking-[0.06em] text-on-surface-variant cursor-pointer whitespace-nowrap hover:text-on-surface transition-colors"
+              :class="{ 'text-primary': sortKey === 'projectCount' }"
+              @click="toggleSort('projectCount')">
+            Projects
+            <template x-if="sortKey === 'projectCount'"><span x-text="sortDir === 'asc' ? ' \\u2191' : ' \\u2193'"></span></template>
+          </th>
+          <th class="py-3 px-4 text-left text-[11px] font-bold uppercase tracking-[0.06em] text-on-surface-variant cursor-pointer whitespace-nowrap hover:text-on-surface transition-colors"
+              :class="{ 'text-primary': sortKey === 'totalSessions' }"
+              @click="toggleSort('totalSessions')">
+            Sessions
+            <template x-if="sortKey === 'totalSessions'"><span x-text="sortDir === 'asc' ? ' \\u2191' : ' \\u2193'"></span></template>
+          </th>
+          <th class="py-3 px-4 text-left text-[11px] font-bold uppercase tracking-[0.06em] text-on-surface-variant cursor-pointer whitespace-nowrap hover:text-on-surface transition-colors"
+              :class="{ 'text-primary': sortKey === 'totalTokens' }"
+              @click="toggleSort('totalTokens')">
+            Tokens
+            <template x-if="sortKey === 'totalTokens'"><span x-text="sortDir === 'asc' ? ' \\u2191' : ' \\u2193'"></span></template>
+          </th>
         </tr>
       </thead>
       <tbody>
         <template x-if="sorted.length === 0">
           <tr>
-            <td colspan="6" class="empty-state">
-              Be the first — run <code>shipcard sync</code> to join
+            <td colspan="6" class="text-center text-on-surface-variant py-16">
+              Be the first &mdash; run <code class="text-primary bg-surface-container px-2 py-0.5">shipcard sync</code> to join
             </td>
           </tr>
         </template>
         <template x-for="(user, idx) in sorted" :key="user.username">
-          <tr>
-            <td class="rank" x-text="idx + 1"></td>
-            <td class="username">
-              <a :href="'/u/' + encodeURIComponent(user.username) + '/dashboard'" x-text="user.username"></a>
+          <tr class="border-b border-outline-variant/10 hover:bg-surface-container/50 transition-colors">
+            <td class="py-3 px-4 text-on-surface-variant text-xs font-label" x-text="idx + 1"></td>
+            <td class="py-3 px-4">
+              <a :href="'/u/' + encodeURIComponent(user.username) + '/dashboard'" class="text-primary hover:underline font-medium" x-text="user.username"></a>
             </td>
-            <td class="cost" x-text="user.totalCost ?? '—'"></td>
-            <td class="num" x-text="user.projectCount !== null ? user.projectCount : '—'"></td>
-            <td class="num" x-text="user.totalSessions !== null ? user.totalSessions : '—'"></td>
-            <td class="num" x-text="user.totalTokens !== null ? Number(user.totalTokens).toLocaleString() : '—'"></td>
+            <td class="py-3 px-4 text-secondary font-label" x-text="user.totalCost ?? '\\u2014'"></td>
+            <td class="py-3 px-4 text-on-surface-variant font-label" x-text="user.projectCount !== null ? user.projectCount : '\\u2014'"></td>
+            <td class="py-3 px-4 text-on-surface-variant font-label" x-text="user.totalSessions !== null ? user.totalSessions : '\\u2014'"></td>
+            <td class="py-3 px-4 text-on-surface-variant font-label" x-text="user.totalTokens !== null ? Number(user.totalTokens).toLocaleString() : '\\u2014'"></td>
           </tr>
         </template>
       </tbody>
     </table>
   </div>
-</div>
 
-<footer>
-  <div class="container">
-    <div class="footer-links">
-      <a href="https://github.com/jjaimealeman/shipcard" target="_blank" rel="noopener">GitHub</a>
-      <a href="https://www.npmjs.com/package/@jjaimealeman/shipcard" target="_blank" rel="noopener">npm</a>
-      <a href="/configure">Configurator</a>
-    </div>
-    <p>MIT License &middot; Made by <a href="https://github.com/jjaimealeman" style="color:var(--orange);text-decoration:none;">jjaimealeman</a></p>
+  <!-- USER COUNT -->
+  <div class="mt-4 text-right text-on-surface-variant text-xs">
+    <span x-text="sorted.length"></span> builders
   </div>
+
+</section>
+
+<!-- FOOTER -->
+<footer class="py-12 border-t border-outline-variant/5 bg-background">
+<div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+  <div class="flex items-center gap-4">
+    <span class="font-headline font-bold text-on-surface">ShipCard</span>
+    <span class="text-on-surface-variant text-xs font-body">&copy; 2026</span>
+  </div>
+  <div class="flex gap-8 text-on-surface-variant text-xs font-medium">
+    <a class="hover:text-on-surface" href="https://github.com/jjaimealeman/shipcard" target="_blank" rel="noopener">GitHub</a>
+    <a class="hover:text-on-surface" href="https://www.npmjs.com/package/@jjaimealeman/shipcard" target="_blank" rel="noopener">npm</a>
+  </div>
+  <div class="text-on-surface-variant text-xs">
+    MIT License &middot; Built on Cloudflare &middot; Made in El Paso
+  </div>
+</div>
 </footer>
 
 <script>

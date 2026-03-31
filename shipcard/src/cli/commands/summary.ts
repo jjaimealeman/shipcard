@@ -45,7 +45,10 @@ If you've used Claude Code on this machine, check that the directory exists.`;
  */
 export async function runSummary(flags: SummaryFlags): Promise<void> {
   if (isTTY() && !flags.json) {
-    intro("ShipCard -- Summary");
+    const rangeLabel = flags.since
+      ? `last ${flags.since}`
+      : "all time";
+    intro(`ShipCard -- Summary (${rangeLabel})`);
   }
 
   const result = await runEngine({
@@ -89,7 +92,7 @@ export async function runSummary(flags: SummaryFlags): Promise<void> {
   }
 
   if (isTTY() && !flags.json) {
-    outro("Done.");
+    outro("Done. Note: only sessions from ~Jan 2026 onward are parseable (Anthropic JSONL format change).");
   }
 
   process.exit(0);

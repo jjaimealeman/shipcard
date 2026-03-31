@@ -44,7 +44,10 @@ If you've used Claude Code on this machine, check that the directory exists.`;
  */
 export async function runCosts(flags: CostsFlags): Promise<void> {
   if (isTTY() && !flags.json) {
-    intro("ShipCard -- Costs");
+    const rangeLabel = flags.since
+      ? `last ${flags.since}`
+      : "all time";
+    intro(`ShipCard -- Costs (${rangeLabel})`);
   }
 
   const result = await runEngine({

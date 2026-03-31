@@ -1,0 +1,8 @@
+<svg width="240" height="60" viewBox="0 0 240 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Icon Mark -->
+  <path d="M12 14H30V30L21 38L12 30V14Z" fill="#00d4aa"/>
+  <rect x="16" y="19" width="10" height="3" fill="#0a0a0f"/>
+
+  <!-- Wordmark: Instrument Sans Bold Style -->
+  <text x="42" y="38" fill="white" style="font: bold 24px 'Instrument Sans', sans-serif; letter-spacing: -0.5px;">Ship<tspan fill="#00d4aa">Card</tspan></text>
+</svg>
